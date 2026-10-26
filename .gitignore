@@ -68,3 +68,7 @@ scripts/catalogue/manifest.json
 
 # Draft product images awaiting approval
 .image-drafts/
+
+# Cloudflare build and deploy output
+.wrangler/
+.netlify/

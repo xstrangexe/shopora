@@ -11,7 +11,9 @@ export default defineConfig({
     tanstackStart({
       router: { entry: "router.tsx" },
     }),
-    nitro({ preset: "vercel" }),
+    // Vercel by default. `NITRO_PRESET=cloudflare_module` builds the same app
+    // for Cloudflare Workers.
+    nitro({ preset: process.env.NITRO_PRESET || "vercel" }),
     react(),
     tailwindcss(),
     tsconfigPaths(),
