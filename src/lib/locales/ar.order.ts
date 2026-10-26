@@ -76,6 +76,4 @@ export const arOrder = {
   "spot.colours": "الألوان المتوفرة",
   "spot.cod": "دفع عند الاستلام",
   "trust2.wilayas": "توصيل لـ {count} ولاية",
-  "hx.banner": "اختار الكوفر لي يليق بيك",
-  "hx.new": "وصلنا جديد",
 } as const;

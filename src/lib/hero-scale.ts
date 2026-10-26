@@ -1,11 +1,11 @@
 import type { CSSProperties } from "react";
 
 /**
- * Sizes the home hero's design canvas (1172 x 620 design pixels) to the window.
+ * Sizes the home hero's design canvas (1172 x 700 design pixels) to the window.
  *
- * k = min(vw / W, vh / 560). Dividing the height by 560 rather than 620 fills
- * the width and lets the store preview bleed off the foot instead of
- * letterboxing. Between 1080 and 701px the design window W narrows from 1172
+ * k = min(vw / W, vh / 700): the whole canvas fits the screen under the header,
+ * so the ring's cards show whole rather than cut at the foot. Between 1080 and
+ * 701px the design window W narrows from 1172
  * towards 920, continuously, so type stops shrinking with the viewport and k
  * does not jump at 1080; a portrait tablet tightens to 900 and reads larger.
  * At 700px and below the hero is a normal column and this does nothing.
@@ -22,7 +22,6 @@ export function applyHeroScale(section: HTMLElement | null): void {
   if (vw <= 700) {
     section.style.removeProperty("height");
     canvas.style.removeProperty("--k");
-    canvas.style.removeProperty("--fill");
     return;
   }
   // The header and announcement bar sit above the hero; it takes what is left.
@@ -33,12 +32,10 @@ export function applyHeroScale(section: HTMLElement | null): void {
     w = 920 + ((vw - 701) * (1172 - 920)) / (1080 - 701);
     if (avail > vw * 1.15) w = Math.min(w, 900);
   }
-  const k = Math.min(vw / w, avail / 560);
-  // Never taller than 700 design px: on a tall screen the shop shows below.
-  const designH = Math.min(avail / k, 700);
-  section.style.height = `${designH * k}px`;
+  const k = Math.min(vw / w, avail / 700);
+  // Exactly the canvas: on a tall screen the shop shows below, not empty black.
+  section.style.height = `${700 * k}px`;
   canvas.style.setProperty("--k", String(k));
-  canvas.style.setProperty("--fill", `${Math.max(0, designH - 620)}px`);
 }
 
 /**

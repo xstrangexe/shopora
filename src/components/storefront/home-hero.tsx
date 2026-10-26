@@ -1,28 +1,20 @@
 import { useEffect, useRef } from "react";
 import { Banknote, RefreshCw, Truck } from "lucide-react";
 import { useI18n } from "@/lib/i18n-context";
-import type { CatalogueProduct, StoreSettings } from "@/lib/queries";
+import type { StoreSettings } from "@/lib/queries";
 import { HERO_SCALE_SCRIPT, applyHeroScale, enter } from "@/lib/hero-scale";
 import { HeroRing } from "./hero-ring";
-import { HeroBrowser } from "./hero-browser";
 
 /**
  * Home hero: a black stage under the black header, the delivery badge, the
- * tagline, the owner's description and a gold "shop now"; behind them a 3D ring
- * of the shop's own phone-case pictures turning slowly, and in front of the ring
- * the shop itself in a browser window. Everything below it stays cream.
+ * tagline, the owner's description and a gold "shop now"; under them a 3D ring
+ * of the shop's own phone-case pictures turning slowly, spaced and shown whole,
+ * with nothing on top of it. Everything below stays cream.
  *
  * The owner's tagline and description are Arabic, so French and English readers
  * get the interface headline instead of untranslated text.
  */
-export function HomeHero({
-  settings,
-  products,
-}: {
-  settings: StoreSettings | null;
-  /** The two cases for the shop window; the grid below starts after them. */
-  products: CatalogueProduct[];
-}) {
+export function HomeHero({ settings }: { settings: StoreSettings | null }) {
   const { t, locale } = useI18n();
   const section = useRef<HTMLElement>(null);
   const tagline =
@@ -50,7 +42,7 @@ export function HomeHero({
         <div className="hx-stars" data-n="150" data-blur="0" />
         <div className="hx-stars" data-n="18" data-blur="1.2" />
         <div className="hx-canvas" suppressHydrationWarning>
-          <div className="hx-row" style={{ top: 70 }}>
+          <div className="hx-row" style={{ top: 40 }}>
             <span className="hx-badge hx-a" style={enter(270, 11, 0.985)}>
               <i aria-hidden="true">
                 <svg viewBox="5 1 14 22" preserveAspectRatio="none">
@@ -66,24 +58,23 @@ export function HomeHero({
               {t("home2.pill")}
             </span>
           </div>
-          <div className="hx-row" style={{ top: 124 }}>
+          <div className="hx-row" style={{ top: 94 }}>
             <h1 className="hx-h1 font-display">{tagline}</h1>
           </div>
           {description && (
-            <div className="hx-row" style={{ top: 212 }}>
+            <div className="hx-row" style={{ top: 180 }}>
               <p className="hx-sub hx-a" style={enter(690, 10)}>
                 {description}
               </p>
             </div>
           )}
-          <div className="hx-row hx-cta" style={{ top: 296 }}>
+          <div className="hx-row hx-cta" style={{ top: 262 }}>
             <a href="#catalogue" className="hx-btn hx-a" style={enter(830, 13, 0.985)}>
               <span>{t("home2.shop")}</span>
             </a>
           </div>
           <div className="hx-show">
             <HeroRing />
-            <HeroBrowser products={products} />
           </div>
         </div>
       </section>

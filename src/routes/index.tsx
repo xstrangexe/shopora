@@ -89,17 +89,14 @@ function Home() {
   // The shop is about phone cases: the home page shows only products with
   // iPhone models, so lenses or organisers in the catalogue stay off it.
   const cases = (catalogue.data?.products ?? []).filter((p) => availableModels([p]).length > 0);
-  // The hero's shop window shows the first two; the grid starts after them so a
-  // phone visitor does not meet the same two cases twice in one scroll.
-  const featured = cases.slice(0, 2);
-  const rest = cases.slice(2, 2 + GRID_SIZE);
+  const grid = cases.slice(0, GRID_SIZE);
   const wilayaCount = settings?.delivery_wilayas?.length || WILAYAS.length;
 
   // The YouCan page's order: black hero and shop window, the three promises,
   // model finder, more cases, product of the week, and how to order.
   return (
     <StoreLayout>
-      <HomeHero settings={settings} products={featured} />
+      <HomeHero settings={settings} />
       <TrustBar returnsDays={settings?.returns_days ?? 7} wilayaCount={wilayaCount} />
       <ModelFinder products={cases} />
 
@@ -124,7 +121,7 @@ function Home() {
           <NoProducts />
         ) : (
           <>
-            <ProductGrid products={rest.length > 0 ? rest : cases} />
+            <ProductGrid products={grid} />
             <Link
               to="/catalogue"
               className="btn btn-block mt-5 !min-h-12 border-[1.5px] border-on-surface bg-surface font-semibold text-on-surface hover:bg-surface-high"

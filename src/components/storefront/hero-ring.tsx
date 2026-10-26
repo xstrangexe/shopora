@@ -37,11 +37,12 @@ const SHOTS: { src: string; kind: "tall" | "ad" }[] = [
   kind: kind as "tall" | "ad",
 }));
 
-// The ring: 37 cards on a cylinder of radius R, the camera at its centre
+// The ring: 30 cards on a cylinder of radius R, the camera at its centre
 // (perspective = R), so each card is tangent to the cylinder and faces the
-// camera. Cards more than 42 degrees round are behind the preview and culled.
+// camera. 30 rather than more leaves a clear gap between neighbours. Cards
+// more than 42 degrees round are off the sides and culled.
 const R = 891;
-const COUNT = 37;
+const COUNT = 30;
 const STEP = 360 / COUNT;
 const CULL = 42;
 const SPEED = 1.9; // degrees per second

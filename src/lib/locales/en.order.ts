@@ -73,6 +73,4 @@ export const enOrder: Record<keyof typeof arOrder, string> = {
   "spot.colours": "Available colours",
   "spot.cod": "Cash on delivery",
   "trust2.wilayas": "Delivery to {count} wilayas",
-  "hx.banner": "Find the case that suits you",
-  "hx.new": "New in",
 };
