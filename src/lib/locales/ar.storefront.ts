@@ -39,7 +39,8 @@ export const arStorefront = {
     "لديك طلبات تنتظر التأكيد. سيتصل بك المتجر قريباً، ولا داعي لطلب جديد.",
   "checkout.method.title": "طريقة التوصيل",
   "checkout.method.home": "التوصيل إلى المنزل",
-  "checkout.method.stopdesk": "التوصيل إلى المكتب",
+  // "ZR EXPRESS" is joined by a no-break space so the carrier name never wraps.
+  "checkout.method.stopdesk": "التوصيل إلى مكتب ZR EXPRESS",
   "checkout.stopdesk.choose": "اختر المكتب",
   "checkout.stopdesk.later": "سيخبرك المتجر بأقرب مكتب عند الاتصال لتأكيد طلبك.",
   "checkout.error.stopdesk_unavailable":
