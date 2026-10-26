@@ -5,9 +5,11 @@
  * derived from it, so every other locale is forced by the compiler to cover the
  * same keys — a missing translation becomes a build failure, not a blank label.
  *
- * The choice lives in a cookie (mirrored in `localStorage`), so the server renders
- * the visitor's language from the first byte. A first visit has no cookie yet:
- * the server picks from `Accept-Language` and sets it in the same response.
+ * SHOPORA opens in Arabic on every new visit, whatever the phone's language. A
+ * buyer who switches to French or English keeps that choice for the rest of the
+ * visit only: it lives in a session cookie (mirrored in `sessionStorage`), so the
+ * server renders the chosen language from the first byte, and the next visit
+ * starts in Arabic again.
  */
 
 import { ar } from "./locales/ar";
@@ -38,7 +40,9 @@ export const LOCALE_LABEL: Record<Locale, string> = {
 
 const DICTS: Record<Locale, Record<TranslationKey, string>> = { ar, fr, en };
 
-const STORAGE_KEY = "openstore-locale";
+// Renamed from "openstore-locale" so year-long choices saved by the old
+// behaviour no longer apply: everyone starts again in Arabic.
+const STORAGE_KEY = "shopora-locale";
 
 export function isLocale(value: unknown): value is Locale {
   return typeof value === "string" && (LOCALES as readonly string[]).includes(value);
@@ -65,47 +69,21 @@ export function translate(
 
 export function readStoredLocale(): Locale | null {
   if (typeof window === "undefined") return null;
-  const raw = window.localStorage.getItem(STORAGE_KEY);
+  const raw = window.sessionStorage.getItem(STORAGE_KEY);
   return isLocale(raw) ? raw : null;
 }
 
 export function persistLocale(locale: Locale): void {
   if (typeof window === "undefined") return;
-  window.localStorage.setItem(STORAGE_KEY, locale);
+  window.sessionStorage.setItem(STORAGE_KEY, locale);
   // The cookie is what lets the server render the next page in this language,
-  // instead of rendering Arabic and switching after load.
-  document.cookie = `${STORAGE_KEY}=${locale}; path=/; max-age=31536000; samesite=lax`;
+  // instead of rendering Arabic and switching after load. No max-age: it ends
+  // with the visit, so the next visit opens in Arabic.
+  document.cookie = `${STORAGE_KEY}=${locale}; path=/; samesite=lax`;
 }
 
 export function hasLocaleCookie(): boolean {
   return typeof document !== "undefined" && document.cookie.includes(`${STORAGE_KEY}=`);
-}
-
-/**
- * Best guess from the browser, used only when the visitor has never chosen.
- * Arabic is returned for `ar-*`; anything else falls back to Arabic rather than
- * guessing, because the platform is Arabic-first.
- */
-export function detectLocale(): Locale {
-  if (typeof navigator === "undefined") return DEFAULT_LOCALE;
-  return pickLocale(navigator.languages ?? [navigator.language]);
-}
-
-/**
- * The first supported language in a preference list, as a browser sends it
- * (`navigator.languages`) or as a header carries it (`Accept-Language`, split
- * and stripped of `;q=` weights). The server and the browser use this same rule,
- * so a first visit renders in the language the browser would have picked.
- */
-export function pickLocale(tags: readonly string[]): Locale {
-  for (const tag of tags) {
-    if (!tag) continue;
-    const base = tag.toLowerCase().split("-")[0];
-    if (base === "ar") return "ar";
-    if (base === "fr") return "fr";
-    if (base === "en") return "en";
-  }
-  return DEFAULT_LOCALE;
 }
 
 /** Apply `lang` and `dir` to `<html>`. Called on every locale change. */
@@ -118,12 +96,11 @@ export function applyLocaleToDocument(locale: Locale): void {
 
 /**
  * Inline script so the first paint is already in the right direction. The cookie
- * is the server's own decision, so it wins; the stored choice is the fallback.
- * With neither it leaves `<html>` alone: the server already set `lang` and `dir`
- * from the browser's language, and forcing Arabic here is what made a first
- * English visit render left-to-right text right-to-left.
+ * is the server's own decision, so it wins; the choice stored for this visit is
+ * the fallback. With neither it leaves `<html>` alone: the server already
+ * rendered Arabic, right to left.
  */
-export const localeBootstrapScript = `(function(){try{var m=document.cookie.match(/(?:^|; )${STORAGE_KEY}=(ar|fr|en)/);var l=m?m[1]:localStorage.getItem("${STORAGE_KEY}");if(l==="ar"||l==="fr"||l==="en"){document.documentElement.setAttribute("lang",l);document.documentElement.setAttribute("dir",l==="ar"?"rtl":"ltr");}}catch(e){}})();`;
+export const localeBootstrapScript = `(function(){try{var m=document.cookie.match(/(?:^|; )${STORAGE_KEY}=(ar|fr|en)/);var l=m?m[1]:sessionStorage.getItem("${STORAGE_KEY}");if(l==="ar"||l==="fr"||l==="en"){document.documentElement.setAttribute("lang",l);document.documentElement.setAttribute("dir",l==="ar"?"rtl":"ltr");}}catch(e){}})();`;
 
 /**
  * Pick the owner's text for a locale. Catalogue rows carry Arabic and a Latin

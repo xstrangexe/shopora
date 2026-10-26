@@ -2,7 +2,7 @@ import { createIsomorphicFn } from "@tanstack/react-start";
 import { getCookie, setCookie } from "@tanstack/react-start/server";
 import { DEFAULT_LOCALE, isLocale, type Locale } from "./i18n";
 
-const COOKIE = "openstore-locale";
+const COOKIE = "shopora-locale";
 
 /**
  * The visitor's language, readable on the server and in the browser alike, so
@@ -13,11 +13,11 @@ export const readLocale = createIsomorphicFn()
   .server((): Locale => {
     const raw = getCookie(COOKIE);
     if (isLocale(raw)) return raw;
-    // First visit: SHOPORA always opens in Arabic, whatever the browser's
-    // language (many Algerian phones are set to French). French and English stay
-    // one tap away in the switcher, and that choice is remembered. The cookie is
-    // set in the same response so the browser reads what the server rendered.
-    setCookie(COOKIE, DEFAULT_LOCALE, { path: "/", maxAge: 31536000, sameSite: "lax" });
+    // New visit: SHOPORA always opens in Arabic, whatever the browser's language
+    // (many Algerian phones are set to French). French and English stay one tap
+    // away in the switcher for the rest of the visit. A session cookie, set in the
+    // same response so the browser reads what the server rendered.
+    setCookie(COOKIE, DEFAULT_LOCALE, { path: "/", sameSite: "lax" });
     return DEFAULT_LOCALE;
   })
   .client((): Locale => {

@@ -1,17 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { localeBootstrapScript, pickLocale } from "./i18n";
-
-describe("pickLocale", () => {
-  it("takes the first supported language, in order", () => {
-    expect(pickLocale(["fr-DZ", "ar", "en"])).toBe("fr");
-    expect(pickLocale(["de-DE", "en-US"])).toBe("en");
-  });
-
-  it("falls back to Arabic when nothing matches", () => {
-    expect(pickLocale(["de", "es"])).toBe("ar");
-    expect(pickLocale([])).toBe("ar");
-  });
-});
+import { localeBootstrapScript } from "./i18n";
 
 /** Run the inline script against a fake document and return what it set on <html>. */
 function runBootstrap(cookie: string, stored: string | null, html: Record<string, string>) {
@@ -19,20 +7,24 @@ function runBootstrap(cookie: string, stored: string | null, html: Record<string
     cookie,
     documentElement: { setAttribute: (k: string, v: string) => (html[k] = v) },
   };
-  const localStorage = { getItem: () => stored };
-  new Function("document", "localStorage", localeBootstrapScript)(document, localStorage);
+  const sessionStorage = { getItem: () => stored };
+  new Function("document", "sessionStorage", localeBootstrapScript)(document, sessionStorage);
   return html;
 }
 
 describe("localeBootstrapScript", () => {
-  it("leaves the server's lang and dir alone on a first visit with nothing stored", () => {
-    // Regression: it used to force Arabic, so an English visitor got RTL text.
-    const html = runBootstrap("", null, { lang: "en", dir: "ltr" });
-    expect(html).toEqual({ lang: "en", dir: "ltr" });
+  it("leaves the server's Arabic alone on a new visit with nothing stored", () => {
+    const html = runBootstrap("", null, { lang: "ar", dir: "rtl" });
+    expect(html).toEqual({ lang: "ar", dir: "rtl" });
+  });
+
+  it("ignores the old year-long cookie", () => {
+    const html = runBootstrap("openstore-locale=fr", null, { lang: "ar", dir: "rtl" });
+    expect(html).toEqual({ lang: "ar", dir: "rtl" });
   });
 
   it("prefers the cookie over the stored choice", () => {
-    const html = runBootstrap("a=1; openstore-locale=fr", "ar", {});
+    const html = runBootstrap("a=1; shopora-locale=fr", "ar", {});
     expect(html).toEqual({ lang: "fr", dir: "ltr" });
   });
 

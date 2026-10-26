@@ -2,7 +2,6 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 import {
   applyLocaleToDocument,
   DEFAULT_LOCALE,
-  detectLocale,
   hasLocaleCookie,
   persistLocale,
   readStoredLocale,
@@ -25,8 +24,8 @@ const I18nContext = createContext<I18nValue | null>(null);
  *
  * Starts from the locale the server rendered with, read from the same cookie, so
  * server and first client render agree and nothing flips after hydration. Only
- * a first visit has no cookie; then the browser's language is detected once and
- * remembered, so every later page is rendered right from the start.
+ * a visit whose cookie the server could not set lands here without one; it then
+ * starts in Arabic, the shop's language, never in the phone's language.
  */
 export function I18nProvider({
   initialLocale = DEFAULT_LOCALE,
@@ -39,7 +38,7 @@ export function I18nProvider({
 
   useEffect(() => {
     if (hasLocaleCookie()) return;
-    const next = readStoredLocale() ?? detectLocale();
+    const next = readStoredLocale() ?? DEFAULT_LOCALE;
     persistLocale(next);
     if (next !== initialLocale) setLocaleState(next);
     applyLocaleToDocument(next);
