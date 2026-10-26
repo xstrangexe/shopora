@@ -16,6 +16,7 @@ import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as SetupRouteImport } from './routes/setup'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as TrackRouteImport } from './routes/track'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminCategoriesRouteImport } from './routes/admin.categories'
@@ -64,6 +65,11 @@ const SearchRoute = SearchRouteImport.update({
 const SetupRoute = SetupRouteImport.update({
   id: '/setup',
   path: '/setup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TrackRoute = TrackRouteImport.update({
@@ -145,6 +151,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/search': typeof SearchRoute
   '/setup': typeof SetupRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/track': typeof TrackRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/delivery': typeof AdminDeliveryRoute
@@ -167,6 +174,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/search': typeof SearchRoute
   '/setup': typeof SetupRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/track': typeof TrackRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/delivery': typeof AdminDeliveryRoute
@@ -191,6 +199,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/search': typeof SearchRoute
   '/setup': typeof SetupRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/track': typeof TrackRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/delivery': typeof AdminDeliveryRoute
@@ -216,6 +225,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/search'
     | '/setup'
+    | '/sitemap.xml'
     | '/track'
     | '/admin/categories'
     | '/admin/delivery'
@@ -238,6 +248,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/search'
     | '/setup'
+    | '/sitemap.xml'
     | '/track'
     | '/admin/categories'
     | '/admin/delivery'
@@ -261,6 +272,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/search'
     | '/setup'
+    | '/sitemap.xml'
     | '/track'
     | '/admin/categories'
     | '/admin/delivery'
@@ -285,6 +297,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   SearchRoute: typeof SearchRoute
   SetupRoute: typeof SetupRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TrackRoute: typeof TrackRoute
   CategorySlugRoute: typeof CategorySlugRoute
   OrderTokenRoute: typeof OrderTokenRoute
@@ -341,6 +354,13 @@ declare module '@tanstack/react-router' {
       path: '/setup'
       fullPath: '/setup'
       preLoaderRoute: typeof SetupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/track': {
@@ -478,6 +498,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   SearchRoute: SearchRoute,
   SetupRoute: SetupRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   TrackRoute: TrackRoute,
   CategorySlugRoute: CategorySlugRoute,
   OrderTokenRoute: OrderTokenRoute,

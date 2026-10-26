@@ -1,7 +1,6 @@
 import { Link } from "@tanstack/react-router";
-import { Menu, ShoppingBag, X } from "lucide-react";
+import { Menu, Search, X } from "lucide-react";
 import { useState } from "react";
-import { useCart } from "@/lib/cart";
 import { useI18n } from "@/lib/i18n-context";
 import { useStoreSettings } from "@/lib/queries";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -9,14 +8,15 @@ import { LocaleSwitcher } from "@/components/locale-switcher";
 import { cn } from "@/lib/utils";
 
 /**
- * Storefront header.
+ * Storefront header: black with the gold mark, like the brand's packaging.
  *
- * The cart count is an aria-live region so a screen-reader user hears the basket
- * change when they add something, which is otherwise a silent state change.
+ * `data-theme="dark"` scopes the dark tokens to the header alone, so every
+ * control inside it (locale switcher, theme toggle, links) picks up light text
+ * on black without a second set of styles. There is no cart: SHOPORA orders
+ * from the product page, so the header offers search instead.
  */
 export function SiteHeader() {
   const { t } = useI18n();
-  const { count, openCart } = useCart();
   const { data: settings } = useStoreSettings();
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -31,15 +31,26 @@ export function SiteHeader() {
     { to: "/track", label: t("nav.trackOrder") },
   ] as const;
 
+  const iconButton =
+    "inline-flex size-10 items-center justify-center rounded-full border border-outline text-on-surface transition-colors hover:bg-surface-mid";
+
   return (
-    <header className="sticky top-0 z-30 border-b border-outline bg-nav-bg/95 backdrop-blur supports-[backdrop-filter]:bg-nav-bg/80">
+    <header
+      data-theme="dark"
+      className="sticky top-0 z-30 border-b border-outline bg-nav-bg text-on-surface"
+    >
       <div className="container-page flex h-16 items-center gap-3">
-        <Link
-          to="/"
-          className="flex min-h-11 min-w-0 items-center gap-2 font-display text-lg font-semibold"
-        >
-          <img src={logoUrl} alt="" className="h-9 max-w-[120px] shrink-0 object-contain" />
-          <span className="truncate">{storeName}</span>
+        <Link to="/" className="flex min-h-11 min-w-0 items-center gap-2.5">
+          <img
+            src={logoUrl}
+            alt=""
+            width={40}
+            height={40}
+            className="size-10 shrink-0 rounded-full object-cover"
+          />
+          <span className="truncate font-display text-lg font-semibold tracking-[0.12em] text-primary">
+            {storeName}
+          </span>
         </Link>
 
         <nav className="hidden items-center gap-1 md:flex" aria-label="Main">
@@ -47,7 +58,7 @@ export function SiteHeader() {
             <Link
               key={link.to}
               to={link.to}
-              className="rounded-full px-3 py-2 text-sm text-on-surface-muted transition-colors hover:bg-surface-mid hover:text-on-surface"
+              className="rounded-full px-3 py-2 text-sm text-on-surface-muted transition-colors hover:text-on-surface"
               activeOptions={{ exact: link.to === "/" }}
               activeProps={{ className: "text-on-surface font-medium" }}
             >
@@ -59,32 +70,13 @@ export function SiteHeader() {
         <div className="ms-auto flex items-center gap-2">
           <LocaleSwitcher className="hidden sm:block" />
           <ThemeToggle />
-
-          <button
-            type="button"
-            onClick={openCart}
-            data-testid="cart-open"
-            className="relative inline-flex size-10 items-center justify-center rounded-full border border-outline text-on-surface transition-colors hover:bg-surface-mid"
-            aria-label={t("cart.title")}
-          >
-            <ShoppingBag size={18} aria-hidden="true" />
-            <span className="sr-only" aria-live="polite">
-              {count > 0 ? t("cart.itemMany", { count }) : ""}
-            </span>
-            {count > 0 && (
-              <span
-                aria-hidden="true"
-                className="absolute -top-1 -end-1 grid size-5 place-items-center rounded-full bg-primary font-mono text-[0.65rem] font-semibold text-on-primary"
-              >
-                {count > 99 ? "99+" : count}
-              </span>
-            )}
-          </button>
-
+          <Link to="/search" className={iconButton} aria-label={t("nav.search")}>
+            <Search size={18} aria-hidden="true" />
+          </Link>
           <button
             type="button"
             onClick={() => setMenuOpen((open) => !open)}
-            className="inline-flex size-10 items-center justify-center rounded-full border border-outline text-on-surface transition-colors hover:bg-surface-mid md:hidden"
+            className={cn(iconButton, "md:hidden")}
             aria-expanded={menuOpen}
             aria-label={menuOpen ? t("common.close") : t("nav.shop")}
           >

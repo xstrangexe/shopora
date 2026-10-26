@@ -4,7 +4,9 @@ import { ProductDetail } from "@/components/storefront/product-detail";
 import { SizeGuide } from "@/components/storefront/size-guide";
 import { ReviewForm, ReviewList } from "@/components/storefront/reviews";
 import { ErrorState } from "@/components/ui/feedback";
-import { productQuery, reviewsQuery, useProduct } from "@/lib/queries";
+import { productImage, productQuery, reviewsQuery, useProduct } from "@/lib/queries";
+import { formatDzd } from "@/lib/format";
+import { absoluteUrl } from "@/lib/site-url";
 import { sizeGuidesQuery } from "@/lib/size-guides";
 import { RelatedProducts } from "@/components/storefront/related-products";
 import { localized } from "@/lib/i18n";
@@ -33,14 +35,31 @@ export const Route = createFileRoute("/product/$slug")({
       localized(locale, product.description ?? "", product.description_fr)
         .trim()
         .slice(0, 155) || name;
+    const prices = product.product_variants.map((v) => v.price);
+    const price = prices.length > 0 ? Math.min(...prices) : null;
+    const image = productImage(product);
+    const url = absoluteUrl(`/product/${product.slug}`);
+    // The title carries the price and "cash on delivery", which is what a buyer
+    // looks for when the link is shared in a Messenger or WhatsApp chat.
+    const title = `${name}${price ? ` — ${formatDzd(price, locale)}` : ""} | SHOPORA`;
     return {
       meta: [
-        { title: name },
+        { title },
         { name: "description", content: description },
-        { property: "og:title", content: name },
+        { property: "og:title", content: title },
         { property: "og:description", content: description },
         { property: "og:type", content: "product" },
+        { property: "og:url", content: url },
+        ...(image ? [{ property: "og:image", content: absoluteUrl(image) }] : []),
+        { name: "twitter:card", content: image ? "summary_large_image" : "summary" },
+        ...(price
+          ? [
+              { property: "product:price:amount", content: String(price) },
+              { property: "product:price:currency", content: "DZD" },
+            ]
+          : []),
       ],
+      links: [{ rel: "canonical", href: url }],
     };
   },
   component: ProductPage,
@@ -54,7 +73,7 @@ function ProductPage() {
   const current = live ?? product;
 
   return (
-    <StoreLayout>
+    <StoreLayout bottomNav={false}>
       <div className="container-page flex flex-col gap-12 py-8 sm:py-12">
         {isError ? (
           <ErrorState message={error.message} onRetry={() => void refetch()} />

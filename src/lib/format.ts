@@ -19,10 +19,17 @@ const UNIT: Record<Locale, string> = {
   en: "DA",
 };
 
-/** "2 500 دج" in Arabic, "2 500 DA" in French and English. */
+/** No-break space, written as a code so it stays visible in the source. */
+const NBSP = String.fromCharCode(0xa0);
+
+/**
+ * "2 500 دج" in Arabic, "2 500 DA" in French and English. Thousands are split by
+ * a no-break space, the way Algerian price tags write them, so a price never
+ * wraps across two lines.
+ */
 export function formatDzd(amount: number, locale: Locale = "ar"): string {
-  const digits = new Intl.NumberFormat("en-US").format(Math.round(amount));
-  return `${digits} ${UNIT[locale]}`;
+  const digits = new Intl.NumberFormat("en-US").format(Math.round(amount)).replace(/,/g, NBSP);
+  return `${digits}${NBSP}${UNIT[locale]}`;
 }
 
 const DATE_LOCALE: Record<Locale, string> = {

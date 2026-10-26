@@ -11,8 +11,13 @@ import { formatDateTime, formatDzd } from "@/lib/format";
 import { ORDER_FLOW, isTerminal, trackOrder } from "@/lib/order";
 import { wilayaLabel } from "@/lib/wilayas";
 import { cn } from "@/lib/utils";
+import { OrderPlacedBanner } from "@/components/storefront/order-placed-banner";
 
 export const Route = createFileRoute("/order/$token")({
+  // `?placed=1` is set only by the express order form, right after the database
+  // accepted the order, so the success header never shows for a failed write.
+  validateSearch: (search: Record<string, unknown>): { placed?: boolean } =>
+    search.placed === true || search.placed === "1" || search.placed === 1 ? { placed: true } : {},
   head: ({ match }) => ({
     meta: [
       { title: translate(match.context.locale, "order.title") },
@@ -24,6 +29,7 @@ export const Route = createFileRoute("/order/$token")({
 
 function OrderPage() {
   const { token } = Route.useParams();
+  const { placed } = Route.useSearch();
   const { t, locale } = useI18n();
 
   const { data, isPending, isError, error, refetch } = useQuery({
@@ -35,7 +41,11 @@ function OrderPage() {
   return (
     <StoreLayout>
       <div className="container-page flex max-w-3xl flex-col gap-6 py-8 sm:py-12">
-        <h1 className="font-display text-2xl font-semibold sm:text-3xl">{t("order.title")}</h1>
+        {placed && data?.status === "pending" ? (
+          <OrderPlacedBanner token={data.token} phone={data.phone} />
+        ) : (
+          <h1 className="font-display text-2xl font-semibold sm:text-3xl">{t("order.title")}</h1>
+        )}
 
         {isPending ? (
           <LoadingState />

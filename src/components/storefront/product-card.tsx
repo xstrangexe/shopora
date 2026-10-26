@@ -17,8 +17,9 @@ import { StarRating } from "./star-rating";
  * Catalogue card.
  *
  * Full-bleed 1:1 media, then a deliberately small text block: brand line, title,
- * rating, mono price, CTA. The thesis is that the photograph sells and the card
- * should not compete with it, so the only coloured element is the price.
+ * rating, price, colour count and the gold "order now". The photograph sells;
+ * the only gold on the card is the ordering action, which opens the product
+ * page where the express form is.
  */
 function ProductCard({ product }: { product: CatalogueProduct }) {
   const { t, locale } = useI18n();
@@ -30,6 +31,9 @@ function ProductCard({ product }: { product: CatalogueProduct }) {
   const sale = cheapest ? saleOf(cheapest) : null;
   const stock = totalStock(product);
   const soldOut = stock <= 0;
+  // Distinct colours, so a buyer scanning the grid sees that a case comes in
+  // several colours. The card data carries names, not swatch codes.
+  const colours = [...new Set(product.product_variants.map((v) => v.color_name).filter(Boolean))];
   const rating = product.rating_avg ?? null;
   const ratingCount = product.rating_count ?? 0;
   // Display only, not a link: the whole card is already an anchor, and a nested
@@ -82,8 +86,16 @@ function ProductCard({ product }: { product: CatalogueProduct }) {
           </span>
         )}
 
+        {colours.length > 1 && (
+          <span className="text-xs text-on-surface-muted">
+            {t("express.colours", { count: colours.length })}
+          </span>
+        )}
+
         <span className="pc-cta">
-          <span className="btn btn-secondary btn-sm btn-block">{t("store.viewDetails")}</span>
+          <span className="btn btn-gold btn-sm btn-block !min-h-10">
+            {soldOut ? t("store.outOfStock") : t("express.cta")}
+          </span>
         </span>
       </div>
     </Link>

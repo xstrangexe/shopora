@@ -65,18 +65,26 @@ export function findVariant(
   );
 }
 
-/** The first in-stock variant, so the page opens on something buyable. */
+/**
+ * The colour of the first in-stock variant, so the page opens on a buyable
+ * photo. The size (for SHOPORA, the phone model) is left unchosen whenever
+ * there is more than one: a pre-selected iPhone model that the buyer did not
+ * notice is a case that does not fit, so the buyer has to pick it.
+ */
 export function initialChoice(variants: CatalogueVariant[]): {
   colour: string | null;
   size: string | null;
 } {
   const first = variants.find((v) => v.stock > 0) ?? variants[0];
-  return { colour: first?.color_name ?? null, size: first?.size ?? null };
+  const colour = first?.color_name ?? null;
+  const sizes = sizeOptions(variants, colour);
+  return { colour, size: sizes.length === 1 ? sizes[0].name : null };
 }
 
 /**
  * Keep the buyer's size when they switch colour, if that colour has it in
- * stock. Otherwise move to the first size that is.
+ * stock. Otherwise the size is unchosen again (or the only size, if there is
+ * one), rather than silently switched to a model the buyer did not pick.
  */
 export function sizeAfterColourChange(
   variants: CatalogueVariant[],
@@ -86,7 +94,7 @@ export function sizeAfterColourChange(
   const sizes = sizeOptions(variants, colour);
   if (sizes.length === 0) return null;
   if (size && sizes.some((s) => s.name === size && s.inStock)) return size;
-  return (sizes.find((s) => s.inStock) ?? sizes[0]).name;
+  return sizes.length === 1 ? sizes[0].name : null;
 }
 
 /** Images for one colour, de-duplicated. Every size of a colour shares photos. */

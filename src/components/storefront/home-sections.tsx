@@ -5,7 +5,6 @@ import { formatRelative } from "@/lib/format";
 import { useCategories, useReviews } from "@/lib/queries";
 import { StarRating } from "./star-rating";
 import { localized } from "@/lib/i18n";
-import { cn } from "@/lib/utils";
 
 /**
  * Category strip.
@@ -138,28 +137,43 @@ export function ReviewWall() {
   );
 }
 
-/** Closing call to action. */
-export function ClosingCta({ storeName }: { storeName: string }) {
+/**
+ * "How to order": the four real steps of a SHOPORA order, from picking a model
+ * to paying the courier. It answers the first-time buyer's real question
+ * (do I pay now? do I need an account?) without inventing any promise.
+ */
+export function HowToOrder() {
   const { t } = useI18n();
+  const steps = [
+    ["how.step1.title", "how.step1.body"],
+    ["how.step2.title", "how.step2.body"],
+    ["how.step3.title", "how.step3.body"],
+    ["how.step4.title", "how.step4.body"],
+  ] as const;
+
   return (
-    <section className="container-page py-14">
-      <div
-        className={cn(
-          "flex flex-col items-center gap-4 rounded-[24px] border border-outline bg-surface px-6 py-12 text-center",
-        )}
-      >
-        <h2 className="font-display text-xl font-semibold sm:text-2xl">{t("home.cta.title")}</h2>
-        <p className="max-w-md text-sm text-on-surface-muted">{t("home.cta.body")}</p>
-        <div className="flex flex-wrap justify-center gap-3">
-          <a href="#catalogue" className="btn btn-primary btn-lg">
-            {t("home.browseAll")}
-          </a>
-          <Link to="/track" className="btn btn-secondary btn-lg">
-            {t("nav.trackOrder")}
-          </Link>
-        </div>
-        <p className="mt-2 text-xs text-on-surface-muted">{storeName}</p>
-      </div>
+    <section className="container-page py-12" aria-labelledby="how-title">
+      <h2 id="how-title" className="mb-6 font-display text-xl font-semibold sm:text-2xl">
+        {t("how.title")}
+      </h2>
+      <ol className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        {steps.map(([title, body], index) => (
+          <li
+            key={title}
+            className="flex items-start gap-3 rounded-[16px] border border-outline bg-surface p-4"
+          >
+            <span className="grid size-9 shrink-0 place-items-center rounded-full bg-on-surface font-bold text-bg">
+              {index + 1}
+            </span>
+            <span>
+              <span className="block text-sm font-semibold">{t(title)}</span>
+              <span className="mt-0.5 block text-xs leading-relaxed text-on-surface-muted">
+                {t(body)}
+              </span>
+            </span>
+          </li>
+        ))}
+      </ol>
     </section>
   );
 }

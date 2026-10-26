@@ -4,7 +4,7 @@ import { ProductGrid } from "@/components/storefront/product-card";
 import { HomeHero, TrustBar } from "@/components/storefront/home-hero";
 import {
   CategoryStrip,
-  ClosingCta,
+  HowToOrder,
   PromoBand,
   ReviewWall,
 } from "@/components/storefront/home-sections";
@@ -14,6 +14,7 @@ import { supabaseConfigProblem } from "@/lib/supabase/client";
 import { reviewsQuery, storeSettingsQuery } from "@/lib/queries";
 import { EMPTY_FILTERS, cataloguePageQuery, useCataloguePage } from "@/lib/catalogue";
 import { useI18n } from "@/lib/i18n-context";
+import { absoluteUrl } from "@/lib/site-url";
 
 export const Route = createFileRoute("/")({
   loader: async ({ context }) => {
@@ -51,7 +52,10 @@ export const Route = createFileRoute("/")({
         { property: "og:title", content: title },
         { property: "og:description", content: description },
         { property: "og:type", content: "website" },
+        { property: "og:url", content: absoluteUrl("/") },
+        { property: "og:image", content: absoluteUrl(s?.logo_url || "/brand/shopora-logo.png") },
       ],
+      links: [{ rel: "canonical", href: absoluteUrl("/") }],
     };
   },
   component: Home,
@@ -81,14 +85,11 @@ function Home() {
   return (
     <StoreLayout>
       <HomeHero settings={settings} products={list} />
-      <TrustBar returnsDays={settings?.returns_days ?? 14} />
+      <TrustBar returnsDays={settings?.returns_days ?? 7} />
 
-      <section id="catalogue" className="container-page scroll-mt-20 py-12">
-        <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
-          <div>
-            <span className="section-label">{t("home.featured")}</span>
-            <h2 className="mt-2 font-display text-xl font-semibold sm:text-2xl">{t("nav.shop")}</h2>
-          </div>
+      <section id="catalogue" className="container-page scroll-mt-20 py-8 sm:py-12">
+        <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
+          <h2 className="font-display text-xl font-semibold sm:text-2xl">{t("home.featured")}</h2>
           {catalogueTotal > 0 && (
             <Link
               to="/catalogue"
@@ -123,7 +124,7 @@ function Home() {
       <CategoryStrip />
       <PromoBand threshold={settings?.free_shipping_threshold ?? 0} />
       <ReviewWall />
-      <ClosingCta storeName={settings?.name ?? "SHOPORA"} />
+      <HowToOrder />
     </StoreLayout>
   );
 }

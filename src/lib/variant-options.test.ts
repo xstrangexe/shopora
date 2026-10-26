@@ -47,14 +47,18 @@ describe("variant options", () => {
     expect(sizeOptions(polo, "Noir").find((s) => s.name === "S")?.inStock).toBe(false);
   });
 
-  it("opens on something buyable", () => {
-    expect(initialChoice(polo)).toEqual({ colour: "Noir", size: "XL" });
+  it("opens on a buyable colour but leaves the size for the buyer to pick", () => {
+    expect(initialChoice(polo)).toEqual({ colour: "Noir", size: null });
+  });
+
+  it("picks the size itself when there is only one", () => {
+    expect(initialChoice([v("Noir", "M", 2)])).toEqual({ colour: "Noir", size: "M" });
   });
 
   it("keeps the size across a colour change only when it is in stock there", () => {
     expect(sizeAfterColourChange(polo, "Blanc", "L")).toBe("L");
-    expect(sizeAfterColourChange(polo, "Blanc", "M")).toBe("L");
-    expect(sizeAfterColourChange(polo, "Noir", "L")).toBe("M");
+    expect(sizeAfterColourChange(polo, "Blanc", "M")).toBeNull();
+    expect(sizeAfterColourChange(polo, "Noir", "L")).toBeNull();
   });
 
   it("finds the exact variant", () => {
