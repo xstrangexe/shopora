@@ -3,40 +3,22 @@ import { useI18n } from "@/lib/i18n-context";
 import { priceRange, productImage, type CatalogueProduct } from "@/lib/queries";
 import { formatDzd } from "@/lib/format";
 import { localized } from "@/lib/i18n";
-import { absoluteUrl } from "@/lib/site-url";
 import { enter } from "@/lib/hero-scale";
 
 /**
- * The shop seen in a browser window, in front of the ring: its cream theme,
- * a banner of real cases, and its real phone cases with their prices. The
- * window itself is decoration and hidden from screen readers; the cases are
+ * A slice of the shop rising in front of the ring: its cream theme, a banner of
+ * real cases, and its real phone cases with their prices. No browser chrome or
+ * announcement strip: the owner found them useless, and the height they took
+ * goes to the ring. The decoration is hidden from screen readers; the cases are
  * real links, because on a phone two of them sit on the first scroll.
  */
 export function HeroBrowser({ products }: { products: CatalogueProduct[] }) {
   const { t, locale } = useI18n();
-  const host = new URL(absoluteUrl("/")).host;
   const items = products.slice(0, 2);
 
   return (
     <div className="hx-browser hx-a" style={enter(900, 26)}>
-      <div className="hx-bar" aria-hidden="true">
-        <span className="hx-dots" dir="ltr">
-          <i style={{ background: "#ee5c62" }} />
-          <i style={{ background: "#f6b719" }} />
-          <i style={{ background: "#12c02f" }} />
-        </span>
-        <span className="hx-omni" dir="ltr">
-          <svg viewBox="0 0 24 24" width="9" height="9" fill="none" stroke="#fff" strokeWidth="2.4">
-            <circle cx="11" cy="11" r="7" />
-            <path d="M20 20l-3.8-3.8" />
-          </svg>
-          {host}
-        </span>
-      </div>
       <div className="hx-page">
-        <div className="hx-ann" aria-hidden="true">
-          {t("home2.pill")}
-        </div>
         <div className="hx-shophead" aria-hidden="true">
           SHOPORA
         </div>

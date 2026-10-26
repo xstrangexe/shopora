@@ -1486,76 +1486,30 @@ button.gallery-main {
   display: none;
 }
 
-/* The store preview paints in FRONT of the ring, over its lower third. */
+/* The slice of the shop paints in FRONT of the ring, over its lower part. It
+   starts 60px lower than the old browser window did: no chrome bar and no
+   announcement strip, so that height now shows more of the ring. */
 .hx-browser {
   position: absolute;
   left: 165px;
-  top: 492px;
+  top: 552px;
   width: 842px;
-  height: calc(128px + var(--fill, 0px));
+  height: calc(68px + var(--fill, 0px));
   border-radius: 28px 28px 0 0;
   overflow: hidden;
   z-index: 100;
   box-shadow: 0 -14px 44px rgba(0, 0, 0, 0.55);
-  background: rgba(22, 19, 14, 0.82);
-}
-.hx-bar {
-  position: absolute;
-  inset: 0 0 auto;
-  height: 42px;
-  background: linear-gradient(180deg, rgba(40, 33, 22, 0.5), rgba(28, 23, 15, 0.6));
-  backdrop-filter: blur(6px) saturate(112%);
-}
-.hx-dots {
-  position: absolute;
-  left: 27px;
-  top: 17px;
-  display: flex;
-  gap: 3px;
-}
-.hx-dots i {
-  width: 7.6px;
-  height: 7.6px;
-  border-radius: 50%;
-}
-.hx-omni {
-  position: absolute;
-  left: 50%;
-  top: 8px;
-  width: 336px;
-  height: 26px;
-  transform: translateX(-50%);
-  border-radius: 6px;
-  background: rgba(10, 8, 5, 0.93);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  font-size: 10px;
-  color: rgba(255, 255, 255, 0.72);
 }
 .hx-page {
   position: absolute;
-  left: 7px;
-  right: 6px;
-  top: 42px;
-  bottom: 0;
+  inset: 0;
   overflow: hidden;
-  border-radius: 10px 10px 0 0;
+  border-radius: inherit;
   background: #f6eee6;
   color: #111;
 }
-.hx-ann {
-  height: 18px;
-  display: grid;
-  place-items: center;
-  background: #0d0d0d;
-  color: #e3c68f;
-  font-size: 7px;
-}
 .hx-shophead {
-  height: 34px;
+  height: 42px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1768,31 +1722,11 @@ button.gallery-main {
     position: absolute;
     left: 0;
     right: 0;
-    top: 196px;
+    top: 252px;
     bottom: 0;
     width: auto;
     height: auto;
     border-radius: 22px 22px 0 0;
-  }
-  .hx-bar {
-    height: 36px;
-  }
-  .hx-omni {
-    top: 6px;
-    width: 58%;
-    height: 24px;
-    font-size: 9.5px;
-  }
-  .hx-dots {
-    top: 14px;
-    left: 18px;
-  }
-  .hx-page {
-    top: 36px;
-  }
-  .hx-ann {
-    font-size: 9px;
-    height: 20px;
   }
   .hx-banner {
     margin: 0 16px;
