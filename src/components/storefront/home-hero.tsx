@@ -7,7 +7,7 @@ import { formatDzd } from "@/lib/format";
 import { localized } from "@/lib/i18n";
 
 /**
- * Home hero, after the brand's YouCan page: centred on black, a delivery pill,
+ * Home hero, after the brand's YouCan page: centred, a delivery pill,
  * the tagline, the owner's one-line description and a gold "shop now", then a
  * swipeable row of real product photos with their prices. The row is the shop
  * window: an ad visitor sees products and prices on the first screen.

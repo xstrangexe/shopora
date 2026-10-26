@@ -87,11 +87,11 @@ function Home() {
   const catalogueTotal = catalogue.data?.total ?? 0;
   const wilayaCount = settings?.delivery_wilayas?.length || WILAYAS.length;
 
-  // Black and gold from top to bottom, like the brand's YouCan page: hero and
-  // product row, trust strip, model finder, best sellers, product of the week,
-  // how to order, and why it is safe to order.
+  // The YouCan page's order, in the shop's light cream theme like every other
+  // page: hero and product row, trust strip, model finder, best sellers, product
+  // of the week, how to order, and why it is safe to order.
   return (
-    <StoreLayout dark>
+    <StoreLayout>
       <HomeHero settings={settings} products={list} />
       <TrustBar returnsDays={settings?.returns_days ?? 7} />
       <ModelFinder products={list} />
