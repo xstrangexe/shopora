@@ -44,7 +44,11 @@ export function ProductSpotlight({ products }: { products: CatalogueProduct[] })
             <Star size={13} aria-hidden="true" />
             {t("spot.badge")}
           </span>
-          <h2 id="spot-title" className="font-display text-2xl font-bold sm:text-3xl">
+          <h2
+            id="spot-title"
+            dir="auto"
+            className="font-body text-2xl font-bold rtl:text-right sm:text-3xl"
+          >
             {name}
           </h2>
 
@@ -75,7 +79,7 @@ export function ProductSpotlight({ products }: { products: CatalogueProduct[] })
           )}
 
           {range && (
-            <p className="text-3xl font-bold text-brand" dir="ltr">
+            <p className="text-gold-ink text-3xl font-bold rtl:text-right" dir="ltr">
               {formatDzd(range.min, locale)}
             </p>
           )}

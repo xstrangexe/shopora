@@ -16,10 +16,14 @@ import { StarRating } from "./star-rating";
 /**
  * Catalogue card.
  *
- * Full-bleed 1:1 media, then a deliberately small text block: brand line, title,
- * rating, price, colour count and the gold "order now". The photograph sells;
- * the only gold on the card is the ordering action, which opens the product
- * page where the express form is.
+ * Full-bleed 1:1 media, then a deliberately small text block: title, rating,
+ * price, colour count and the gold "order now". The photograph sells; the only
+ * gold on the card is the ordering action, which opens the product page where
+ * the express form is.
+ *
+ * No category line: the shop has one category ("best sellers"), so the label
+ * only repeated itself on every card. The title gets two lines' height and the
+ * colour line always takes its row, so prices line up across a row.
  */
 function ProductCard({ product }: { product: CatalogueProduct }) {
   const { t, locale } = useI18n();
@@ -36,12 +40,6 @@ function ProductCard({ product }: { product: CatalogueProduct }) {
   const colours = [...new Set(product.product_variants.map((v) => v.color_name).filter(Boolean))];
   const rating = product.rating_avg ?? null;
   const ratingCount = product.rating_count ?? 0;
-  // Display only, not a link: the whole card is already an anchor, and a nested
-  // anchor is invalid HTML. Category navigation lives on the category pages and
-  // the category strip.
-  const category = product.categories
-    ? localized(locale, product.categories.name, product.categories.name_fr)
-    : undefined;
 
   return (
     <Link to="/product/$slug" params={{ slug: product.slug }} className="product-card">
@@ -55,9 +53,11 @@ function ProductCard({ product }: { product: CatalogueProduct }) {
       </div>
 
       <div className="pc-body">
-        {category && <span className="pc-brand">{category}</span>}
-
-        <h3 className="pc-title">{localized(locale, product.name, product.name_fr)}</h3>
+        {/* dir="auto": a Latin name ("Anti-Choc Iphone Magsafe") inside the
+            Arabic page otherwise loses letters where the two lines are cut. */}
+        <h3 className="pc-title" dir="auto">
+          {localized(locale, product.name, product.name_fr)}
+        </h3>
 
         {rating !== null && ratingCount > 0 && (
           <span className="pc-rating">
@@ -86,11 +86,9 @@ function ProductCard({ product }: { product: CatalogueProduct }) {
           </span>
         )}
 
-        {colours.length > 1 && (
-          <span className="text-xs text-on-surface-muted">
-            {t("express.colours", { count: colours.length })}
-          </span>
-        )}
+        <span className="pc-colours">
+          {colours.length > 1 ? t("express.colours", { count: colours.length }) : null}
+        </span>
 
         <span className="pc-cta">
           <span className="btn btn-gold btn-sm btn-block !min-h-10">

@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { ArrowRight, Banknote, Headphones, MapPin, Quote, Truck } from "lucide-react";
+import { ArrowRight, Quote } from "lucide-react";
 import { useI18n } from "@/lib/i18n-context";
 import { formatRelative } from "@/lib/format";
 import { useCategories, useReviews } from "@/lib/queries";
@@ -153,8 +153,8 @@ export function HowToOrder() {
   ] as const;
 
   return (
-    <section className="container-page py-12" aria-labelledby="how-title">
-      <h2 id="how-title" className="mb-6 font-display text-xl font-semibold sm:text-2xl">
+    <section className="container-page py-8 sm:py-12" aria-labelledby="how-title">
+      <h2 id="how-title" className="mb-4 font-display text-xl font-bold sm:text-2xl">
         {t("how.title")}
       </h2>
       <ol className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
@@ -175,50 +175,6 @@ export function HowToOrder() {
           </li>
         ))}
       </ol>
-    </section>
-  );
-}
-
-/**
- * "Shop with confidence": the four reasons a first-time buyer can order without
- * risk, each one true of this shop. The wilaya count comes from the owner's
- * delivery list, so it follows the settings.
- */
-export function ConfidenceSection({ wilayaCount }: { wilayaCount: number }) {
-  const { t } = useI18n();
-  const items = [
-    { icon: Banknote, title: t("trust2.cod"), body: t("trust2.codBody") },
-    { icon: Truck, title: t("trust2.choice"), body: t("trust2.choiceBody") },
-    {
-      icon: MapPin,
-      title: t("trust2.wilayas", { count: wilayaCount }),
-      body: t("trust2.wilayasBody"),
-    },
-    { icon: Headphones, title: t("trust2.support"), body: t("trust2.supportBody") },
-  ];
-
-  return (
-    <section className="container-page py-10" aria-labelledby="trust-title">
-      <div className="mb-6 text-center">
-        <h2 id="trust-title" className="font-display text-xl font-bold sm:text-2xl">
-          {t("trust2.title")}
-        </h2>
-        <p className="mt-1.5 text-sm text-on-surface-muted">{t("trust2.body")}</p>
-      </div>
-      <ul className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        {items.map((item) => (
-          <li
-            key={item.title}
-            className="flex flex-col items-center gap-2 rounded-[18px] border border-outline bg-surface p-4 text-center"
-          >
-            <span className="grid size-11 place-items-center rounded-full bg-brand/15 text-brand">
-              <item.icon size={20} aria-hidden="true" />
-            </span>
-            <span className="text-sm font-bold">{item.title}</span>
-            <span className="text-xs leading-relaxed text-on-surface-muted">{item.body}</span>
-          </li>
-        ))}
-      </ul>
     </section>
   );
 }

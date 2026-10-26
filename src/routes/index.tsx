@@ -4,11 +4,11 @@ import { ProductGrid } from "@/components/storefront/product-card";
 import { HomeHero, TrustBar } from "@/components/storefront/home-hero";
 import {
   CategoryStrip,
-  ConfidenceSection,
   HowToOrder,
   PromoBand,
   ReviewWall,
 } from "@/components/storefront/home-sections";
+import { availableModels } from "@/lib/phone-models";
 import { ModelFinder } from "@/components/storefront/home-finder";
 import { ProductSpotlight } from "@/components/storefront/home-spotlight";
 import { WILAYAS } from "@/lib/wilayas";
@@ -19,6 +19,9 @@ import { reviewsQuery, storeSettingsQuery } from "@/lib/queries";
 import { EMPTY_FILTERS, cataloguePageQuery, useCataloguePage } from "@/lib/catalogue";
 import { useI18n } from "@/lib/i18n-context";
 import { absoluteUrl } from "@/lib/site-url";
+
+// Three rows on a phone. The rest is one tap away in the shop.
+const GRID_SIZE = 6;
 
 export const Route = createFileRoute("/")({
   loader: async ({ context }) => {
@@ -83,31 +86,25 @@ function Home() {
     );
   }
 
-  const list = catalogue.data?.products ?? [];
-  const catalogueTotal = catalogue.data?.total ?? 0;
+  // The shop is about phone cases: the home page shows only products with
+  // iPhone models, so lenses or organisers in the catalogue stay off it.
+  const cases = (catalogue.data?.products ?? []).filter((p) => availableModels([p]).length > 0);
+  // The hero's shop window shows the first two; the grid starts after them so a
+  // phone visitor does not meet the same two cases twice in one scroll.
+  const featured = cases.slice(0, 2);
+  const rest = cases.slice(2, 2 + GRID_SIZE);
   const wilayaCount = settings?.delivery_wilayas?.length || WILAYAS.length;
 
-  // The YouCan page's order, in the shop's light cream theme like every other
-  // page: hero and product row, trust strip, model finder, best sellers, product
-  // of the week, how to order, and why it is safe to order.
+  // The YouCan page's order: black hero and shop window, the three promises,
+  // model finder, more cases, product of the week, and how to order.
   return (
     <StoreLayout>
-      <HomeHero settings={settings} products={list} />
-      <TrustBar returnsDays={settings?.returns_days ?? 7} />
-      <ModelFinder products={list} />
+      <HomeHero settings={settings} products={featured} />
+      <TrustBar returnsDays={settings?.returns_days ?? 7} wilayaCount={wilayaCount} />
+      <ModelFinder products={cases} />
 
-      <section id="catalogue" className="container-page scroll-mt-20 py-8 sm:py-12">
-        <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
-          <h2 className="font-display text-xl font-bold sm:text-2xl">{t("best.title")}</h2>
-          {catalogueTotal > 0 && (
-            <Link
-              to="/catalogue"
-              className="inline-flex min-h-9 items-center text-sm text-brand hover:underline"
-            >
-              {t("best.more")} ({catalogueTotal})
-            </Link>
-          )}
-        </div>
+      <section id="catalogue" className="container-page scroll-mt-20 py-6 sm:py-10">
+        <h2 className="mb-4 font-display text-xl font-bold sm:text-2xl">{t("best.title")}</h2>
 
         {catalogue.isPending ? (
           <div className="product-grid">
@@ -123,19 +120,26 @@ function Home() {
             />
             <SetupCheck />
           </div>
-        ) : list.length === 0 ? (
+        ) : cases.length === 0 ? (
           <NoProducts />
         ) : (
-          <ProductGrid products={list} />
+          <>
+            <ProductGrid products={rest.length > 0 ? rest : cases} />
+            <Link
+              to="/catalogue"
+              className="btn btn-block mt-5 !min-h-12 border-[1.5px] border-on-surface bg-surface font-semibold text-on-surface hover:bg-surface-high"
+            >
+              {t("best.more")}
+            </Link>
+          </>
         )}
       </section>
 
       <CategoryStrip />
-      <ProductSpotlight products={list} />
+      <ProductSpotlight products={cases} />
       <PromoBand threshold={settings?.free_shipping_threshold ?? 0} />
       <ReviewWall />
       <HowToOrder />
-      <ConfidenceSection wilayaCount={wilayaCount} />
     </StoreLayout>
   );
 }

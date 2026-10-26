@@ -50,7 +50,7 @@ export function ModelFinder({ products }: { products: CatalogueProduct[] }) {
   return (
     <section className="container-page py-6" aria-labelledby="finder-title">
       <div className="rounded-[22px] border border-outline bg-surface p-4 sm:p-6">
-        <span className="inline-flex items-center gap-1.5 rounded-full border border-brand/40 px-3 py-1 text-xs text-brand">
+        <span className="text-gold-ink inline-flex items-center gap-1.5 rounded-full border border-brand/50 px-3 py-1 text-xs font-medium">
           <Sparkles size={13} aria-hidden="true" />
           {t("finder.badge")}
         </span>

@@ -3,7 +3,6 @@ import { Menu, Search, X } from "lucide-react";
 import { useState } from "react";
 import { useI18n } from "@/lib/i18n-context";
 import { useStoreSettings } from "@/lib/queries";
-import { ThemeToggle } from "@/components/theme-toggle";
 import { LocaleSwitcher } from "@/components/locale-switcher";
 import { cn } from "@/lib/utils";
 
@@ -11,9 +10,9 @@ import { cn } from "@/lib/utils";
  * Storefront header: black with the gold mark, like the brand's packaging.
  *
  * `data-theme="dark"` scopes the dark tokens to the header alone, so every
- * control inside it (locale switcher, theme toggle, links) picks up light text
- * on black without a second set of styles. There is no cart: SHOPORA orders
- * from the product page, so the header offers search instead.
+ * control inside it (locale switcher, links) picks up light text on black
+ * without a second set of styles. There is no cart: SHOPORA orders from the
+ * product page. No theme toggle either: the shop is always light.
  */
 export function SiteHeader() {
   const { t } = useI18n();
@@ -69,8 +68,12 @@ export function SiteHeader() {
 
         <div className="ms-auto flex items-center gap-2">
           <LocaleSwitcher className="hidden sm:block" />
-          <ThemeToggle />
-          <Link to="/search" className={iconButton} aria-label={t("nav.search")}>
+          {/* Phones and tablets have search in the bottom bar. */}
+          <Link
+            to="/search"
+            className={cn(iconButton, "hidden lg:inline-flex")}
+            aria-label={t("nav.search")}
+          >
             <Search size={18} aria-hidden="true" />
           </Link>
           <button

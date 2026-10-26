@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Mail, MapPin, Phone, ShieldCheck } from "lucide-react";
+import { Mail, MapPin, MessageCircle, Phone, ShieldCheck } from "lucide-react";
 import { infoPages } from "@/lib/pages";
 import { useI18n } from "@/lib/i18n-context";
 import { useStoreSettings } from "@/lib/queries";
@@ -24,8 +24,8 @@ export function SiteFooter() {
   // shown untranslated; the address falls back, since it is still an address.
   const ownText = (arabic: string | null | undefined, latin: string | null | undefined) =>
     locale === "ar" ? arabic : latin;
+  // The tagline only: the description is already the hero's first paragraph.
   const tagline = ownText(settings?.tagline, settings?.tagline_fr);
-  const description = ownText(settings?.description, settings?.description_fr);
   const address = locale === "ar" ? settings?.address : (settings?.address_fr ?? settings?.address);
   const identity = [settings?.legal_name, address].filter(Boolean) as string[];
   const tax = [
@@ -33,7 +33,9 @@ export function SiteFooter() {
     settings?.rc_number ? { label: "RC", value: settings.rc_number } : null,
   ].filter(Boolean) as { label: string; value: string }[];
 
-  const hasLegal = identity.length > 0 || tax.length > 0 || Boolean(settings?.phone);
+  // A legal block holding only the country repeats the contact column; it shows
+  // once there is a trader name or a tax number to publish.
+  const hasLegal = Boolean(settings?.legal_name) || tax.length > 0;
 
   // Normalised, because an owner types the number the local way and wa.me needs
   // the international form. Null when there is no usable number, so the row is
@@ -41,12 +43,11 @@ export function SiteFooter() {
   const whatsappHref = waLink(settings?.whatsapp);
 
   return (
-    <footer className="mt-16 border-t border-outline bg-section-alt">
-      <div className="container-page grid gap-8 py-10 sm:grid-cols-2 lg:grid-cols-4">
-        <div className="flex flex-col gap-2">
+    <footer className="mt-6 border-t border-outline bg-section-alt sm:mt-12">
+      <div className="container-page grid gap-6 py-8 sm:grid-cols-2 sm:gap-8 sm:py-10 lg:grid-cols-4">
+        <div className="flex flex-col gap-1.5">
           <p className="font-display text-lg font-semibold">{settings?.name ?? t("app.name")}</p>
           {tagline && <p className="text-sm text-on-surface-muted">{tagline}</p>}
-          {description && <p className="max-w-sm text-sm text-on-surface-muted">{description}</p>}
         </div>
 
         {hasLegal && (
@@ -68,21 +69,9 @@ export function SiteFooter() {
           </div>
         )}
 
-        <nav className="flex flex-col gap-1" aria-label={t("footer.pages")}>
-          <p className="mb-1 text-sm font-medium">{t("footer.pages")}</p>
-          {infoPages().map((page) => (
-            <Link
-              key={page.slug}
-              to="/pages/$slug"
-              params={{ slug: page.slug }}
-              className="flex min-h-9 items-center text-sm text-on-surface-muted hover:text-on-surface"
-            >
-              {page.title}
-            </Link>
-          ))}
-        </nav>
+        <FooterPages />
 
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-1">
           <p className="text-sm font-medium">{t("footer.contact")}</p>
           {settings?.phone && (
             <a
@@ -90,11 +79,11 @@ export function SiteFooter() {
               className="flex min-h-11 items-center gap-2 text-sm text-on-surface-muted hover:text-on-surface"
             >
               <Phone size={15} aria-hidden="true" />
-              <span dir="ltr" className="font-mono text-xs">
-                {settings.phone}
-              </span>
+              <span dir="ltr">{settings.phone}</span>
             </a>
           )}
+          {/* Named, not numbered: it is usually the same number as the phone,
+              and printing it twice read as a mistake. */}
           {whatsappHref && (
             <a
               href={whatsappHref}
@@ -102,10 +91,8 @@ export function SiteFooter() {
               rel="noopener noreferrer"
               target="_blank"
             >
-              <Phone size={15} aria-hidden="true" />
-              <span dir="ltr" className="font-mono text-xs">
-                {settings?.whatsapp}
-              </span>
+              <MessageCircle size={15} aria-hidden="true" />
+              {t("store.orderViaWhatsapp")}
             </a>
           )}
           {settings?.email && (
@@ -141,5 +128,27 @@ export function SiteFooter() {
         </div>
       )}
     </footer>
+  );
+}
+
+/** The info pages, two columns on a phone: one per row took a whole screen. */
+function FooterPages() {
+  const { t } = useI18n();
+  return (
+    <nav aria-label={t("footer.pages")}>
+      <p className="mb-1 text-sm font-medium">{t("footer.pages")}</p>
+      <div className="grid grid-cols-2 gap-x-4 sm:grid-cols-1">
+        {infoPages().map((page) => (
+          <Link
+            key={page.slug}
+            to="/pages/$slug"
+            params={{ slug: page.slug }}
+            className="flex min-h-10 items-center text-sm text-on-surface-muted hover:text-on-surface"
+          >
+            {page.title}
+          </Link>
+        ))}
+      </div>
+    </nav>
   );
 }

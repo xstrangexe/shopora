@@ -18,6 +18,9 @@ import { BrandStyle } from "./brand-style";
  *
  * There is no cart drawer: buyers order from the product page. The cart code
  * stays in the project only for the old /checkout page.
+ *
+ * Always light: `data-theme="light"` re-scopes the tokens, so a dark choice made
+ * with the admin sidebar's toggle never turns the shop dark for its owner.
  */
 export function StoreLayout({
   children,
@@ -27,7 +30,7 @@ export function StoreLayout({
   bottomNav?: boolean;
 }) {
   return (
-    <div className="flex min-h-dvh flex-col">
+    <div data-theme="light" className="flex min-h-dvh flex-col bg-bg text-on-surface">
       <BrandStyle />
       <DemoBanner />
       <AnnouncementBar />

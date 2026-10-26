@@ -12,13 +12,7 @@ import { enter } from "@/lib/hero-scale";
  * window itself is decoration and hidden from screen readers; the cases are
  * real links, because on a phone two of them sit on the first scroll.
  */
-export function HeroBrowser({
-  products,
-  tagline,
-}: {
-  products: CatalogueProduct[];
-  tagline: string;
-}) {
+export function HeroBrowser({ products }: { products: CatalogueProduct[] }) {
   const { t, locale } = useI18n();
   const host = new URL(absoluteUrl("/")).host;
   const items = products.slice(0, 2);
@@ -49,14 +43,14 @@ export function HeroBrowser({
         <div className="hx-banner" aria-hidden="true">
           <img src="/hero/banner.webp" alt="" decoding="async" />
           <div className="hx-banner-scrim" />
+          {/* Not the headline again: what the shop is, in a few words. */}
           <div className="hx-banner-copy">
-            <strong>{tagline}</strong>
-            <span>{t("home2.shop")}</span>
+            <strong>{t("hx.banner")}</strong>
+            <span>{t("home2.trust.cod")}</span>
           </div>
         </div>
         <div className="hx-sec" aria-hidden="true">
-          {t("best.title")}
-          <span>{t("best.more")}</span>
+          {t("hx.new")}
         </div>
         <div className="hx-grid">
           {items.map((product) => {
