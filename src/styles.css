@@ -1173,6 +1173,651 @@ button.gallery-main {
   background: var(--section-alt);
 }
 
+/* ==========================================================================
+   Home hero: black stage, 3D ring of phone-case cards, store preview
+   --------------------------------------------------------------------------
+   Above 700px the hero is a fixed 1172 x 620 design canvas, every element
+   placed in design pixels, scaled by one transform: k = min(vw / W, vh / 560).
+   560 rather than 620 fills the width and lets the store preview bleed off the
+   foot instead of letterboxing. hero-scale.ts writes --k and --fill. At 700px
+   and below the same elements become a normal column (see the media query).
+   The rest of the shop stays cream; only this section is black.
+   ========================================================================== */
+.hx {
+  position: relative;
+  overflow: hidden;
+  height: 640px;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(201, 169, 110, 0) 38%,
+      rgba(201, 169, 110, 0.04) 56%,
+      rgba(201, 169, 110, 0.055) 70%,
+      rgba(201, 169, 110, 0.03) 100%
+    ),
+    #050403;
+  color: #fff;
+}
+.hx-stars {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1px;
+  height: 1px;
+  border-radius: 50%;
+}
+.hx-canvas {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 1172px;
+  height: 620px;
+  transform: translateX(-50%) scale(var(--k, 1));
+  transform-origin: 50% 0;
+}
+.hx-canvas > * {
+  position: absolute;
+}
+/* Centred rows span the canvas so their own transform stays free for motion. */
+.hx-row {
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  z-index: 300;
+}
+
+/* Badge: icon tile pinned to the reading start, label beside it, never under it. */
+.hx-badge {
+  position: relative;
+  height: 39px;
+  padding-inline: 45px 16px;
+  display: flex;
+  align-items: center;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.115);
+  background: linear-gradient(
+    to top,
+    rgba(240, 215, 160, 0.175) 0px,
+    rgba(240, 215, 160, 0.128) 2px,
+    rgba(240, 215, 160, 0.075) 4px,
+    rgba(240, 215, 160, 0.026) 6px,
+    rgba(255, 255, 255, 0.012) 9px,
+    rgba(255, 255, 255, 0.012) 100%
+  );
+  backdrop-filter: blur(12px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035);
+  font-size: 13.5px;
+  color: rgba(255, 255, 255, 0.94);
+  white-space: nowrap;
+}
+.hx-badge i {
+  position: absolute;
+  inset-inline-start: 4px;
+  top: 4px;
+  width: 29px;
+  height: 29px;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(
+    to top,
+    #f3dca6 0px,
+    #e5c88a 2px,
+    #b8945a 4px,
+    #8d6d3c 6px,
+    #66502c 8px,
+    #4e3d22 10px,
+    #3a2d1a 12px,
+    #2a2114 14px,
+    #1d170f 16px,
+    #15110b 19px,
+    #120f0a 23px,
+    #0e0c08 29px
+  );
+  box-shadow:
+    inset 1px 0 0 rgba(240, 215, 160, 0.4),
+    inset -1px 0 0 rgba(240, 215, 160, 0.52),
+    0 0 6px rgba(201, 169, 110, 0.2),
+    0 3px 8px -5px rgba(230, 200, 140, 0.6);
+}
+.hx-badge i svg {
+  width: 14px;
+  height: 16px;
+  position: relative;
+  top: -1px;
+}
+
+.hx-h1 {
+  max-width: 1000px;
+  text-align: center;
+  font-size: 58px;
+  font-weight: 800;
+  line-height: 1.2;
+  text-shadow: 0 0 34px rgba(201, 169, 110, 0.22);
+}
+.hx-sub {
+  max-width: 560px;
+  text-align: center;
+  font-size: 15.5px;
+  line-height: 1.75;
+  color: #b8b0a4;
+}
+
+/* The glow button: near-black with a bank of gold light at its foot. The light
+   is a background gradient clipped by the button's own rounded rect, not a
+   shadow; overflow:hidden does the clipping. Outer shadows stop at 8px blur. */
+.hx-btn {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  height: 54px;
+  min-width: 150px;
+  padding: 0 34px;
+  border-radius: 14px;
+  color: #fff;
+  font-size: 17px;
+  font-weight: 600;
+  background: linear-gradient(
+    to top,
+    #f6e7c3 1px,
+    #f0dcaa 2px,
+    #e9cf95 3px,
+    #ddbf80 4px,
+    #cfae6c 5px,
+    #b8955a 6px,
+    #a3824c 7px,
+    #8f7141 8px,
+    #7a5f36 9px,
+    #634d2c 10px,
+    #4f3e25 12px,
+    #45361f 13px,
+    #3a2e1b 14px,
+    #2d2416 16px,
+    #221c12 18px,
+    #1b170f 20px,
+    #15120d 24px,
+    #110f0b 30px,
+    #100e0a 34px,
+    #100e0a 100%
+  );
+  box-shadow:
+    inset 0 3px 3px -2px rgba(255, 236, 190, 0.1),
+    inset 1px 0 0 rgba(255, 255, 255, 0.09),
+    inset -1px 0 0 rgba(255, 255, 255, 0.09),
+    1px 0 0 rgba(220, 190, 130, 0.17),
+    -1px 0 0 rgba(220, 190, 130, 0.17),
+    0 0 8px rgba(201, 169, 110, 0.1),
+    0 2px 5px -3px rgba(230, 200, 140, 0.45);
+  transition:
+    transform 0.25s,
+    box-shadow 0.25s,
+    filter 0.25s;
+}
+/* Side edge-light, masked so it fades up the button instead of flooding it. */
+.hx-btn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 1;
+  background:
+    linear-gradient(90deg, rgba(250, 232, 190, 0.7), rgba(250, 232, 190, 0) 13px),
+    linear-gradient(270deg, rgba(250, 232, 190, 0.7), rgba(250, 232, 190, 0) 13px);
+  mask: linear-gradient(
+    to top,
+    #000 0,
+    #000 6px,
+    rgba(0, 0, 0, 0.4) 12px,
+    rgba(0, 0, 0, 0.15) 18px,
+    rgba(0, 0, 0, 0.09) 24px,
+    rgba(0, 0, 0, 0.02) 30px,
+    rgba(0, 0, 0, 0.02) 100%
+  );
+}
+.hx-btn span {
+  position: relative;
+  z-index: 2;
+  line-height: 1;
+  text-shadow: 0 1px 2px rgba(20, 14, 4, 0.5);
+}
+.hx-btn:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.12);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 240, 200, 0.6),
+    inset 1px 0 0 rgba(240, 215, 160, 0.35),
+    inset -1px 0 0 rgba(240, 215, 160, 0.35),
+    0 6px 22px rgba(201, 169, 110, 0.45);
+}
+
+/* Holds the ring and the preview; on wide screens it is only a frame. */
+.hx-show {
+  left: 0;
+  top: 0;
+  width: 1172px;
+  height: 620px;
+}
+
+/* The ring: cards on a cylinder (R = 891) seen from its centre, so each card
+   faces the camera and the slanted top edges are perspective, not rotation. */
+.hx-ring {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1172px;
+  height: 620px;
+  z-index: 5;
+  perspective: 891px;
+  perspective-origin: 586px 862px;
+  transform-style: preserve-3d;
+  pointer-events: none;
+}
+.hx-card {
+  position: absolute;
+  left: 586px;
+  top: 560px;
+  width: 140px;
+  height: 249px;
+  margin: -124.5px 0 0 -70px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: linear-gradient(155deg, #3a3122, #15120d 60%, #22180f);
+  box-shadow:
+    0 24px 46px rgba(0, 0, 0, 0.6),
+    0 3px 8px rgba(0, 0, 0, 0.5);
+  backface-visibility: hidden;
+  will-change: transform;
+  visibility: hidden;
+}
+.hx-card img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+/* Ad creatives are 4:5: shown whole over a blurred copy of themselves. */
+.hx-card .hx-ad-bg {
+  filter: blur(14px) brightness(0.75);
+  transform: scale(1.2);
+}
+.hx-card .hx-ad {
+  object-fit: contain;
+}
+.hx-card-edge {
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.15),
+    inset 0 16px 30px rgba(255, 255, 255, 0.05);
+}
+.hx-card-cap {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  padding: 34px 10px 10px;
+  background: linear-gradient(180deg, rgba(5, 4, 3, 0), rgba(5, 4, 3, 0.88) 55%);
+  font-size: 10px;
+  line-height: 1.35;
+}
+.hx-card-cap b {
+  display: block;
+  margin-top: 2px;
+  font-size: 12px;
+  color: #e3c68f;
+}
+.hx-card.broken img {
+  display: none;
+}
+
+/* The store preview paints in FRONT of the ring, over its lower third. */
+.hx-browser {
+  position: absolute;
+  left: 165px;
+  top: 492px;
+  width: 842px;
+  height: calc(128px + var(--fill, 0px));
+  border-radius: 28px 28px 0 0;
+  overflow: hidden;
+  z-index: 100;
+  box-shadow: 0 -14px 44px rgba(0, 0, 0, 0.55);
+  background: rgba(22, 19, 14, 0.82);
+}
+.hx-bar {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 42px;
+  background: linear-gradient(180deg, rgba(40, 33, 22, 0.5), rgba(28, 23, 15, 0.6));
+  backdrop-filter: blur(6px) saturate(112%);
+}
+.hx-dots {
+  position: absolute;
+  left: 27px;
+  top: 17px;
+  display: flex;
+  gap: 3px;
+}
+.hx-dots i {
+  width: 7.6px;
+  height: 7.6px;
+  border-radius: 50%;
+}
+.hx-omni {
+  position: absolute;
+  left: 50%;
+  top: 8px;
+  width: 336px;
+  height: 26px;
+  transform: translateX(-50%);
+  border-radius: 6px;
+  background: rgba(10, 8, 5, 0.93);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.72);
+}
+.hx-page {
+  position: absolute;
+  left: 7px;
+  right: 6px;
+  top: 42px;
+  bottom: 0;
+  overflow: hidden;
+  border-radius: 10px 10px 0 0;
+  background: #f6eee6;
+  color: #111;
+}
+.hx-ann {
+  height: 18px;
+  display: grid;
+  place-items: center;
+  background: #0d0d0d;
+  color: #e3c68f;
+  font-size: 7px;
+}
+.hx-shophead {
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font: 700 13px/1 var(--font-display);
+  letter-spacing: 0.18em;
+}
+.hx-banner {
+  position: relative;
+  margin: 0 26px;
+  height: 150px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: linear-gradient(120deg, #e8dcd4, #cbb6a8);
+}
+.hx-banner img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.hx-banner-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to left,
+    rgba(20, 15, 8, 0.66) 0%,
+    rgba(20, 15, 8, 0.3) 46%,
+    rgba(20, 15, 8, 0) 72%
+  );
+}
+[dir="ltr"] .hx-banner-scrim {
+  transform: scaleX(-1);
+}
+.hx-banner-copy {
+  position: absolute;
+  inset-inline-start: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #fff;
+}
+.hx-banner-copy strong {
+  display: block;
+  font: 700 17px/1.3 var(--font-display);
+}
+.hx-banner-copy span {
+  display: inline-block;
+  margin-top: 9px;
+  padding: 5px 14px;
+  border-radius: 20px;
+  background: #c9a96e;
+  color: #111;
+  font-size: 8px;
+  font-weight: 700;
+}
+.hx-sec {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin: 14px 26px 8px;
+  font-size: 10px;
+  font-weight: 700;
+}
+.hx-sec span {
+  font-size: 7px;
+  font-weight: 400;
+  color: #8a7f74;
+}
+.hx-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin: 0 26px;
+}
+.hx-grid a {
+  display: block;
+  color: inherit;
+}
+/* Wide screens only ever show the top of the window (banner); the cases would
+   sit below the hero's edge as invisible links, so they are phone-only. */
+@media (min-width: 701px) {
+  .hx-sec,
+  .hx-grid {
+    display: none;
+  }
+}
+.hx-grid figure {
+  margin: 0;
+}
+.hx-grid img,
+.hx-grid .hx-ph {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 6px;
+  background: #e7dbcf;
+}
+.hx-grid figcaption {
+  margin-top: 5px;
+  font-size: 7px;
+  line-height: 1.4;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.hx-grid figcaption b {
+  display: block;
+  font-size: 8px;
+  color: #8a6a32;
+}
+
+/* Entrance, once, on load. It uses the individual translate/scale/clip-path
+   properties because `transform` already belongs to the canvas scale, the
+   ring loop and the button hover; these compose instead of colliding. */
+@keyframes hx-in {
+  from {
+    opacity: 0;
+    translate: 0 var(--hx-y, 12px);
+    scale: var(--hx-s, 1);
+  }
+}
+@keyframes hx-wipe {
+  from {
+    opacity: 0;
+    translate: 0 15px;
+    clip-path: inset(100% 0 -30% 0);
+  }
+  to {
+    clip-path: inset(-30% 0 -30% 0);
+  }
+}
+.hx-a {
+  animation: hx-in 620ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.hx-h1 {
+  animation: hx-wipe 900ms cubic-bezier(0.16, 1, 0.3, 1) 380ms both;
+}
+
+@media (max-width: 700px) {
+  .hx {
+    height: auto;
+  }
+  .hx-canvas {
+    position: relative;
+    left: auto;
+    width: 100%;
+    height: auto;
+    transform: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 22px 20px 0;
+  }
+  .hx-canvas > * {
+    position: relative;
+  }
+  .hx-row {
+    top: auto !important;
+    width: 100%;
+  }
+  .hx-badge {
+    height: 36px;
+    padding-inline: 42px 15px;
+    border-radius: 18px;
+    font-size: 12.5px;
+  }
+  .hx-badge i {
+    width: 28px;
+    height: 28px;
+    top: 3px;
+  }
+  .hx-h1 {
+    margin-top: 16px;
+    font-size: clamp(30px, 8.6vw, 38px);
+    line-height: 1.25;
+  }
+  .hx-sub {
+    margin-top: 10px;
+    font-size: clamp(14px, 3.9vw, 15.5px);
+    line-height: 1.65;
+    max-width: 340px;
+  }
+  .hx-cta {
+    margin-top: 20px;
+  }
+  .hx-btn {
+    height: 52px;
+    min-width: 170px;
+    font-size: 16px;
+  }
+  /* Ring, then the shop window with two real cases a thumb can open. */
+  .hx-show {
+    position: relative;
+    width: calc(100% + 40px);
+    height: 652px;
+    margin-top: 4px;
+    overflow: hidden;
+  }
+  /* The ring keeps its full 3D geometry, repositioned, shrunk and clipped. */
+  .hx-ring {
+    position: absolute;
+    left: 50%;
+    top: -446px;
+    margin-left: -586px;
+    transform: scale(0.8);
+    transform-origin: 586px 560px;
+  }
+  .hx-browser {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 196px;
+    bottom: 0;
+    width: auto;
+    height: auto;
+    border-radius: 22px 22px 0 0;
+  }
+  .hx-bar {
+    height: 36px;
+  }
+  .hx-omni {
+    top: 6px;
+    width: 58%;
+    height: 24px;
+    font-size: 9.5px;
+  }
+  .hx-dots {
+    top: 14px;
+    left: 18px;
+  }
+  .hx-page {
+    top: 36px;
+  }
+  .hx-ann {
+    font-size: 9px;
+    height: 20px;
+  }
+  .hx-banner {
+    margin: 0 16px;
+    height: 96px;
+  }
+  .hx-banner-copy strong {
+    font-size: 16px;
+  }
+  .hx-banner-copy span {
+    font-size: 10px;
+  }
+  .hx-sec {
+    margin: 12px 16px 8px;
+    font-size: 13px;
+  }
+  .hx-sec span {
+    font-size: 10px;
+  }
+  .hx-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin: 0 16px;
+  }
+  .hx-grid figcaption {
+    font-size: 12px;
+  }
+  .hx-grid figcaption b {
+    font-size: 13.5px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hx-a,
+  .hx-h1 {
+    animation: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

@@ -1,16 +1,17 @@
-import { Link } from "@tanstack/react-router";
-import { ArrowLeft, Banknote, RefreshCw, Truck, Zap } from "lucide-react";
+import { useEffect, useRef } from "react";
+import { Banknote, RefreshCw, Truck } from "lucide-react";
 import { useI18n } from "@/lib/i18n-context";
 import type { CatalogueProduct, StoreSettings } from "@/lib/queries";
-import { priceRange, productImage } from "@/lib/queries";
-import { formatDzd } from "@/lib/format";
-import { localized } from "@/lib/i18n";
+import { availableModels } from "@/lib/phone-models";
+import { HERO_SCALE_SCRIPT, applyHeroScale, enter } from "@/lib/hero-scale";
+import { HeroRing } from "./hero-ring";
+import { HeroBrowser } from "./hero-browser";
 
 /**
- * Home hero, after the brand's YouCan page: centred, a delivery pill,
- * the tagline, the owner's one-line description and a gold "shop now", then a
- * swipeable row of real product photos with their prices. The row is the shop
- * window: an ad visitor sees products and prices on the first screen.
+ * Home hero: a black stage under the black header, the delivery badge, the
+ * tagline, the owner's description and a gold "shop now"; behind them a 3D ring
+ * of the shop's own phone-case pictures turning slowly, and in front of the ring
+ * the shop itself in a browser window. Everything below it stays cream.
  *
  * The owner's tagline and description are Arabic, so French and English readers
  * get the interface headline instead of untranslated text.
@@ -23,77 +24,93 @@ export function HomeHero({
   products: CatalogueProduct[];
 }) {
   const { t, locale } = useI18n();
-  const shots = products
-    .map((product) => ({ product, image: productImage(product), range: priceRange(product) }))
-    .filter((s) => s.image !== null)
-    .slice(0, 8);
-  const tagline = locale === "ar" ? settings?.tagline?.trim() : settings?.tagline_fr?.trim();
+  const section = useRef<HTMLElement>(null);
+  const tagline =
+    (locale === "ar" ? settings?.tagline?.trim() : settings?.tagline_fr?.trim()) ||
+    t("home.hero.title");
   const description =
     locale === "ar" ? settings?.description?.trim() : settings?.description_fr?.trim();
+  // Phone cases only: the shop is about cases, so the preview leaves out the rest.
+  const cases = products.filter((p) => availableModels([p]).length > 0);
+
+  useEffect(() => {
+    const el = section.current;
+    const resize = () => applyHeroScale(el);
+    resize();
+    stars(el);
+    window.addEventListener("resize", resize);
+    window.visualViewport?.addEventListener("resize", resize);
+    return () => {
+      window.removeEventListener("resize", resize);
+      window.visualViewport?.removeEventListener("resize", resize);
+    };
+  }, []);
 
   return (
-    <section className="relative overflow-hidden">
-      {/* A soft gold light behind the headline; the only decoration on the page. */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 top-0 h-72 bg-[radial-gradient(ellipse_at_top,rgba(201,169,110,0.16),transparent_70%)]"
-      />
-      <div className="container-page relative flex flex-col items-center pt-7 pb-4 text-center sm:pt-12">
-        <span className="inline-flex items-center gap-2 rounded-full border border-brand/40 bg-surface px-3.5 py-1.5 text-xs font-medium">
-          <Zap size={14} className="text-brand" aria-hidden="true" />
-          {t("home2.pill")}
-        </span>
-        <h1 className="mt-4 max-w-2xl font-display text-[clamp(30px,8.5vw,58px)] font-bold leading-[1.15]">
-          {tagline || t("home.hero.title")}
-        </h1>
-        {description && (
-          <p className="mt-3 max-w-md text-sm leading-relaxed text-on-surface-muted sm:text-base">
-            {description}
-          </p>
-        )}
-        <a href="#catalogue" className="btn btn-gold btn-lg mt-5 !min-h-12 !px-9 !text-base">
-          {t("home2.shop")}
-          <ArrowLeft size={18} className="ltr:rotate-180" aria-hidden="true" />
-        </a>
-      </div>
-
-      {shots.length > 0 && (
-        <div className="container-page pb-6">
-          <div className="-mx-4 flex snap-x gap-3 overflow-x-auto px-4 pb-2 [scrollbar-width:none] lg:mx-0 lg:grid lg:grid-cols-4 lg:overflow-visible lg:px-0">
-            {shots.map(({ product, image, range }, index) => (
-              <Link
-                key={product.id}
-                to="/product/$slug"
-                params={{ slug: product.slug }}
-                className="group relative block w-[44%] shrink-0 snap-start overflow-hidden rounded-[18px] border border-outline bg-surface sm:w-[30%] lg:w-auto"
-              >
-                <img
-                  src={image as string}
-                  alt=""
-                  width={320}
-                  height={400}
-                  loading={index < 2 ? "eager" : "lazy"}
-                  fetchPriority={index === 0 ? "high" : "auto"}
-                  decoding="async"
-                  className="aspect-[4/5] w-full object-cover transition-transform duration-500 ease-out-soft group-hover:scale-[1.04]"
-                />
-                <span className="absolute inset-x-0 bottom-0 flex flex-col gap-0.5 bg-gradient-to-t from-black/85 via-black/50 to-transparent px-3 pt-10 pb-3 text-start text-white">
-                  <span className="line-clamp-1 text-xs font-medium">
-                    {localized(locale, product.name, product.name_fr)}
-                  </span>
-                  {range && (
-                    <span className="text-sm font-bold text-brand" dir="ltr">
-                      {formatDzd(range.min, locale)}
-                    </span>
-                  )}
-                </span>
-              </Link>
-            ))}
+    <>
+      <section ref={section} className="hx" suppressHydrationWarning>
+        <div className="hx-stars" data-n="150" data-blur="0" />
+        <div className="hx-stars" data-n="18" data-blur="1.2" />
+        <div className="hx-canvas" suppressHydrationWarning>
+          <div className="hx-row" style={{ top: 70 }}>
+            <span className="hx-badge hx-a" style={enter(270, 11, 0.985)}>
+              <i aria-hidden="true">
+                <svg viewBox="5 1 14 22" preserveAspectRatio="none">
+                  <path
+                    d="M13.9 1.6 5.5 13.6a.7.7 0 0 0 .6 1.1h4.2l-1 7.7a.7.7 0 0 0 1.25.55l8.3-12.1a.7.7 0 0 0-.6-1.1h-4.2l1-7.7a.7.7 0 0 0-1.25-.55Z"
+                    fill="rgba(150,115,55,.72)"
+                    stroke="rgba(255,236,190,.6)"
+                    strokeWidth="1.6"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </i>
+              {t("home2.pill")}
+            </span>
+          </div>
+          <div className="hx-row" style={{ top: 124 }}>
+            <h1 className="hx-h1 font-display">{tagline}</h1>
+          </div>
+          {description && (
+            <div className="hx-row" style={{ top: 212 }}>
+              <p className="hx-sub hx-a" style={enter(690, 10)}>
+                {description}
+              </p>
+            </div>
+          )}
+          <div className="hx-row hx-cta" style={{ top: 296 }}>
+            <a href="#catalogue" className="hx-btn hx-a" style={enter(830, 13, 0.985)}>
+              <span>{t("home2.shop")}</span>
+            </a>
+          </div>
+          <div className="hx-show">
+            <HeroRing />
+            <HeroBrowser products={cases} tagline={tagline} />
           </div>
         </div>
-      )}
-    </section>
+      </section>
+      {/* Scales the canvas before the first paint, not after hydration. The
+          server and browser bundles print the function differently, and the
+          script has already run by hydration, so its text is not compared. */}
+      <script suppressHydrationWarning dangerouslySetInnerHTML={{ __html: HERO_SCALE_SCRIPT }} />
+    </>
   );
+}
+
+/** Two starfields, each one 1px dot whose box-shadow list is every star. */
+function stars(section: HTMLElement | null) {
+  if (!section) return;
+  const w = section.clientWidth;
+  const h = Math.max(section.clientHeight, 640);
+  section.querySelectorAll<HTMLElement>(".hx-stars").forEach((el) => {
+    const n = Number(el.dataset.n);
+    const blur = Number(el.dataset.blur);
+    const [lo, hi] = blur > 0 ? [0.35, 0.7] : [0.05, 0.3];
+    el.style.boxShadow = Array.from({ length: n }, () => {
+      const alpha = (lo + Math.random() * (hi - lo)).toFixed(2);
+      return `${Math.round(Math.random() * w)}px ${Math.round(Math.random() * h)}px ${blur}px 0 rgba(255,246,228,${alpha})`;
+    }).join(",");
+  });
 }
 
 /**
