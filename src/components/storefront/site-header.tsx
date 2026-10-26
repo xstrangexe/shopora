@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Menu, ShoppingBag, Store, X } from "lucide-react";
+import { Menu, ShoppingBag, X } from "lucide-react";
 import { useState } from "react";
 import { useCart } from "@/lib/cart";
 import { useI18n } from "@/lib/i18n-context";
@@ -20,7 +20,10 @@ export function SiteHeader() {
   const { data: settings } = useStoreSettings();
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const storeName = settings?.name?.trim() || t("app.tagline");
+  // SHOPORA's own name and logo stand in while the settings row is loading, so
+  // a page fetched in the browser never flashes a generic "your online shop".
+  const storeName = settings?.name?.trim() || "SHOPORA";
+  const logoUrl = settings?.logo_url || "/brand/shopora-logo.png";
 
   const links = [
     { to: "/", label: t("nav.home") },
@@ -35,15 +38,7 @@ export function SiteHeader() {
           to="/"
           className="flex min-h-11 min-w-0 items-center gap-2 font-display text-lg font-semibold"
         >
-          {settings?.logo_url ? (
-            <img
-              src={settings.logo_url}
-              alt=""
-              className="h-9 max-w-[120px] shrink-0 object-contain"
-            />
-          ) : (
-            <Store size={20} className="shrink-0 text-primary" aria-hidden="true" />
-          )}
+          <img src={logoUrl} alt="" className="h-9 max-w-[120px] shrink-0 object-contain" />
           <span className="truncate">{storeName}</span>
         </Link>
 
