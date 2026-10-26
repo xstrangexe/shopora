@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { ArrowLeft, CheckCircle2 } from "lucide-react";
 import { StoreLayout } from "@/components/storefront/store-layout";
@@ -19,6 +19,15 @@ import { pickupFee, resolveDelivery, useDeliveryZones } from "@/lib/delivery";
 import { DeliveryChoice } from "@/components/storefront/delivery-choice";
 import { isDemoShop } from "@/components/storefront/demo-banner";
 import { placeOrder } from "@/lib/order";
+import { trackInitiateCheckout, trackPurchase, type PixelItem } from "@/lib/pixels";
+import type { CartItem } from "@/lib/cart";
+
+const pixelItem = (line: CartItem): PixelItem => ({
+  id: line.productId,
+  name: line.name,
+  price: line.unitPrice,
+  quantity: line.quantity,
+});
 
 export const Route = createFileRoute("/checkout")({
   head: ({ match }) => ({ meta: [{ title: translate(match.context.locale, "checkout.title") }] }),
@@ -35,6 +44,12 @@ function CheckoutPage() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [placedToken, setPlacedToken] = useState<string | null>(null);
+
+  // Once per visit, after the saved cart has loaded from the browser.
+  const hasItems = cart.ready && cart.items.length > 0;
+  useEffect(() => {
+    if (hasItems) trackInitiateCheckout(cart.items.map(pixelItem));
+  }, [hasItems]); // eslint-disable-line react-hooks/exhaustive-deps -- once, not per edit
 
   if (placedToken) return <OrderPlaced token={placedToken} phone={form.phone} />;
 
@@ -81,6 +96,7 @@ function CheckoutPage() {
       );
       return;
     }
+    trackPurchase(cart.items.map(pixelItem), cart.subtotal + delivery.fee, result.token);
     cart.clear();
     setPlacedToken(result.token);
   };

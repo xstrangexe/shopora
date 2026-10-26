@@ -1,4 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { trackAddToCart } from "./pixels";
 
 /**
  * Cart line.
@@ -85,6 +86,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   }, [items, ready]);
 
   const add = useCallback((item: Omit<CartItem, "quantity">, quantity = 1) => {
+    trackAddToCart({ id: item.productId, name: item.name, price: item.unitPrice, quantity });
     setItems((current) => {
       const existing = current.find((line) => line.variantId === item.variantId);
       if (existing) {

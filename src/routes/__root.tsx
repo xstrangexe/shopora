@@ -16,6 +16,8 @@ import frauncesLatin from "@fontsource-variable/fraunces/files/fraunces-latin-op
 
 import { themeBootstrapScript } from "@/lib/theme";
 import { localeBootstrapScript } from "@/lib/i18n";
+import { pixelBootstrapScript } from "@/lib/pixels";
+import { PixelPageViews } from "@/components/pixel-page-views";
 import { readLocale } from "@/lib/locale-cookie";
 import { I18nProvider, useI18n } from "@/lib/i18n-context";
 import { AuthProvider } from "@/lib/auth";
@@ -55,7 +57,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         crossOrigin: "anonymous" as const,
       })),
     ],
-    scripts: [{ children: themeBootstrapScript }, { children: localeBootstrapScript }],
+    scripts: [
+      { children: themeBootstrapScript },
+      { children: localeBootstrapScript },
+      { children: pixelBootstrapScript },
+    ],
   }),
   shellComponent: RootShell,
   component: RootComponent,
@@ -99,6 +105,7 @@ function RootComponent() {
             <Outlet />
             <Toaster position="top-center" richColors closeButton />
             <ServiceWorkerRegistrar />
+            <PixelPageViews />
           </CartProvider>
         </AuthProvider>
       </I18nProvider>

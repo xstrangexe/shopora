@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { trackViewContent } from "@/lib/pixels";
 import { ShieldCheck } from "lucide-react";
 import { useI18n } from "@/lib/i18n-context";
 import { averageRating, sortVariants, useReviews, type CatalogueProduct } from "@/lib/queries";
@@ -28,6 +29,12 @@ export function ProductDetail({ product }: { product: CatalogueProduct }) {
 
   const variants = sortVariants(product.product_variants);
   const stockable = variants.filter((v) => v.stock > 0);
+
+  useEffect(() => {
+    if (product.product_variants.length === 0) return;
+    const price = Math.min(...product.product_variants.map((v) => v.price));
+    trackViewContent({ id: product.id, name: product.name, price, quantity: 1 });
+  }, [product.id]); // eslint-disable-line react-hooks/exhaustive-deps -- once per product
 
   const [choice, setChoice] = useState(() => initialChoice(variants));
   const [quantity, setQuantity] = useState(1);
