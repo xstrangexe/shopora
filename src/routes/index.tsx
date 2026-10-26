@@ -4,10 +4,14 @@ import { ProductGrid } from "@/components/storefront/product-card";
 import { HomeHero, TrustBar } from "@/components/storefront/home-hero";
 import {
   CategoryStrip,
+  ConfidenceSection,
   HowToOrder,
   PromoBand,
   ReviewWall,
 } from "@/components/storefront/home-sections";
+import { ModelFinder } from "@/components/storefront/home-finder";
+import { ProductSpotlight } from "@/components/storefront/home-spotlight";
+import { WILAYAS } from "@/lib/wilayas";
 import { ErrorState, NoProducts, ProductSkeleton } from "@/components/ui/feedback";
 import { SetupCheck } from "@/components/setup-check";
 import { supabaseConfigProblem } from "@/lib/supabase/client";
@@ -81,21 +85,26 @@ function Home() {
 
   const list = catalogue.data?.products ?? [];
   const catalogueTotal = catalogue.data?.total ?? 0;
+  const wilayaCount = settings?.delivery_wilayas?.length || WILAYAS.length;
 
+  // Black and gold from top to bottom, like the brand's YouCan page: hero and
+  // product row, trust strip, model finder, best sellers, product of the week,
+  // how to order, and why it is safe to order.
   return (
-    <StoreLayout>
+    <StoreLayout dark>
       <HomeHero settings={settings} products={list} />
       <TrustBar returnsDays={settings?.returns_days ?? 7} />
+      <ModelFinder products={list} />
 
       <section id="catalogue" className="container-page scroll-mt-20 py-8 sm:py-12">
         <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
-          <h2 className="font-display text-xl font-semibold sm:text-2xl">{t("home.featured")}</h2>
+          <h2 className="font-display text-xl font-bold sm:text-2xl">{t("best.title")}</h2>
           {catalogueTotal > 0 && (
             <Link
               to="/catalogue"
-              className="inline-flex min-h-9 items-center text-sm text-primary hover:underline"
+              className="inline-flex min-h-9 items-center text-sm text-brand hover:underline"
             >
-              {t("store.productCount", { count: catalogueTotal })}
+              {t("best.more")} ({catalogueTotal})
             </Link>
           )}
         </div>
@@ -122,9 +131,11 @@ function Home() {
       </section>
 
       <CategoryStrip />
+      <ProductSpotlight products={list} />
       <PromoBand threshold={settings?.free_shipping_threshold ?? 0} />
       <ReviewWall />
       <HowToOrder />
+      <ConfidenceSection wilayaCount={wilayaCount} />
     </StoreLayout>
   );
 }

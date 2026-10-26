@@ -22,12 +22,18 @@ import { BrandStyle } from "./brand-style";
 export function StoreLayout({
   children,
   bottomNav = true,
+  dark = false,
 }: {
   children: React.ReactNode;
   bottomNav?: boolean;
+  /** Black page, gold accents: the home page, like the brand's YouCan shop. */
+  dark?: boolean;
 }) {
   return (
-    <div className="flex min-h-dvh flex-col">
+    <div
+      data-theme={dark ? "dark" : undefined}
+      className={dark ? "flex min-h-dvh flex-col bg-bg text-on-surface" : "flex min-h-dvh flex-col"}
+    >
       <BrandStyle />
       <DemoBanner />
       <AnnouncementBar />
