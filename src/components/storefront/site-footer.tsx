@@ -4,7 +4,6 @@ import { infoPages } from "@/lib/pages";
 import { useI18n } from "@/lib/i18n-context";
 import { useStoreSettings } from "@/lib/queries";
 import { SocialLinks } from "./social-links";
-import { formatDzd } from "@/lib/format";
 import { waLink } from "@/lib/whatsapp";
 
 /**
@@ -129,10 +128,10 @@ export function SiteFooter() {
       </div>
 
       <div className="container-page flex flex-wrap items-center justify-between gap-3 border-t border-outline py-5 text-xs text-on-surface-muted">
+        {/* Delivery is priced per wilaya (shown at checkout), so no single fee here. */}
         <p>
-          {t("checkout.codTitle")} · {t("cart.delivery")}{" "}
-          {settings ? formatDzd(settings.delivery_fee_flat, locale) : "—"} ·{" "}
-          {t("admin.settings.returnsDays")} {settings?.returns_days ?? 0}
+          {t("checkout.codTitle")} · {t("home.trust.delivery.title")} ·{" "}
+          {t("home.trust.returns.title", { days: settings?.returns_days ?? 7 })}
         </p>
       </div>
 

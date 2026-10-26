@@ -164,7 +164,7 @@ export const arStorefront = {
   "home.trust.cod.body": "تخلصي كاش كي توصلك الكوموند، بلا كارطة بنكية.",
   "home.trust.delivery.title": "التوصيل لـ 58 ولاية",
   "home.trust.delivery.body": "للدار ولا للمكتب، فكامل الجزائر.",
-  "home.trust.returns.title": "إرجاع خلال {days} يوماً",
+  "home.trust.returns.title": "إرجاع خلال {days} أيام",
   "home.trust.returns.body": "إذا ما عجبكش المنتوج تقدري ترجعيه فالمدة المحددة.",
   "home.trust.support.title": "نجاوبوك فالتيليفون",
   "home.trust.support.body": "نجاوبو على أسئلتك قبل الكوموند وبعدها.",
