@@ -38,7 +38,7 @@ export const Route = createFileRoute("/")({
     const ar = match.context.locale === "ar";
     const name = s?.name?.trim();
     const tagline = (ar ? s?.tagline : s?.tagline_fr)?.trim();
-    const title = name ? `${name}${tagline ? ` — ${tagline}` : ""}` : "OpenStore DZ";
+    const title = name ? `${name}${tagline ? ` — ${tagline}` : ""}` : "SHOPORA";
     const description =
       (ar ? s?.description : s?.description_fr)?.trim() ||
       (ar
@@ -69,7 +69,7 @@ function Home() {
   if (configProblem) {
     return (
       <main className="container-page flex min-h-dvh flex-col items-center justify-center gap-6 py-20 text-center">
-        <h1 className="font-display text-3xl font-semibold">{settings?.name ?? "OpenStore DZ"}</h1>
+        <h1 className="font-display text-3xl font-semibold">{settings?.name ?? "SHOPORA"}</h1>
         <SetupCheck />
       </main>
     );
@@ -123,7 +123,7 @@ function Home() {
       <CategoryStrip />
       <PromoBand threshold={settings?.free_shipping_threshold ?? 0} />
       <ReviewWall />
-      <ClosingCta storeName={settings?.name ?? "OpenStore DZ"} />
+      <ClosingCta storeName={settings?.name ?? "SHOPORA"} />
     </StoreLayout>
   );
 }

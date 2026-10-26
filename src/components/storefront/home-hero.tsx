@@ -38,7 +38,7 @@ export function HomeHero({
         <div className="flex flex-col items-start">
           <span className="mb-4 inline-flex items-center gap-1.5 rounded-full border border-outline bg-surface px-3.5 py-1.5 text-xs font-semibold text-secondary">
             <span className="size-[7px] shrink-0 rounded-full bg-secondary" aria-hidden="true" />
-            {settings?.name ?? "OpenStore DZ"}
+            {settings?.name ?? "SHOPORA"}
           </span>
 
           <h1 className="mb-4 max-w-xl font-display text-[clamp(32px,5.2vw,60px)] font-semibold leading-[1.06] tracking-[-0.02em]">

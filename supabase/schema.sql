@@ -1052,83 +1052,71 @@ grant all on storage.objects to authenticated;
 -- =============================================================================
 
 insert into public.store_settings (
-  id, name, tagline, description,
+  id, name, tagline, description, tagline_fr, description_fr,
+  logo_url,
   legal_name, nif, rc_number, phone, whatsapp, address,
   delivery_fee_flat, delivery_wilayas, delivery_eta_days, returns_days,
-  free_shipping_threshold
+  free_shipping_threshold, instagram_url
 ) values (
   1,
-  'OpenStore DZ',
-  'متجرك الإلكتروني — الدفع عند الاستلام',
-  'This is the demo shop created by supabase/schema.sql. Edit it in Settings, or delete the demo products and add your own.',
-       'Demo SARL', '000000000000000', '00/00-0000000', '+213 555 00 00 00', '+213 555 00 00 00',
-  'Alger, Algeria',
+  'SHOPORA',
+  'لوك فخم بسوما معقولة — الدفع عند الاستلام',
+  'SHOPORA متجر جزائري للبنات: إكسسوارات، تنظيم الماكياج وكوفرات التليفون. التوصيل لـ 58 ولاية، للدار ولا للمكتب، وتخلصي كي توصلك السلعة.',
+  'Le style chic à petit prix — paiement à la livraison',
+  'SHOPORA, boutique algérienne : accessoires, rangement maquillage et coques de téléphone. Livraison 58 wilayas, à domicile ou au bureau.',
+  '/brand/shopora-logo.png',
+  -- Legal details are left empty on purpose: the owner fills them in Settings.
+  null, null, null, null, null,
+  'Algérie',
   600,
   -- Empty means every wilaya. It was a list of Arabic names, which the checkout
   -- (matching on the carrier's Latin names) filtered down to nothing.
   '{}',
   3, 14,
-  10000
+  0,
+  null
 )
 on conflict (id) do nothing;
 
--- Two products: one single item, one pack. Prices and stock are the numbers the
--- storefront and the seed-verification query in the README expect.
+-- The two SHOPORA launch products. Photos are served from public/products/.
 insert into public.categories (slug, name, name_fr, sort_order)
 values
-  ('shirts', 'قمصان', 'Chemises', 1),
-  ('packs',  'باقات', 'Packs',    2)
+  ('makeup',      'تنظيم الماكياج', 'Rangement maquillage', 1),
+  ('phone-cases', 'كوفرات التليفون', 'Coques de téléphone',  2)
 on conflict (slug) do nothing;
 
 insert into public.products (id, slug, name, name_fr, description, kind, status, category_id, published_at)
 values
-  ('11111111-1111-4111-8111-111111111111', 'shirt-demo',  'قميص قطني كلاسيكي',  'Chemise coton classique',  'قميص قطني 100% بقصة مريحة، مناسب للعمل والمناسبات اليومية.', 'single', 'published', (select id from public.categories where slug = 'shirts'), now()),
-  ('22222222-2222-4222-8222-222222222222', 'pack-demo',    'باك القميص + البنطال', 'Pack chemise + pantalon', 'باقة موفرة تجمع قميصاً وبنطالاً بسعر أقل من شرائهما منفصلين.', 'pack', 'published', (select id from public.categories where slug = 'packs'), now())
+  ('11111111-1111-4111-8111-111111111111', 'aurabox', 'AuraBox — علبة تنظيم الماكياج', 'AuraBox — Rangement maquillage', 'علبة فخمة تنظملك الماكياج تاعك كامل فبلاصة وحدة. كلش يبان، كلش فبلاصتو، والطاولة تولي نقية.', 'single', 'published', (select id from public.categories where slug = 'makeup'), now()),
+  ('22222222-2222-4222-8222-222222222222', 'quilted-chain-case', 'كوفر آيفون مبطّن بالسنسلة', 'Coque iPhone matelassée à chaîne', 'كوفر مبطّن فخم مع سنسلة، تلبسيه كيما الصاك. متوفر من iPhone 13 حتى 17 Pro Max، و 6 ألوان تختاري منهم.', 'single', 'published', (select id from public.categories where slug = 'phone-cases'), now())
 on conflict (id) do nothing;
 
 insert into public.product_variants (id, product_id, size, color_name, color_hex, sku, price, stock, weight_grams, sort_order)
 values
-  ('aaaaaaaa-1111-4111-8111-111111111111', '11111111-1111-4111-8111-111111111111', 'M',  'أبيض',  '#ffffff', 'DEMO-TS-W-M',  2500, 12, 180, 0),
-  ('aaaaaaaa-2222-4111-8222-222222222222', '11111111-1111-4111-8111-111111111111', 'L',  'أسود',  '#000000', 'DEMO-TS-B-L',  2500,  8, 180, 1),
-  ('bbbbbbbb-1111-4111-8111-111111111111', '22222222-2222-4222-8222-222222222222', 'M',  'أبيض',  '#ffffff', 'DEMO-PK-W-M',  4500,  6, 420, 0),
-  ('bbbbbbbb-2222-4111-8222-222222222222', '22222222-2222-4222-8222-222222222222', 'L',  'أسود',  '#000000', 'DEMO-PK-B-L',  4500,  4, 420, 1)
+  ('aaaaaaaa-1111-4111-8111-111111111111', '11111111-1111-4111-8111-111111111111', null, null,      null,      'SH-AURA',      2500, 20, 600, 0),
+  ('bbbbbbbb-1111-4111-8111-111111111111', '22222222-2222-4222-8222-222222222222', null, 'أسود',    '#111111', 'SH-CASE-BLK',  4400, 10, 150, 0),
+  ('bbbbbbbb-2222-4111-8222-222222222222', '22222222-2222-4222-8222-222222222222', null, 'بني',     '#7a4a2a', 'SH-CASE-BRN',  4400, 10, 150, 1),
+  ('bbbbbbbb-3333-4111-8333-333333333333', '22222222-2222-4222-8222-222222222222', null, 'روز',     '#f2a7c3', 'SH-CASE-PNK',  4400, 10, 150, 2),
+  ('bbbbbbbb-4444-4111-8444-444444444444', '22222222-2222-4222-8222-222222222222', null, 'أحمر',    '#c0262d', 'SH-CASE-RED',  4400, 10, 150, 3),
+  ('bbbbbbbb-5555-4111-8555-555555555555', '22222222-2222-4222-8222-222222222222', null, 'برتقالي', '#ee7a2f', 'SH-CASE-ORG',  4400, 10, 150, 4),
+  ('bbbbbbbb-6666-4111-8666-666666666666', '22222222-2222-4222-8222-222222222222', null, 'أبيض',    '#f7f3ee', 'SH-CASE-WHT',  4400, 10, 150, 5)
 on conflict (id) do nothing;
 
--- Demo imagery: external placeholders so a fresh install renders a shop that
--- looks like a shop on first load. Replace with uploaded media.
 insert into public.variant_images (variant_id, url, alt, sort_order)
 values
-  ('aaaaaaaa-1111-4111-8111-111111111111', 'https://picsum.photos/seed/openstore-shirt-white/900/900', 'قميص أبيض', 0),
-  ('aaaaaaaa-2222-4111-8222-222222222222', 'https://picsum.photos/seed/openstore-shirt-black/900/900', 'قميص أسود', 0),
-  ('bbbbbbbb-1111-4111-8111-111111111111', 'https://picsum.photos/seed/openstore-pack-white/900/900', 'باقة بيضاء', 0),
-  ('bbbbbbbb-2222-4111-8222-222222222222', 'https://picsum.photos/seed/openstore-pack-black/900/900', 'باقة سوداء', 0)
+  ('aaaaaaaa-1111-4111-8111-111111111111', '/products/aurabox-1.webp', 'AuraBox', 0),
+  ('aaaaaaaa-1111-4111-8111-111111111111', '/products/aurabox-2.webp', 'AuraBox', 1),
+  ('aaaaaaaa-1111-4111-8111-111111111111', '/products/aurabox-3.webp', 'AuraBox', 2),
+  ('aaaaaaaa-1111-4111-8111-111111111111', '/products/aurabox-4.webp', 'AuraBox', 3),
+  ('bbbbbbbb-1111-4111-8111-111111111111', '/products/case-black.webp',  'كوفر أسود',    0),
+  ('bbbbbbbb-2222-4111-8222-222222222222', '/products/case-brown.webp',  'كوفر بني',     0),
+  ('bbbbbbbb-3333-4111-8333-333333333333', '/products/case-pink.webp',   'كوفر روز',     0),
+  ('bbbbbbbb-4444-4111-8444-444444444444', '/products/case-red.webp',    'كوفر أحمر',    0),
+  ('bbbbbbbb-5555-4111-8555-555555555555', '/products/case-orange.webp', 'كوفر برتقالي', 0),
+  ('bbbbbbbb-6666-4111-8666-666666666666', '/products/case-white.webp',  'كوفر أبيض',    0)
 on conflict do nothing;
 
-insert into public.pack_items (product_id, variant_id, quantity, sort_order)
-values
-  ('22222222-2222-4222-8222-222222222222', 'aaaaaaaa-1111-4111-8111-111111111111', 1, 0),
-  ('22222222-2222-4222-8222-222222222222', 'bbbbbbbb-1111-4111-8111-111111111111', 1, 1)
-on conflict (product_id, variant_id) do nothing;
-
-insert into public.reviews (id, product_id, customer_name, rating, comment, is_approved)
-values
-  ('cccccccc-1111-4111-8111-111111111111', '11111111-1111-4111-8111-111111111111', 'سعاد', 5, 'قماش ممتاز والتوصيل كان سريع.', true),
-  ('cccccccc-2222-4222-8222-222222222222', '22222222-2222-4222-8222-222222222222', 'كريم', 4, 'الباك مناسب والسعر معقول.', true)
-on conflict (id) do nothing;
-
--- The `true` above is a lie, and deliberately so. validate_review() forces
--- is_approved := false on every INSERT, including this one, because that trigger
--- is the control that stops a customer approving their own review. The demo
--- reviews therefore arrive unapproved and are approved here with an UPDATE,
--- which is exactly the path the moderation screen uses. Do not "fix" this by
--- weakening the trigger.
-update public.reviews
-   set is_approved = true
- where id in (
-   'cccccccc-1111-4111-8111-111111111111',
-   'cccccccc-2222-4222-8222-222222222222'
- )
-   and is_approved = false;
+-- No seeded reviews: a real shop shows only reviews from real buyers.
 
 -- =============================================================================
 -- 10. Later additions

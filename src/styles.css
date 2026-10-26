@@ -2,7 +2,7 @@
 @import "tw-animate-css";
 
 /*
- * OpenStore DZ — design system
+ * SHOPORA — design system (built on OpenStore DZ)
  *
  * Ported from the Commerce Storefront reference system (system 02), which is a
  * component-CSS system rather than a utility system. The tokens below are copied
@@ -26,97 +26,86 @@
  */
 
 /* ── Tokens: light (canonical) ─────────────────────────────────────────────── */
+/* SHOPORA palette: black, cream #f6eee6, champagne gold #c9a96e.
+   Gold on cream measures about 2:1, under the 4.5:1 AA floor for text, so the
+   pure gold is used for accents and marks only. Buttons are black on cream,
+   and gold-toned text uses the darker #7a5c28 (5.4:1 on cream). */
 :root,
 [data-theme="light"] {
-  --bg: #faf7f4;
-  --bg-dim: #f3efeb;
-  --surface: #ffffff;
-  --surface-mid: #faf7f4;
-  --surface-high: #f0ebe6;
-  --surface-highest: #e6dfd7;
-  --on-surface: #1c1917;
-  /* Darkened from the reference #78716c, which measured 4.49:1 on the cream
-     background and 4.19:1 on the tinted section band — both under the 4.5:1 AA
-     floor for body text. This measures 5.13:1 and 4.78:1. Muted secondary text
-     is what a shop uses for delivery terms and return windows, so failing AA
-     there is failing on the copy a buyer most needs to read. */
-  --on-surface-muted: #6b6460;
-  --outline: #e7e0d8;
-  --outline-hi: #c9beb2;
+  --bg: #f6eee6;
+  --bg-dim: #efe4d8;
+  --surface: #fffaf5;
+  --surface-mid: #f6eee6;
+  --surface-high: #ede2d5;
+  --surface-highest: #e3d5c4;
+  --on-surface: #111111;
+  --on-surface-muted: #5e554b;
+  --outline: #e3d6c6;
+  --outline-hi: #c9b79f;
 
-  /* One deliberate deviation from the reference palette, measured rather than
-     guessed. The reference primary #d9480f scores 4.29:1 for white-on-orange and
-     4.02:1 for orange-on-cream, and WCAG AA requires 4.5:1 for text below 18.66px.
-     It therefore fails on every button label and every accented caption.
-     #c2410c is the same hue one step darker: 5.18:1 with white and 4.85:1 on the
-     cream background, passing both. The brand still reads as burnt orange; it
-     just stops failing axe. Verified by e2e/accessibility.spec.ts. */
-  --primary: #c2410c;
-  --primary-solid: #c2410c;
-  --on-primary: #ffffff;
-  --primary-glow: rgba(194, 65, 12, 0.18);
-  --primary-glow-sm: rgba(194, 65, 12, 0.08);
+  --primary: #111111;
+  --primary-solid: #111111;
+  --on-primary: #f6eee6;
+  --primary-glow: rgba(201, 169, 110, 0.28);
+  --primary-glow-sm: rgba(201, 169, 110, 0.12);
 
-  --brand-orange: #ea580c;
-  --secondary: #e11d48;
-  --secondary-dim: #be123c;
+  --brand-orange: #c9a96e;
+  --secondary: #7a5c28;
+  --secondary-dim: #634a1f;
   --on-secondary: #ffffff;
-  --tertiary: #b45309;
+  --tertiary: #7a5c28;
   --on-tertiary: #ffffff;
-  --quaternary: #0d9488;
+  --quaternary: #3d3d3d;
   --on-quaternary: #ffffff;
-  /* Darkened from #15803d for the same reason as --primary: on the 12% tint the
-     in-stock badge uses, the reference green measured 4.27:1. This is 6.07:1
-     there and 7.14:1 on plain white. */
   --positive: #166534;
   --on-positive: #ffffff;
   --error: #dc2626;
 
-  --shadow-sm: 0 1px 3px rgba(60, 30, 10, 0.08);
-  --shadow-md: 0 6px 16px rgba(60, 30, 10, 0.1);
-  --shadow-lg: 0 16px 40px rgba(60, 30, 10, 0.14);
+  --shadow-sm: 0 1px 3px rgba(40, 28, 10, 0.08);
+  --shadow-md: 0 6px 16px rgba(40, 28, 10, 0.1);
+  --shadow-lg: 0 16px 40px rgba(40, 28, 10, 0.14);
 
-  --nav-bg: #ffffff;
-  --scroll-track: #f3efeb;
-  --scroll-thumb: #ddd3c7;
-  --scroll-thumb-hi: #d9480f;
-  --toggle-bg: rgba(217, 72, 15, 0.06);
-  --toggle-border: rgba(217, 72, 15, 0.22);
-  --table-header-bg: #f0ebe6;
-  --table-header-fg: #9a3412;
-  --table-row-bg: #ffffff;
-  --table-row-hover: #faf7f4;
-  --table-border: #e7e0d8;
-  --section-alt: #f3efeb;
+  --nav-bg: #fffaf5;
+  --scroll-track: #efe4d8;
+  --scroll-thumb: #d8c8b3;
+  --scroll-thumb-hi: #c9a96e;
+  --toggle-bg: rgba(201, 169, 110, 0.1);
+  --toggle-border: rgba(201, 169, 110, 0.35);
+  --table-header-bg: #ede2d5;
+  --table-header-fg: #7a5c28;
+  --table-row-bg: #fffaf5;
+  --table-row-hover: #f6eee6;
+  --table-border: #e3d6c6;
+  --section-alt: #efe4d8;
 }
 
 /* ── Tokens: dark ──────────────────────────────────────────────────────────── */
 [data-theme="dark"] {
-  --bg: #16110c;
-  --bg-dim: #100c08;
-  --surface: #1d1712;
-  --surface-mid: #241d16;
-  --surface-high: #2b231b;
-  --surface-highest: #352b21;
-  --on-surface: #f2ece5;
-  --on-surface-muted: #a8a29e;
-  --outline: #332a21;
-  --outline-hi: #4a3e31;
+  --bg: #0d0d0d;
+  --bg-dim: #080808;
+  --surface: #161616;
+  --surface-mid: #1c1c1c;
+  --surface-high: #232323;
+  --surface-highest: #2c2c2c;
+  --on-surface: #f6eee6;
+  --on-surface-muted: #b8ad9f;
+  --outline: #2a2724;
+  --outline-hi: #3d3833;
 
-  --primary: #fb923c;
-  --primary-solid: #fb923c;
-  --on-primary: #271204;
-  --primary-glow: rgba(251, 146, 60, 0.2);
-  --primary-glow-sm: rgba(251, 146, 60, 0.1);
+  --primary: #c9a96e;
+  --primary-solid: #c9a96e;
+  --on-primary: #111111;
+  --primary-glow: rgba(201, 169, 110, 0.22);
+  --primary-glow-sm: rgba(201, 169, 110, 0.1);
 
-  --brand-orange: #fb923c;
-  --secondary: #fb7185;
-  --secondary-dim: #f43f5e;
-  --on-secondary: #2a050e;
-  --tertiary: #fbbf24;
-  --on-tertiary: #422006;
-  --quaternary: #2dd4bf;
-  --on-quaternary: #042f2e;
+  --brand-orange: #c9a96e;
+  --secondary: #d9bd88;
+  --secondary-dim: #c9a96e;
+  --on-secondary: #111111;
+  --tertiary: #e0c48f;
+  --on-tertiary: #111111;
+  --quaternary: #a8a29e;
+  --on-quaternary: #111111;
   --positive: #4ade80;
   --on-positive: #052e16;
   --error: #f87171;
@@ -125,25 +114,27 @@
   --shadow-md: 0 6px 20px rgba(0, 0, 0, 0.45);
   --shadow-lg: 0 16px 44px rgba(0, 0, 0, 0.5);
 
-  --nav-bg: #100c08;
-  --scroll-track: #1d1712;
-  --scroll-thumb: #352b21;
-  --scroll-thumb-hi: #fb923c;
-  --toggle-bg: rgba(251, 146, 60, 0.08);
-  --toggle-border: rgba(251, 146, 60, 0.25);
-  --table-header-bg: #241d16;
-  --table-header-fg: #fb923c;
-  --table-row-bg: #16110c;
-  --table-row-hover: #1d1712;
-  --table-border: #332a21;
-  --section-alt: #100c08;
+  --nav-bg: #0a0a0a;
+  --scroll-track: #161616;
+  --scroll-thumb: #2c2c2c;
+  --scroll-thumb-hi: #c9a96e;
+  --toggle-bg: rgba(201, 169, 110, 0.08);
+  --toggle-border: rgba(201, 169, 110, 0.25);
+  --table-header-bg: #1c1c1c;
+  --table-header-fg: #c9a96e;
+  --table-row-bg: #0d0d0d;
+  --table-row-hover: #161616;
+  --table-border: #2a2724;
+  --section-alt: #080808;
 }
 
 /* ── Tokens: scale (keep verbatim) ─────────────────────────────────────────── */
 :root {
   --font-display: "Fraunces Variable", "Cairo Variable", serif;
   --font-body: "Outfit Variable", "Cairo Variable", sans-serif;
-  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+  /* Cairo before the generic fallback: Plex Mono has no Arabic glyphs, and
+     Arabic labels set in mono (the delivery-fee line) fell back to the OS font. */
+  --font-mono: "IBM Plex Mono", "Cairo Variable", ui-monospace, monospace;
 
   --r-xs: 4px;
   --r-sm: 10px;

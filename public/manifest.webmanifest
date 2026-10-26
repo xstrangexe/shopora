@@ -1,15 +1,15 @@
 {
-  "name": "OpenStore DZ",
-  "short_name": "OpenStore",
-  "description": "متجر إلكتروني مع الدفع عند الاستلام والتوصيل إلى 58 ولاية.",
+  "name": "SHOPORA",
+  "short_name": "SHOPORA",
+  "description": "SHOPORA — الدفع عند الاستلام والتوصيل لـ 58 ولاية.",
   "lang": "ar",
   "dir": "rtl",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#faf7f4",
-  "theme_color": "#d9480f",
+  "background_color": "#f6eee6",
+  "theme_color": "#111111",
   "categories": ["shopping", "business"],
   "icons": [
     {

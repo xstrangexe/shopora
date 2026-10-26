@@ -61,7 +61,7 @@ insert into public.store_settings (id, name) values (2, 'second shop');
 \echo '=== 9. Price is taken from the catalogue, not the caller ==='
 select public.place_order(
   '{"customer_name":"اختبار","phone":"0555123456","wilaya":"الجزائر","address":"10 rue test"}',
-  '[{"variant_id":"aaaaaaaa-2222-4111-8222-222222222222","quantity":3}]'
+  '[{"variant_id":"aaaaaaaa-1111-4111-8111-111111111111","quantity":3}]'
 ) as token \gset
 
 \echo '=== 10. Totals were computed server-side: 2500 x 3 + 600 fee = 8100 ==='

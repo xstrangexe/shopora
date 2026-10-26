@@ -26,7 +26,7 @@ export const Route = createFileRoute("/product/$slug")({
   },
   head: ({ loaderData, match }) => {
     const product = loaderData?.product;
-    if (!product) return { meta: [{ title: "OpenStore DZ" }] };
+    if (!product) return { meta: [{ title: "SHOPORA" }] };
     const locale = match.context.locale;
     const name = localized(locale, product.name, product.name_fr);
     const description =
