@@ -7,7 +7,8 @@
  *   - Navigations are NETWORK-FIRST. The network always wins when it answers;
  *     the cache is only an offline fallback.
  *   - Hashed build assets are CACHE-FIRST. Their names change when their
- *     contents do, so serving them from cache cannot go stale.
+ *     contents do, so serving them from cache cannot go stale. Unhashed files
+ *     (logo, icons, pictures in public/) are not cached here.
  *   - Anything cross-origin (Supabase, product images on another host) is never
  *     cached. Prices and stock must not come from a cache we control.
  *
@@ -15,13 +16,18 @@
  * a service worker in front of the dev server causes confusing stale modules.
  */
 
-const VERSION = "openstore-v1";
+// v2: v1 also kept unhashed files such as /brand/shopora-logo.png forever, so a
+// new logo never reached returning visitors. Bumping the name clears v1 caches.
+const VERSION = "openstore-v2";
 const SHELL_CACHE = `${VERSION}-shell`;
 const ASSET_CACHE = `${VERSION}-assets`;
 
-/** Immutable, content-hashed build output. */
+/**
+ * Immutable, content-hashed build output. Only these are cache-first: files in
+ * public/ (logo, icons, hero pictures) keep their names when they change, so
+ * they go to the network like everything else.
+ */
 const ASSET_PATTERN = /\/(_build|assets|build)\//;
-const STATIC_PATTERN = /\.(?:js|css|woff2?|ttf|otf|png|jpg|jpeg|webp|avif|svg|ico)$/i;
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
@@ -58,7 +64,7 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  if (ASSET_PATTERN.test(url.pathname) || STATIC_PATTERN.test(url.pathname)) {
+  if (ASSET_PATTERN.test(url.pathname)) {
     event.respondWith(cacheFirstAsset(request));
   }
 });
