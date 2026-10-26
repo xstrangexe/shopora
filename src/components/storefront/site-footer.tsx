@@ -1,4 +1,6 @@
+import { Link } from "@tanstack/react-router";
 import { Mail, MapPin, Phone, ShieldCheck } from "lucide-react";
+import { infoPages } from "@/lib/pages";
 import { useI18n } from "@/lib/i18n-context";
 import { useStoreSettings } from "@/lib/queries";
 import { SocialLinks } from "./social-links";
@@ -41,7 +43,7 @@ export function SiteFooter() {
 
   return (
     <footer className="mt-16 border-t border-outline bg-section-alt">
-      <div className="container-page grid gap-8 py-10 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="container-page grid gap-8 py-10 sm:grid-cols-2 lg:grid-cols-4">
         <div className="flex flex-col gap-2">
           <p className="font-display text-lg font-semibold">{settings?.name ?? t("app.name")}</p>
           {tagline && <p className="text-sm text-on-surface-muted">{tagline}</p>}
@@ -66,6 +68,20 @@ export function SiteFooter() {
             ))}
           </div>
         )}
+
+        <nav className="flex flex-col gap-1" aria-label={t("footer.pages")}>
+          <p className="mb-1 text-sm font-medium">{t("footer.pages")}</p>
+          {infoPages().map((page) => (
+            <Link
+              key={page.slug}
+              to="/pages/$slug"
+              params={{ slug: page.slug }}
+              className="flex min-h-9 items-center text-sm text-on-surface-muted hover:text-on-surface"
+            >
+              {page.title}
+            </Link>
+          ))}
+        </nav>
 
         <div className="flex flex-col gap-2">
           <p className="text-sm font-medium">{t("footer.contact")}</p>

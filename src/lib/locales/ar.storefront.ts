@@ -54,6 +54,7 @@ export const arStorefront = {
   "notFound.body": "الرابط الذي فتحته غير صحيح أو أن الصفحة تم حذفها.",
   "notFound.back": "العودة إلى المتجر",
   "footer.contact": "تواصل معنا",
+  "footer.pages": "معلومات",
   "demo.banner": "هذا متجر تجريبي: الطلبات هنا لا تُرسل.",
   "demo.cta": "افتح متجرك المجاني",
   "demo.checkout": "هذا متجر تجريبي. سيُسجَّل طلبك لكنه لن يُرسل أبداً.",

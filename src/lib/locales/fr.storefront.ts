@@ -56,6 +56,7 @@ export const frStorefront = {
   "notFound.body": "Le lien est incorrect ou la page a été supprimée.",
   "notFound.back": "Retour à la boutique",
   "footer.contact": "Contact",
+  "footer.pages": "Informations",
   "demo.banner": "Boutique de démonstration : les commandes ne sont pas expédiées.",
   "demo.cta": "Ouvrez votre boutique gratuite",
   "demo.checkout":
