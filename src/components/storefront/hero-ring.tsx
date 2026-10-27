@@ -2,36 +2,18 @@ import { useEffect, useRef } from "react";
 import { enter } from "@/lib/hero-scale";
 
 /**
- * The shop's own phone-case pictures, cut from its photos, ad creatives and
- * videos (public/hero). "tall" are 9:16 and fill the card; "ad" are the 4:5
- * creatives, shown whole over a blurred copy so no text is cropped. Every
- * price shown on an ad matches the catalogue (Chanel 4 400, 18 Pro Max 2 900).
+ * The owner's own pick of tall photos (Desktop\cards), in public/hero as
+ * h01.webp, h02.webp… in this order, one line each. "tall" fill the card
+ * (360 x 640); "ad" would show a square or 4:5 picture whole over a blurred
+ * copy of itself. Six photos repeat exactly five times round the 30 cards.
  */
 const SHOTS: { src: string; kind: "tall" | "ad" }[] = [
-  "ad",
-  "tall",
-  "tall",
-  "ad",
-  "tall",
-  "ad",
-  "tall",
-  "tall",
-  "tall",
-  "tall",
-  "tall",
-  "ad",
-  "tall",
-  "ad",
-  "tall",
-  "tall",
-  "ad",
-  "ad",
-  "tall",
-  "ad",
-  "tall",
-  "ad",
-  "ad",
-  "tall",
+  "tall", // h01 green case on the polka-dot shirt
+  "tall", // h02 pink case, seated outdoors
+  "tall", // h03 four cases in the car
+  "tall", // h04 "حول أيفونك الى 18 PRO MAX" ad
+  "tall", // h05 cases on the chain, in the park
+  "tall", // h06 18 Pro Max 2 900 ad
 ].map((kind, i) => ({
   src: `/hero/h${String(i + 1).padStart(2, "0")}.webp`,
   kind: kind as "tall" | "ad",
