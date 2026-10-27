@@ -36,26 +36,26 @@ export function StockLine({
 
   return (
     <div className="flex flex-col gap-2">
-      {!selected && (
-        <p className="text-2xl font-bold" dir="ltr">
-          {formatDzd(fromPrice, locale)}
-        </p>
-      )}
-      {selected && (
-        <p className="flex flex-wrap items-baseline gap-x-3 gap-y-1" dir="ltr">
-          <span className="text-2xl font-bold">{formatDzd(selected.price, locale)}</span>
-          {sale && (
-            <>
-              <span className="text-base text-on-surface-muted line-through">
-                {formatDzd(sale.was, locale)}
-              </span>
-              <span className="rounded-full bg-positive/12 px-2 py-0.5 font-mono text-xs font-semibold text-positive">
-                −{sale.percent}%
-              </span>
-            </>
-          )}
-        </p>
-      )}
+      {/* The row follows the page direction, so in Arabic the price sits on the
+          right edge; each figure stays LTR so its digits read correctly. */}
+      <p className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+        <span dir="ltr" className="text-3xl font-extrabold text-gold-ink">
+          {formatDzd(selected ? selected.price : fromPrice, locale)}
+        </span>
+        {selected && sale && (
+          <>
+            <span dir="ltr" className="text-base text-on-surface-muted line-through">
+              {formatDzd(sale.was, locale)}
+            </span>
+            <span
+              dir="ltr"
+              className="rounded-full bg-positive/12 px-2 py-0.5 font-mono text-xs font-semibold text-positive"
+            >
+              −{sale.percent}%
+            </span>
+          </>
+        )}
+      </p>
       <div className="flex flex-wrap items-center gap-3 text-sm">
         {hasStock ? (
           <span className="inline-flex items-center gap-1.5 rounded-full bg-positive/12 px-3 py-1 text-positive">
