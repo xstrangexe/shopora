@@ -10,6 +10,7 @@ import {
   sizeAfterColourChange,
   sizeOptions,
 } from "@/lib/variant-options";
+import { productVideos } from "@/lib/product-videos";
 import { StarRating } from "./star-rating";
 import { ProductGallery } from "./product-gallery";
 import { ModelHelp, OrderActions, StockLine, variantLabel } from "./product-purchase";
@@ -53,11 +54,16 @@ export function ProductDetail({ product }: { product: CatalogueProduct }) {
   const selected = choiceComplete ? findVariant(variants, choice.colour, choice.size) : null;
   // The gallery follows the colour. With no colour photos, fall back to all.
   const colourImages = imagesForColour(variants, choice.colour);
-  const images = colourImages.length > 0 ? colourImages : imagesForColour(variants, null);
+  const photos = colourImages.length > 0 ? colourImages : imagesForColour(variants, null);
+  // The first clip opens the gallery; the rest follow the photos. Picking a
+  // colour jumps to its first photo, not back to the clip.
+  const videos = productVideos(product.slug);
+  const lead = Math.min(videos.length, 1);
+  const images = [...videos.slice(0, lead), ...photos, ...videos.slice(lead)];
 
   const pickColour = (colour: string) => {
     setChoice({ colour, size: sizeAfterColourChange(variants, colour, choice.size) });
-    setActiveImage(0);
+    setActiveImage(lead);
   };
   const pickSize = (size: string) => {
     setChoice((current) => ({ ...current, size }));

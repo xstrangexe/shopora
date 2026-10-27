@@ -722,6 +722,26 @@ button.gallery-main {
   height: 100%;
   object-fit: cover;
 }
+.gallery-main video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.gallery-thumb {
+  position: relative;
+}
+.gallery-play {
+  position: absolute;
+  inset-inline-end: 4px;
+  bottom: 4px;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: rgb(0 0 0 / 0.6);
+  color: #fff;
+}
 .gallery-thumbs {
   /* One scrolling row, never a wall: four visible, the rest a swipe away. */
   display: grid;

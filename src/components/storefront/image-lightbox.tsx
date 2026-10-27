@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { useI18n } from "@/lib/i18n-context";
+import { isVideo, posterOf } from "@/lib/product-videos";
 import { cn } from "@/lib/utils";
 
 /**
@@ -55,26 +56,40 @@ export function ImageLightbox({
     >
       {index !== null && (
         <div className="relative flex h-full items-center justify-center overflow-hidden">
-          <img
-            src={images[index]}
-            alt={alt}
-            onClick={(event) => {
-              const box = event.currentTarget.getBoundingClientRect();
-              setZoom(
-                zoom
-                  ? null
-                  : {
-                      x: ((event.clientX - box.left) / box.width) * 100,
-                      y: ((event.clientY - box.top) / box.height) * 100,
-                    },
-              );
-            }}
-            style={zoom ? { transformOrigin: `${zoom.x}% ${zoom.y}%` } : undefined}
-            className={cn(
-              "max-h-full max-w-full object-contain transition-transform duration-200",
-              zoom ? "scale-[2.2] cursor-zoom-out" : "cursor-zoom-in",
-            )}
-          />
+          {isVideo(images[index] ?? "") ? (
+            <video
+              key={images[index]}
+              src={images[index]}
+              poster={posterOf(images[index] ?? "")}
+              autoPlay
+              controls
+              muted
+              loop
+              playsInline
+              className="max-h-full max-w-full"
+            />
+          ) : (
+            <img
+              src={images[index]}
+              alt={alt}
+              onClick={(event) => {
+                const box = event.currentTarget.getBoundingClientRect();
+                setZoom(
+                  zoom
+                    ? null
+                    : {
+                        x: ((event.clientX - box.left) / box.width) * 100,
+                        y: ((event.clientY - box.top) / box.height) * 100,
+                      },
+                );
+              }}
+              style={zoom ? { transformOrigin: `${zoom.x}% ${zoom.y}%` } : undefined}
+              className={cn(
+                "max-h-full max-w-full object-contain transition-transform duration-200",
+                zoom ? "scale-[2.2] cursor-zoom-out" : "cursor-zoom-in",
+              )}
+            />
+          )}
           <button
             type="button"
             onClick={onClose}

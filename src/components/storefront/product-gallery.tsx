@@ -1,6 +1,7 @@
-import { useState } from "react";
-import { ImageOff } from "lucide-react";
+import { useEffect, useState } from "react";
+import { ImageOff, Play } from "lucide-react";
 import { ImageLightbox } from "./image-lightbox";
+import { isVideo, posterOf } from "@/lib/product-videos";
 import { useI18n } from "@/lib/i18n-context";
 import { cn } from "@/lib/utils";
 
@@ -25,6 +26,11 @@ export function ProductGallery({
 }) {
   const { t } = useI18n();
   const [open, setOpen] = useState<number | null>(null);
+  const [reduceMotion, setReduceMotion] = useState(false);
+  useEffect(() => {
+    setReduceMotion(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  }, []);
+  const current = images[active] ?? images[0] ?? "";
 
   if (images.length === 0) {
     return (
@@ -36,14 +42,36 @@ export function ProductGallery({
 
   return (
     <div className="gallery">
-      <button
-        type="button"
-        className="gallery-main cursor-zoom-in"
-        onClick={() => setOpen(active)}
-        aria-label={t("store.zoom")}
-      >
-        <img src={images[active] ?? images[0]} alt={alt} decoding="async" />
-      </button>
+      {isVideo(current) ? (
+        <div className="gallery-main">
+          <video
+            key={current}
+            src={current}
+            poster={posterOf(current)}
+            autoPlay={!reduceMotion}
+            controls={reduceMotion}
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            aria-label={alt}
+            onClick={(event) => {
+              const video = event.currentTarget;
+              if (video.paused) void video.play();
+              else video.pause();
+            }}
+          />
+        </div>
+      ) : (
+        <button
+          type="button"
+          className="gallery-main cursor-zoom-in"
+          onClick={() => setOpen(active)}
+          aria-label={t("store.zoom")}
+        >
+          <img src={current} alt={alt} decoding="async" />
+        </button>
+      )}
       <ImageLightbox
         images={images}
         index={open}
@@ -66,7 +94,12 @@ export function ProductGallery({
               aria-current={index === active}
               className={cn("gallery-thumb", index === active && "active")}
             >
-              <img src={url} alt="" loading="lazy" />
+              <img src={isVideo(url) ? posterOf(url) : url} alt="" loading="lazy" />
+              {isVideo(url) && (
+                <span className="gallery-play" aria-hidden="true">
+                  <Play size={14} fill="currentColor" />
+                </span>
+              )}
             </button>
           ))}
         </div>
