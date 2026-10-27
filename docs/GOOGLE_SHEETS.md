@@ -113,6 +113,21 @@ function doPost(e) {
   }
 
   const payload = JSON.parse(text);
+
+  // Two orders arriving together would otherwise both pick the same empty row.
+  const lock = LockService.getScriptLock();
+  lock.waitLock(30000);
+  try {
+    write(payload);
+  } finally {
+    lock.releaseLock();
+  }
+
+  return respond({ ok: true, event: payload.event });
+}
+
+/** Insert the order's row, or update it in place when the order is already there. */
+function write(payload) {
   const sheet = sheetFor();
   const row = rowFrom(payload);
   const id = payload.order.id;
@@ -132,8 +147,6 @@ function doPost(e) {
     sheet.getRange(target, column).setNumberFormat("@");
   });
   sheet.getRange(target, 1, 1, row.length).setValues([row]);
-
-  return respond({ ok: true, event: payload.event });
 }
 
 /**
