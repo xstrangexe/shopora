@@ -73,6 +73,8 @@ export function SizePicker({
             onClick={() => onSelect(size.name)}
             disabled={!size.inStock}
             aria-pressed={size.name === selected}
+            // "13 PRO MAX" inside the Arabic page otherwise reads "PRO MAX 13".
+            dir="auto"
             className={cn("size-chip", size.name === selected && "active")}
           >
             {size.name}

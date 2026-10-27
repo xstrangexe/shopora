@@ -10,7 +10,47 @@ import { Button } from "@/components/ui/button";
 import { Field, Input, Textarea } from "@/components/ui/form";
 import { EmptyState, LoadingState } from "@/components/ui/feedback";
 
-export function ReviewList({ productId }: { productId: string }) {
+/**
+ * The reviews block of a product page. Real reviews get their title, list and
+ * form. With none yet it shows nothing but a quiet "write a review" link: a box
+ * saying nobody has reviewed this told a new visitor nobody has bought it,
+ * which is the opposite of what an ad visitor needs to read. Nothing shows
+ * while the reviews load, so the block never flashes empty first.
+ */
+export function ReviewsSection({ productId }: { productId: string }) {
+  const { t } = useI18n();
+  const { data: reviews, isPending } = useReviews(productId);
+  const [writing, setWriting] = useState(false);
+
+  if (isPending) return null;
+  if (!reviews || reviews.length === 0) {
+    return writing ? (
+      <ReviewForm productId={productId} />
+    ) : (
+      <button
+        type="button"
+        onClick={() => setWriting(true)}
+        className="min-h-11 w-fit self-center text-sm font-medium text-on-surface-muted underline underline-offset-4"
+      >
+        {t("reviews.write")}
+      </button>
+    );
+  }
+
+  return (
+    <section className="flex flex-col gap-5" aria-labelledby="reviews-title">
+      <h2 id="reviews-title" className="font-display text-xl font-semibold">
+        {t("reviews.title")}
+      </h2>
+      <div className="grid gap-6 lg:grid-cols-[1.4fr_1fr]">
+        <ReviewList productId={productId} />
+        <ReviewForm productId={productId} />
+      </div>
+    </section>
+  );
+}
+
+function ReviewList({ productId }: { productId: string }) {
   const { t, locale } = useI18n();
   const { data: reviews, isPending } = useReviews(productId);
 
@@ -67,7 +107,7 @@ type FormState = { name: string; rating: number; comment: string };
  * therefore cannot appear anywhere until the shop approves it, which is why this
  * component shows a thank-you rather than the new review.
  */
-export function ReviewForm({ productId }: { productId: string }) {
+function ReviewForm({ productId }: { productId: string }) {
   const { t } = useI18n();
   const [form, setForm] = useState<FormState>({ name: "", rating: 5, comment: "" });
   const [done, setDone] = useState(false);

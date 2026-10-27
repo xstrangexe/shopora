@@ -2,7 +2,7 @@ import { createFileRoute, notFound } from "@tanstack/react-router";
 import { StoreLayout } from "@/components/storefront/store-layout";
 import { ProductDetail } from "@/components/storefront/product-detail";
 import { SizeGuide } from "@/components/storefront/size-guide";
-import { ReviewForm, ReviewList } from "@/components/storefront/reviews";
+import { ReviewsSection } from "@/components/storefront/reviews";
 import { ErrorState } from "@/components/ui/feedback";
 import { productImage, productQuery, reviewsQuery, useProduct } from "@/lib/queries";
 import { formatDzd } from "@/lib/format";
@@ -10,7 +10,6 @@ import { absoluteUrl } from "@/lib/site-url";
 import { sizeGuidesQuery } from "@/lib/size-guides";
 import { RelatedProducts } from "@/components/storefront/related-products";
 import { localized } from "@/lib/i18n";
-import { useT } from "@/lib/i18n-context";
 
 export const Route = createFileRoute("/product/$slug")({
   loader: async ({ context, params }) => {
@@ -68,7 +67,6 @@ export const Route = createFileRoute("/product/$slug")({
 function ProductPage() {
   const { product } = Route.useLoaderData();
   const { data: live, isError, error, refetch } = useProduct(product.slug);
-  const t = useT();
 
   const current = live ?? product;
 
@@ -85,15 +83,7 @@ function ProductPage() {
 
         <RelatedProducts product={current} />
 
-        <section className="flex flex-col gap-5" aria-labelledby="reviews-title">
-          <h2 id="reviews-title" className="font-display text-xl font-semibold">
-            {t("reviews.title")}
-          </h2>
-          <div className="grid gap-6 lg:grid-cols-[1.4fr_1fr]">
-            <ReviewList productId={current.id} />
-            <ReviewForm productId={current.id} />
-          </div>
-        </section>
+        <ReviewsSection productId={current.id} />
       </div>
     </StoreLayout>
   );

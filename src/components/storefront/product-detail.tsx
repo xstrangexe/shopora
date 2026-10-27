@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import { trackViewContent } from "@/lib/pixels";
-import { ShieldCheck } from "lucide-react";
 import { useI18n } from "@/lib/i18n-context";
 import { averageRating, sortVariants, useReviews, type CatalogueProduct } from "@/lib/queries";
 import {
@@ -13,7 +12,8 @@ import {
 } from "@/lib/variant-options";
 import { StarRating } from "./star-rating";
 import { ProductGallery } from "./product-gallery";
-import { OrderActions, StockLine, variantLabel } from "./product-purchase";
+import { ModelHelp, OrderActions, StockLine, variantLabel } from "./product-purchase";
+import { TrustCard } from "./trust-card";
 import { ExpressOrderForm, ORDER_FORM_ID } from "./express-order-form";
 import { StickyOrderBar } from "./sticky-order-bar";
 import { localized } from "@/lib/i18n";
@@ -22,11 +22,11 @@ import { ColourPicker, SizePicker } from "./variant-picker";
 /**
  * Product page layout.
  *
- * Built as a landing page for ad traffic: photos, name, price, the model and
- * colour pickers, then the express order form right after them, so a buyer on
- * a phone never scrolls through the description to find how to order. The
- * description follows the form. Actions live in `product-purchase.tsx` and
- * `express-order-form.tsx`; this file holds the state they share.
+ * Built as a landing page for ad traffic: photos, name, price, the three
+ * promises, the model and colour pickers, a short description, then the express
+ * order form, so a buyer on a phone reads why to buy and then how, with nothing
+ * between them. Actions live in `product-purchase.tsx` and `express-order-form.tsx`;
+ * this file holds the state they share.
  */
 export function ProductDetail({ product }: { product: CatalogueProduct }) {
   const { t, locale } = useI18n();
@@ -79,7 +79,7 @@ export function ProductDetail({ product }: { product: CatalogueProduct }) {
   const name = localized(locale, product.name, product.name_fr);
 
   return (
-    <div className="grid gap-8 lg:grid-cols-2 lg:gap-12">
+    <div className="grid grid-cols-[minmax(0,1fr)] gap-8 lg:grid-cols-2 lg:gap-12">
       <ProductGallery
         images={images}
         alt={choice.colour ? `${name} — ${choice.colour}` : name}
@@ -106,14 +106,20 @@ export function ProductDetail({ product }: { product: CatalogueProduct }) {
           hasStock={selected ? selected.stock > 0 : stockable.length > 0}
         />
 
+        <TrustCard />
+
         <div ref={pickersRef} className="flex flex-col gap-5">
           <ColourPicker colours={colours} selected={choice.colour} onSelect={pickColour} />
           <SizePicker sizes={sizes} selected={choice.size} onSelect={pickSize} />
+          {sizes.length > 0 && <ModelHelp name={name} />}
         </div>
+
+        {/* What the case is, above the form: the selling points a buyer on a
+            phone should read before the fields, not after them. */}
+        {description && <Description text={description} />}
 
         {stockable.length > 0 && (
           <>
-            <OrderActions name={name} selected={selected} onOrder={scrollToForm} />
             <ExpressOrderForm
               product={product}
               name={name}
@@ -121,22 +127,43 @@ export function ProductDetail({ product }: { product: CatalogueProduct }) {
               variantLabel={label === "—" ? null : label}
               onMissingVariant={showPickers}
             />
+            <OrderActions name={name} selected={selected} />
             <StickyOrderBar price={selected?.price ?? fromPrice} onOrder={scrollToForm} />
           </>
         )}
-
-        {description && (
-          <div className="flex flex-col gap-2 border-t border-outline pt-5">
-            <h2 className="font-display text-base font-semibold">{t("store.description")}</h2>
-            <p className="whitespace-pre-line text-sm text-on-surface-muted">{description}</p>
-          </div>
-        )}
-
-        <p className="flex items-center gap-2 rounded-[10px] bg-surface-mid px-4 py-3 text-xs text-on-surface-muted">
-          <ShieldCheck size={15} className="shrink-0 text-primary" aria-hidden="true" />
-          {t("checkout.codBody")}
-        </p>
       </div>
+    </div>
+  );
+}
+
+/**
+ * The product description, four lines at first with a "more" toggle, so a long
+ * one does not push the form out of sight. Short descriptions show whole.
+ */
+function Description({ text }: { text: string }) {
+  const { t } = useI18n();
+  const [open, setOpen] = useState(false);
+  const long = text.split("\n").length > 5 || text.length > 260;
+
+  return (
+    <div className="flex flex-col items-start gap-1">
+      <p
+        className={`whitespace-pre-line text-sm leading-7 text-on-surface-muted ${
+          long && !open ? "line-clamp-5" : ""
+        }`}
+      >
+        {text}
+      </p>
+      {long && (
+        <button
+          type="button"
+          onClick={() => setOpen((v) => !v)}
+          aria-expanded={open}
+          className="min-h-10 text-sm font-semibold text-gold-ink"
+        >
+          {open ? t("store.readLess") : t("store.readMore")}
+        </button>
+      )}
     </div>
   );
 }

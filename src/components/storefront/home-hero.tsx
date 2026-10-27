@@ -1,9 +1,9 @@
 import { useEffect, useRef } from "react";
-import { Banknote, RefreshCw, Truck } from "lucide-react";
 import { useI18n } from "@/lib/i18n-context";
 import type { StoreSettings } from "@/lib/queries";
 import { HERO_SCALE_SCRIPT, applyHeroScale, enter } from "@/lib/hero-scale";
 import { HeroRing } from "./hero-ring";
+import { TrustCard } from "./trust-card";
 
 /**
  * Home hero: a black stage under the black header, the delivery badge, the
@@ -103,43 +103,14 @@ function stars(section: HTMLElement | null) {
 }
 
 /**
- * Three facts the shop keeps, in one card under the hero, as on YouCan: cash on
- * delivery, how many wilayas in 1 to 7 days (from the owner's delivery list),
- * and the exchange window. Said once here; the page does not repeat them.
+ * The three promises under the hero, as on YouCan: cash on delivery, how many
+ * wilayas in 1 to 7 days (from the owner's delivery list) and the exchange
+ * window. Said once on the home page; the page does not repeat them.
  */
-export function TrustBar({
-  returnsDays,
-  wilayaCount,
-}: {
-  returnsDays: number;
-  wilayaCount: number;
-}) {
-  const { t } = useI18n();
-  const items = [
-    { icon: Banknote, title: t("home2.trust.cod"), body: t("home2.trust.codBody") },
-    {
-      icon: Truck,
-      title: t("trust2.wilayas", { count: wilayaCount }),
-      body: t("home2.trust.deliveryBody"),
-    },
-    {
-      icon: RefreshCw,
-      title: t("home2.trust.exchange"),
-      body: t("home2.trust.exchangeBody", { days: returnsDays }),
-    },
-  ];
-
+export function TrustBar(props: { returnsDays: number; wilayaCount: number }) {
   return (
     <section className="container-page pt-4 pb-2">
-      <ul className="grid grid-cols-3 divide-x divide-outline overflow-hidden rounded-[18px] border border-outline bg-surface rtl:divide-x-reverse">
-        {items.map((item) => (
-          <li key={item.title} className="flex flex-col items-center gap-1 px-2 py-3.5 text-center">
-            <item.icon size={18} className="text-gold-ink" aria-hidden="true" />
-            <span className="text-[13px] font-bold leading-tight sm:text-sm">{item.title}</span>
-            <span className="text-xs leading-tight text-on-surface-muted">{item.body}</span>
-          </li>
-        ))}
-      </ul>
+      <TrustCard {...props} />
     </section>
   );
 }

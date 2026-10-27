@@ -693,10 +693,13 @@
 }
 
 /* Product gallery */
+/* min-width: 0 lets this grid item shrink to its column; with many thumbnails it
+   otherwise grew to their combined width and pushed the whole page sideways. */
 .gallery {
   display: flex;
   flex-direction: column;
   gap: var(--s-sm);
+  min-width: 0;
 }
 .gallery-main {
   position: relative;
