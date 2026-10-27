@@ -1728,6 +1728,8 @@ as $$
       'wilaya', o.wilaya,
       'commune', o.commune,
       'address', o.address,
+      'delivery_method', o.delivery_method,
+      'stopdesk_name', o.stopdesk_name,
       'note', o.note,
       'subtotal', o.subtotal,
       'delivery_fee', o.delivery_fee,

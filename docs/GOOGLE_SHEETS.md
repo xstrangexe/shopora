@@ -91,6 +91,8 @@ const COLUMNS = [
   "wilaya",
   "commune",
   "address",
+  "delivery",
+  "office",
   "note",
   "items",
   "subtotal",
@@ -166,11 +168,10 @@ function sheetFor() {
   const book = SpreadsheetApp.openById(SPREADSHEET_ID);
   let sheet = book.getSheetByName(SHEET_NAME);
   if (!sheet) sheet = book.insertSheet(SHEET_NAME);
-  if (sheet.getLastRow() === 0) {
-    sheet.appendRow(COLUMNS);
-    sheet.getRange(1, 1, 1, COLUMNS.length).setFontWeight("bold");
-    sheet.setFrozenRows(1);
-  }
+  // The header row is rewritten each time, so a new column in COLUMNS appears
+  // without touching the sheet by hand.
+  sheet.getRange(1, 1, 1, COLUMNS.length).setValues([COLUMNS]).setFontWeight("bold");
+  sheet.setFrozenRows(1);
   return sheet;
 }
 
@@ -194,6 +195,8 @@ function rowFrom(payload) {
     order.wilaya,
     order.commune,
     order.address,
+    deliveryLabel(order),
+    order.delivery_method === "stopdesk" ? order.stopdesk_name || "" : "",
     order.note,
     items,
     order.subtotal,
@@ -202,6 +205,11 @@ function rowFrom(payload) {
     order.tracking_number,
     order.tracking_url,
   ];
+}
+
+/** Where the parcel goes: the customer's door, or a ZR Express pickup office. */
+function deliveryLabel(order) {
+  return order.delivery_method === "stopdesk" ? "مكتب ZR Express" : "توصيل للمنزل";
 }
 
 function respond(payload) {
