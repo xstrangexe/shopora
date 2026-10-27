@@ -7,7 +7,7 @@
  */
 const VIDEOS: Record<string, string[]> = {
   "chanel-case": [1, 2, 3, 4, 5].map((n) => `/videos/chanel-${n}.mp4`),
-  "iphone-case-17": ["/videos/case17-1.mp4"],
+  case: ["/videos/case18-1.mp4"],
 };
 
 export function productVideos(slug: string): string[] {
