@@ -31,7 +31,7 @@ export function WilayaCommuneFields({
     allowed.length === 0 ? WILAYAS : WILAYAS.filter((w) => allowed.includes(w.fr));
 
   return (
-    <div className="grid gap-4 sm:grid-cols-2">
+    <div className="grid grid-cols-2 gap-3">
       <Field label={t("express.wilaya")} required>
         <Select value={wilaya} onChange={(e) => onWilaya(e.target.value)} required>
           <option value="">{t("express.selectWilaya")}</option>
@@ -67,7 +67,10 @@ export function WilayaCommuneFields({
   );
 }
 
-/** Quantity, 1 to `max` (the variant's stock, capped at 10 per order). */
+/**
+ * Quantity, 1 to `max` (the variant's stock, capped at 10 per order). Sits on
+ * the product line of the summary, so its label is for screen readers only.
+ */
 export function QuantityStepper({
   quantity,
   max,
@@ -79,27 +82,24 @@ export function QuantityStepper({
 }) {
   const { t } = useI18n();
   return (
-    <div className="flex items-center justify-between gap-3">
-      <span className="text-sm font-medium">{t("express.quantity")}</span>
-      <span className="ci-qty !h-11">
-        <button
-          type="button"
-          onClick={() => onChange(Math.max(1, quantity - 1))}
-          aria-label={`${t("express.quantity")} −`}
-        >
-          −
-        </button>
-        <span className="q" aria-live="polite">
-          {quantity}
-        </span>
-        <button
-          type="button"
-          onClick={() => onChange(Math.min(max, quantity + 1))}
-          aria-label={`${t("express.quantity")} +`}
-        >
-          +
-        </button>
-      </span>
-    </div>
+    <span className="xo-qty" role="group" aria-label={t("express.quantity")} dir="ltr">
+      <button
+        type="button"
+        onClick={() => onChange(Math.max(1, quantity - 1))}
+        disabled={quantity <= 1}
+        aria-label={`${t("express.quantity")} −`}
+      >
+        −
+      </button>
+      <span aria-live="polite">{quantity}</span>
+      <button
+        type="button"
+        onClick={() => onChange(Math.min(max, quantity + 1))}
+        disabled={quantity >= max}
+        aria-label={`${t("express.quantity")} +`}
+      >
+        +
+      </button>
+    </span>
   );
 }

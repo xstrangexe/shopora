@@ -1180,6 +1180,442 @@ button.gallery-main {
   padding: 0 4px;
 }
 
+/* ==========================================================================
+   Express order form: a black and gold card on the product page
+   --------------------------------------------------------------------------
+   The card carries data-theme="dark", so the shared .form-input and
+   .form-select pick up dark tokens; the rules here only add the gold. Inputs
+   are 16px so iOS does not zoom when a field is tapped.
+   ========================================================================== */
+.xo {
+  position: relative;
+  overflow: hidden;
+  padding: 22px 16px 18px;
+  border: 1px solid rgba(201, 169, 110, 0.38);
+  border-radius: 24px;
+  background:
+    radial-gradient(120% 55% at 50% 0%, rgba(201, 169, 110, 0.14), transparent 62%), #0c0a07;
+  box-shadow: 0 22px 50px rgba(0, 0, 0, 0.22);
+  color: #f3ede2;
+}
+@media (min-width: 640px) {
+  .xo {
+    padding: 28px 26px 22px;
+  }
+}
+.xo-head {
+  text-align: center;
+}
+.xo-title {
+  font-family: var(--font-body);
+  font-size: 21px;
+  font-weight: 800;
+  line-height: 1.35;
+  color: #fff;
+}
+.xo-sub {
+  margin-top: 6px;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: #bdb3a2;
+}
+.xo-trust {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin: 16px 0 18px;
+}
+.xo-trust li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 4px;
+  border: 1px solid rgba(201, 169, 110, 0.22);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.03);
+  font-size: 11.5px;
+  font-weight: 600;
+  line-height: 1.35;
+  text-align: center;
+  color: #e9dfcc;
+}
+.xo-trust-icon {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: rgba(201, 169, 110, 0.16);
+  color: #e3c68f;
+}
+.xo-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.xo .form-group label,
+.xo legend {
+  font-size: 13px;
+  font-weight: 600;
+  color: #d9ccb4;
+}
+.xo .form-input,
+.xo .form-select {
+  min-height: 52px;
+  border-radius: 14px;
+  border-color: rgba(255, 255, 255, 0.14);
+  background-color: rgba(255, 255, 255, 0.045);
+  font-size: 16px;
+  color: #fff;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s,
+    background-color 0.2s;
+}
+.xo .form-input::placeholder {
+  color: rgba(255, 255, 255, 0.35);
+}
+.xo .form-input:focus,
+.xo .form-select:focus {
+  border-color: #c9a96e;
+  background-color: rgba(201, 169, 110, 0.07);
+  box-shadow: 0 0 0 3px rgba(201, 169, 110, 0.22);
+}
+.xo .form-select option {
+  background: #1a1712;
+  color: #fff;
+}
+.xo-phone {
+  position: relative;
+  display: block;
+}
+/* The number is always typed left to right, so the tick sits on the right,
+   clear of the digits, in every language. */
+.xo-phone .form-input {
+  padding-right: 44px;
+}
+.xo-phone-ok {
+  position: absolute;
+  top: 50%;
+  right: 14px;
+  translate: 0 -50%;
+  color: #6fd29a;
+  animation: xo-pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.xo-add {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: fit-content;
+  min-height: 40px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #e3c68f;
+}
+
+/* Delivery cards. Token-based, so they also read on the cream checkout page. */
+.dc-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  min-height: 112px;
+  padding: 14px 8px 12px;
+  border: 1.5px solid var(--outline);
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--on-surface) 3%, transparent);
+  text-align: center;
+  cursor: pointer;
+  transition:
+    border-color 0.2s,
+    background-color 0.2s,
+    transform 0.2s;
+}
+.dc-card:hover:not(.is-disabled) {
+  border-color: var(--outline-hi);
+}
+.dc-card:active:not(.is-disabled) {
+  transform: scale(0.98);
+}
+.dc-card:has(input:focus-visible) {
+  outline: 2px solid #c9a96e;
+  outline-offset: 2px;
+}
+.dc-card.is-active {
+  border-color: #c9a96e;
+  background: rgba(201, 169, 110, 0.12);
+}
+.dc-card.is-disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+.dc-icon {
+  color: #c9a96e;
+}
+.dc-label {
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+.dc-fee {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--on-surface);
+}
+.dc-card.is-active .dc-fee {
+  color: #b8924f;
+}
+.xo .dc-card.is-active .dc-fee {
+  color: #e3c68f;
+}
+.dc-card.is-disabled .dc-fee {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--on-surface-muted);
+}
+.dc-tick {
+  position: absolute;
+  top: 8px;
+  inset-inline-start: 8px;
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #c9a96e;
+  color: #111;
+  opacity: 0;
+  scale: 0.6;
+  transition:
+    opacity 0.2s,
+    scale 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.dc-card.is-active .dc-tick {
+  opacity: 1;
+  scale: 1;
+}
+.dc-note {
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: var(--surface-mid);
+  font-size: 12px;
+  color: var(--on-surface-muted);
+}
+
+/* Summary: the case, the lines, and the total in gold. */
+.xo-summary {
+  padding: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.04);
+}
+.xo-summary-title {
+  margin-bottom: 12px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 700;
+  color: #d9ccb4;
+}
+.xo-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.xo-item img {
+  flex: none;
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  object-fit: cover;
+  background: #1f1b15;
+}
+.xo-item-name {
+  display: block;
+  overflow: hidden;
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: #fff;
+}
+.xo-item-variant {
+  display: block;
+  margin-top: 2px;
+  font-size: 12px;
+  color: #bdb3a2;
+}
+[dir="rtl"] .xo-item-name,
+[dir="rtl"] .xo-item-variant {
+  text-align: right;
+}
+.xo-qty {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  height: 40px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+}
+.xo-qty button {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 100%;
+  font-size: 18px;
+  color: #e3c68f;
+}
+.xo-qty button:disabled {
+  opacity: 0.3;
+}
+.xo-qty span {
+  min-width: 22px;
+  text-align: center;
+  font-weight: 700;
+}
+.xo-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  margin-top: 12px;
+  font-size: 14px;
+}
+.xo-lines > div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+.xo-lines dt {
+  color: #bdb3a2;
+}
+.xo-lines dd {
+  font-weight: 700;
+  color: #fff;
+}
+/* The chip is itself left-to-right, so its own "inline start" is its left;
+   the gap is set from the page's direction instead. */
+.xo-mult {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 0 6px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  font-size: 12px;
+  font-weight: 700;
+  color: #e9dfcc;
+}
+[dir="rtl"] .xo-mult {
+  margin-right: 8px;
+  margin-left: 0;
+}
+.xo-lines dd.is-pending {
+  font-weight: 500;
+  color: #8f8678;
+}
+.xo-lines .xo-total {
+  margin-top: 4px;
+  padding-top: 12px;
+  border-top: 1px dashed rgba(201, 169, 110, 0.35);
+}
+.xo-total dt {
+  font-weight: 700;
+  color: #f3ede2;
+}
+.xo-total dd {
+  font-size: 24px;
+  font-weight: 800;
+  color: #e3c68f;
+  animation: xo-pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.xo-error {
+  padding: 12px 14px;
+  border: 1px solid rgba(255, 120, 120, 0.35);
+  border-radius: 12px;
+  background: rgba(255, 90, 90, 0.1);
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #ffb4b4;
+}
+
+/* The one gold button, with a slow sweep of light across it. */
+.xo-cta {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 58px;
+  border-radius: 16px;
+  background: linear-gradient(180deg, #e6cb92, #c9a96e 55%, #b08d4f);
+  box-shadow:
+    0 10px 26px rgba(201, 169, 110, 0.32),
+    inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  font-size: 18px;
+  font-weight: 800;
+  color: #111;
+  transition:
+    transform 0.15s,
+    filter 0.2s;
+}
+.xo-cta::after {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 -60%;
+  width: 45%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+  transform: skewX(-18deg);
+  animation: xo-sweep 3.6s ease-in-out 1.2s infinite;
+}
+.xo-cta:hover:not(:disabled) {
+  filter: brightness(1.06);
+}
+.xo-cta:active:not(:disabled) {
+  transform: scale(0.985);
+}
+.xo-cta:disabled {
+  cursor: progress;
+  opacity: 0.85;
+}
+.xo-cta:disabled::after {
+  display: none;
+}
+.xo-privacy {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #8f8678;
+}
+@keyframes xo-pop {
+  from {
+    opacity: 0.4;
+    scale: 0.92;
+  }
+}
+@keyframes xo-sweep {
+  0% {
+    left: -60%;
+  }
+  55%,
+  100% {
+    left: 130%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .xo-cta::after,
+  .xo-total dd,
+  .xo-phone-ok {
+    animation: none;
+  }
+}
+
 /* Section banding, used by the storefront home. */
 .section-alt {
   background: var(--section-alt);

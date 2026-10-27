@@ -1,10 +1,19 @@
+import { useState } from "react";
+import { Banknote, CheckCircle2, PhoneCall, Plus, Truck } from "lucide-react";
 import { Field, Input } from "@/components/ui/form";
 import { useI18n } from "@/lib/i18n-context";
-import type { CatalogueProduct, CatalogueVariant } from "@/lib/queries";
+import {
+  primaryImage,
+  productImage,
+  useStoreSettings,
+  type CatalogueProduct,
+  type CatalogueVariant,
+} from "@/lib/queries";
 import { isValidDzPhone } from "@/lib/express-order";
+import { WILAYAS } from "@/lib/wilayas";
 import { DeliveryChoice } from "./delivery-choice";
 import { ExpressOrderSummary } from "./express-order-summary";
-import { QuantityStepper, WilayaCommuneFields } from "./express-order-fields";
+import { WilayaCommuneFields } from "./express-order-fields";
 import { useExpressOrder } from "./use-express-order";
 
 /** The section the "order now" buttons scroll to. */
@@ -13,11 +22,16 @@ export const ORDER_FORM_ID = "order";
 /**
  * Express order form: the whole purchase on the product page, no cart.
  *
- * Name, phone, wilaya, commune and home or office — the same fields the YouCan
- * shop asked for. The order goes through `place_order()`, which prices it from
- * the catalogue, checks stock and the phone, and returns the tracking token;
- * only then does the buyer see the confirmation page. A ref guards against a
- * double tap sending two orders; see `use-express-order.ts`.
+ * A black and gold card, like the brand's packaging, on the cream page: three
+ * promises, then name, phone, wilaya and commune — the four fields the YouCan
+ * shop asked for — home or office delivery with both prices, and a summary with
+ * the one gold button. `data-theme="dark"` scopes the dark tokens to the card,
+ * so the shared inputs and selects turn dark without a second set of styles.
+ *
+ * The order goes through `place_order()`, which prices it from the catalogue,
+ * checks stock and the phone, and returns the tracking token; only then does
+ * the buyer see the confirmation page. A ref guards against a double tap
+ * sending two orders; see `use-express-order.ts`.
  */
 export function ExpressOrderForm({
   product,
@@ -36,23 +50,31 @@ export function ExpressOrderForm({
   const { t } = useI18n();
   const order = useExpressOrder({ product, name, selected, onMissingVariant });
   const { fields, set } = order;
+  // The address is optional; behind a link it does not lengthen the form.
+  const [showAddress, setShowAddress] = useState(false);
+  const image = primaryImage(selected ?? undefined) ?? productImage(product);
 
   return (
     <section
       id={ORDER_FORM_ID}
-      className="scroll-mt-20 rounded-[20px] border-2 border-brand/60 bg-surface p-4 shadow-md sm:p-6"
+      data-theme="dark"
+      className="xo scroll-mt-20"
       aria-labelledby="order-title"
     >
-      <h2 id="order-title" className="font-display text-xl font-semibold">
-        {t("express.title")}
-      </h2>
-      <p className="mb-4 mt-1 text-sm text-on-surface-muted">{t("express.subtitle")}</p>
+      <header className="xo-head">
+        <h2 id="order-title" className="xo-title">
+          {t("express.title")}
+        </h2>
+        <p className="xo-sub">{t("express.subtitle")}</p>
+      </header>
+
+      <TrustRow />
 
       <form
         onSubmit={order.submit}
         onInput={order.markStarted}
         onChange={order.markStarted}
-        className="flex flex-col gap-4"
+        className="xo-form"
       >
         <Field label={t("express.fullName")} required>
           <Input
@@ -66,27 +88,15 @@ export function ExpressOrderForm({
           />
         </Field>
 
-        <Field label={t("express.phone")} error={order.phoneError} required>
-          <Input
-            value={fields.phone}
-            onChange={(e) => {
-              set.setPhone(e.target.value);
-              order.setPhoneError(null);
-            }}
-            onBlur={() =>
-              fields.phone &&
-              !isValidDzPhone(fields.phone) &&
-              order.setPhoneError(t("express.phoneInvalid"))
-            }
-            type="tel"
-            inputMode="tel"
-            dir="ltr"
-            autoComplete="tel"
-            placeholder="05 / 06 / 07 ..."
-            required
-            maxLength={20}
-          />
-        </Field>
+        <PhoneField
+          value={fields.phone}
+          error={order.phoneError}
+          onChange={(value) => {
+            set.setPhone(value);
+            order.setPhoneError(null);
+          }}
+          onInvalid={() => order.setPhoneError(t("express.phoneInvalid"))}
+        />
 
         <WilayaCommuneFields
           wilaya={fields.wilaya}
@@ -96,11 +106,6 @@ export function ExpressOrderForm({
           onCommune={set.setCommune}
         />
 
-        {fields.wilaya && order.officeFee === null && (
-          <p className="rounded-[10px] bg-surface-mid px-3 py-2 text-xs text-on-surface-muted">
-            {t("express.officeNone")}
-          </p>
-        )}
         <DeliveryChoice
           wilaya={fields.wilaya}
           homeFee={order.homeFee}
@@ -113,23 +118,31 @@ export function ExpressOrderForm({
           }}
         />
 
-        {fields.method === "home" && (
-          <Field label={t("express.address")} hint={t("express.addressHint")}>
-            <Input
-              value={fields.address}
-              onChange={(e) => set.setAddress(e.target.value)}
-              autoComplete="street-address"
-              maxLength={500}
-            />
-          </Field>
-        )}
-
-        <QuantityStepper quantity={fields.quantity} max={order.maxQty} onChange={set.setQuantity} />
+        {fields.method === "home" &&
+          (showAddress || fields.address ? (
+            <Field label={t("express.address")} hint={t("express.addressHint")}>
+              <Input
+                value={fields.address}
+                onChange={(e) => set.setAddress(e.target.value)}
+                autoComplete="street-address"
+                maxLength={500}
+                autoFocus={showAddress && !fields.address}
+              />
+            </Field>
+          ) : (
+            <button type="button" className="xo-add" onClick={() => setShowAddress(true)}>
+              <Plus size={15} aria-hidden="true" />
+              {t("express.addAddress")}
+            </button>
+          ))}
 
         <ExpressOrderSummary
           productName={name}
           variantLabel={variantLabel}
+          image={image}
           quantity={fields.quantity}
+          maxQuantity={order.maxQty}
+          onQuantity={set.setQuantity}
           unitPrice={order.unitPrice}
           deliveryFee={order.fee}
           error={order.error}
@@ -137,5 +150,70 @@ export function ExpressOrderForm({
         />
       </form>
     </section>
+  );
+}
+
+/**
+ * Algerian mobile number, typed left to right. A green tick appears as soon as
+ * it is valid; the error waits until the buyer leaves the field.
+ */
+function PhoneField({
+  value,
+  error,
+  onChange,
+  onInvalid,
+}: {
+  value: string;
+  error: string | null;
+  onChange: (value: string) => void;
+  onInvalid: () => void;
+}) {
+  const { t } = useI18n();
+  const ok = isValidDzPhone(value);
+  return (
+    <Field label={t("express.phone")} error={error} required>
+      <span className="xo-phone">
+        <Input
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          onBlur={() => value && !ok && onInvalid()}
+          type="tel"
+          inputMode="tel"
+          dir="ltr"
+          autoComplete="tel"
+          placeholder="0555 12 34 56"
+          required
+          maxLength={20}
+        />
+        {ok && <CheckCircle2 size={20} className="xo-phone-ok" aria-label={t("express.phoneOk")} />}
+      </span>
+    </Field>
+  );
+}
+
+/**
+ * Three promises, each true of this shop: cash on delivery, a confirmation call
+ * before shipping, and the number of wilayas in the owner's delivery list.
+ */
+function TrustRow() {
+  const { t } = useI18n();
+  const { data: settings } = useStoreSettings();
+  const count = settings?.delivery_wilayas?.length || WILAYAS.length;
+  const items = [
+    { icon: Banknote, label: t("home2.trust.cod") },
+    { icon: PhoneCall, label: t("express.trustConfirm") },
+    { icon: Truck, label: t("trust2.wilayas", { count }) },
+  ];
+  return (
+    <ul className="xo-trust">
+      {items.map((item) => (
+        <li key={item.label}>
+          <span className="xo-trust-icon" aria-hidden="true">
+            <item.icon size={16} />
+          </span>
+          {item.label}
+        </li>
+      ))}
+    </ul>
   );
 }

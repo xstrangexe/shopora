@@ -195,7 +195,7 @@ export function sortVariants(variants: CatalogueVariant[]): CatalogueVariant[] {
     .sort((a, b) => a.sort_order - b.sort_order || a.price - b.price);
 }
 
-function primaryImage(variant: CatalogueVariant | undefined): string | null {
+export function primaryImage(variant: CatalogueVariant | undefined): string | null {
   if (!variant) return null;
   const sorted = [...variant.variant_images].sort((a, b) => a.sort_order - b.sort_order);
   return sorted[0]?.url ?? null;
