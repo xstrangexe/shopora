@@ -13,7 +13,6 @@ import {
 import { StarRating } from "./star-rating";
 import { ProductGallery } from "./product-gallery";
 import { ModelHelp, OrderActions, StockLine, variantLabel } from "./product-purchase";
-import { TrustCard } from "./trust-card";
 import { ExpressOrderForm, ORDER_FORM_ID } from "./express-order-form";
 import { StickyOrderBar } from "./sticky-order-bar";
 import { localized } from "@/lib/i18n";
@@ -22,10 +21,10 @@ import { ColourPicker, SizePicker } from "./variant-picker";
 /**
  * Product page layout.
  *
- * Built as a landing page for ad traffic: photos, name, price, the three
- * promises, the model and colour pickers, a short description, then the express
- * order form, so a buyer on a phone reads why to buy and then how, with nothing
- * between them. Actions live in `product-purchase.tsx` and `express-order-form.tsx`;
+ * Built as a landing page for ad traffic: photos, name, price, the model and
+ * colour pickers, a short description, then the express order form, so a buyer
+ * on a phone reads why to buy and then how, with nothing between them. The
+ * three promises are in the form's own header, not above the pickers. Actions live in `product-purchase.tsx` and `express-order-form.tsx`;
  * this file holds the state they share.
  */
 export function ProductDetail({ product }: { product: CatalogueProduct }) {
@@ -105,8 +104,6 @@ export function ProductDetail({ product }: { product: CatalogueProduct }) {
           fromPrice={fromPrice}
           hasStock={selected ? selected.stock > 0 : stockable.length > 0}
         />
-
-        <TrustCard />
 
         <div ref={pickersRef} className="flex flex-col gap-5">
           <ColourPicker colours={colours} selected={choice.colour} onSelect={pickColour} />
