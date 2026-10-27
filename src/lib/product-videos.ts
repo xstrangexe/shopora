@@ -1,7 +1,7 @@
 /**
  * Short silent clips shown in a product's gallery next to its photos.
  *
- * Clips live in `public/videos` as 4:5 H.264 files under 1 MB, each with a
+ * Clips live in `public/videos` as 4:5 H.264 files of 1-3 MB, each with a
  * `.jpg` poster of the same name. They are listed here by product slug rather
  * than stored per colour, since one clip shows the product, not one variant.
  */
