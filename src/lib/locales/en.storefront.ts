@@ -85,6 +85,7 @@ export const enStorefront = {
   "store.modelHelp": "Your phone isn't listed? Message us on WhatsApp",
   "store.readMore": "Read more",
   "store.readLess": "Show less",
+  "store.showcase": "See it up close",
   "store.viewDetails": "Details",
   "store.from": "From",
   "store.sizeGuide": "Size guide",

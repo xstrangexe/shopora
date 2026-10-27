@@ -84,6 +84,7 @@ export const arStorefront = {
   "store.modelHelp": "موديل هاتفك ماكانش؟ راسلنا على واتساب",
   "store.readMore": "المزيد",
   "store.readLess": "أقل",
+  "store.showcase": "شوف الكوفر عن قرب",
   "store.viewDetails": "التفاصيل",
   "store.from": "يبدأ من",
   "store.sizeGuide": "دليل المقاسات",

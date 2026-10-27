@@ -6,9 +6,21 @@
  * than stored per colour, since one clip shows the product, not one variant.
  */
 const VIDEOS: Record<string, string[]> = {
-  "chanel-case": [1, 2, 3, 4, 5].map((n) => `/videos/chanel-${n}.mp4`),
+  "chanel-case": ["/videos/chanel-1.mp4", "/videos/chanel-3.mp4"],
   case: ["/videos/case18-1.mp4"],
 };
+
+/**
+ * Larger clips shown in their own row below the order form, uncropped 9:16 so
+ * a buyer on a phone sees the case the way it was filmed.
+ */
+const SHOWCASE: Record<string, string[]> = {
+  "chanel-case": [1, 2, 3].map((n) => `/videos/show-${n}.mp4`),
+};
+
+export function showcaseVideos(slug: string): string[] {
+  return SHOWCASE[slug] ?? [];
+}
 
 export function productVideos(slug: string): string[] {
   return VIDEOS[slug] ?? [];

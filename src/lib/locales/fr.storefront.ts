@@ -86,6 +86,7 @@ export const frStorefront = {
   "store.modelHelp": "Votre modèle n'est pas là ? Écrivez-nous sur WhatsApp",
   "store.readMore": "Voir plus",
   "store.readLess": "Voir moins",
+  "store.showcase": "Voyez la coque de près",
   "store.viewDetails": "Détails",
   "store.from": "À partir de",
   "store.sizeGuide": "Guide des tailles",

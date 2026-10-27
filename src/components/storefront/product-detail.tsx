@@ -15,6 +15,7 @@ import { StarRating } from "./star-rating";
 import { ProductGallery } from "./product-gallery";
 import { ModelHelp, OrderActions, StockLine, variantLabel } from "./product-purchase";
 import { ExpressOrderForm, ORDER_FORM_ID } from "./express-order-form";
+import { ProductShowcase } from "./product-showcase";
 import { StickyOrderBar } from "./sticky-order-bar";
 import { localized } from "@/lib/i18n";
 import { ColourPicker, SizePicker } from "./variant-picker";
@@ -130,6 +131,7 @@ export function ProductDetail({ product }: { product: CatalogueProduct }) {
               variantLabel={label === "—" ? null : label}
               onMissingVariant={showPickers}
             />
+            <ProductShowcase slug={product.slug} />
             <OrderActions name={name} selected={selected} />
             <StickyOrderBar price={selected?.price ?? fromPrice} onOrder={scrollToForm} />
           </>
