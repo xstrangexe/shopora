@@ -3,7 +3,7 @@ import { useI18n } from "@/lib/i18n-context";
 import { posterOf, showcaseVideos } from "@/lib/product-videos";
 
 /**
- * A swipeable row of full-height phone clips below the order form. Each plays
+ * Full-height phone clips stacked below the order form, one under the other. Each plays
  * while at least 60% of it is on screen and pauses once it is not, so only one
  * or two decode at a time. Visitors who prefer reduced motion get a poster and
  * the native controls instead of autoplay.
@@ -24,7 +24,7 @@ export function ProductShowcase({ slug }: { slug: string }) {
           else video.pause();
         }
       },
-      { root: el, threshold: 0.6 },
+      { threshold: 0.6 },
     );
     el.querySelectorAll("video").forEach((video) => seen.observe(video));
     return () => seen.disconnect();

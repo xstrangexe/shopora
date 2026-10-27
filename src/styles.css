@@ -743,17 +743,9 @@ button.gallery-main {
   color: #fff;
 }
 .showcase {
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: 86%;
+  display: flex;
+  flex-direction: column;
   gap: var(--s-md);
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  scrollbar-width: none;
-  padding-bottom: 2px;
-}
-.showcase::-webkit-scrollbar {
-  display: none;
 }
 .showcase-clip {
   width: 100%;
@@ -761,11 +753,11 @@ button.gallery-main {
   object-fit: cover;
   border-radius: var(--r-lg);
   background: #000;
-  scroll-snap-align: center;
 }
 @media (min-width: 1024px) {
-  .showcase {
-    grid-auto-columns: 56%;
+  .showcase-clip {
+    max-width: 360px;
+    align-self: center;
   }
 }
 .gallery-thumbs {
