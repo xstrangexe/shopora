@@ -69,7 +69,7 @@ export function ProductGallery({
           onClick={() => setOpen(active)}
           aria-label={t("store.zoom")}
         >
-          <img src={current} alt={alt} decoding="async" />
+          <img key={current} src={current} alt={alt} decoding="async" className="gallery-swap" />
         </button>
       )}
       <ImageLightbox

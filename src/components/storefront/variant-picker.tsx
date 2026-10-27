@@ -1,4 +1,5 @@
 import { useI18n } from "@/lib/i18n-context";
+import { colourLabel } from "@/lib/colour-names";
 import type { ColourOption, SizeOption } from "@/lib/variant-options";
 import { cn } from "@/lib/utils";
 
@@ -19,14 +20,14 @@ export function ColourPicker({
   selected: string | null;
   onSelect: (name: string) => void;
 }) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   if (colours.length === 0) return null;
 
   return (
     <fieldset className="flex flex-col gap-2.5">
       <legend className="mb-1 text-sm">
         <span className="text-on-surface-muted">{t("store.color")}: </span>
-        <span className="font-semibold">{selected}</span>
+        <span className="font-semibold">{colourLabel(selected, locale)}</span>
       </legend>
       <div className="flex flex-wrap gap-2.5">
         {colours.map((colour) => (
@@ -35,8 +36,8 @@ export function ColourPicker({
             type="button"
             onClick={() => onSelect(colour.name)}
             aria-pressed={colour.name === selected}
-            aria-label={colour.name}
-            title={colour.name}
+            aria-label={colourLabel(colour.name, locale)}
+            title={colourLabel(colour.name, locale)}
             className={cn("swatch", colour.name === selected && "active", !colour.inStock && "out")}
           >
             <span style={{ background: colour.hex ?? "var(--surface-high)" }} />

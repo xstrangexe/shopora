@@ -4,6 +4,7 @@ import { useI18n } from "@/lib/i18n-context";
 import { priceRange, productImage, type CatalogueProduct } from "@/lib/queries";
 import { formatDzd } from "@/lib/format";
 import { localized } from "@/lib/i18n";
+import { colourLabel } from "@/lib/colour-names";
 import { modelRange } from "@/lib/phone-models";
 
 /** The YouCan page featured the leather case; it stays the default pick. */
@@ -71,7 +72,7 @@ export function ProductSpotlight({ products }: { products: CatalogueProduct[] })
               <ul className="flex flex-wrap gap-2">
                 {colours.map((c) => (
                   <li key={c} className="rounded-full bg-surface-high px-3 py-1 text-xs">
-                    {c}
+                    {colourLabel(c, locale)}
                   </li>
                 ))}
               </ul>

@@ -1,4 +1,4 @@
-import { Loader2, Lock } from "lucide-react";
+import { Loader2, Lock, Truck } from "lucide-react";
 import { useI18n } from "@/lib/i18n-context";
 import { formatDzd } from "@/lib/format";
 import { QuantityStepper } from "./express-order-fields";
@@ -108,6 +108,11 @@ export function ExpressOrderSummary({
           t("express.submit")
         )}
       </button>
+
+      <p className="xo-delivery">
+        <Truck size={15} aria-hidden="true" />
+        {t("express.deliveryNote")}
+      </p>
 
       <p className="xo-privacy">
         <Lock size={12} aria-hidden="true" />

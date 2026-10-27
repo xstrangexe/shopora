@@ -5,6 +5,8 @@ import { formatDzd } from "@/lib/format";
 import { useStoreSettings, type CatalogueVariant } from "@/lib/queries";
 import { waLink } from "@/lib/whatsapp";
 import { saleOf } from "@/lib/sale";
+import { colourLabel } from "@/lib/colour-names";
+import type { Locale } from "@/lib/i18n";
 
 /**
  * The parts of a product page that actually sell something: stock and the
@@ -15,8 +17,8 @@ import { saleOf } from "@/lib/sale";
  * everything left there is presentation.
  */
 
-export function variantLabel(variant: CatalogueVariant): string {
-  const parts = [variant.size, variant.color_name].filter(Boolean);
+export function variantLabel(variant: CatalogueVariant, locale: Locale): string {
+  const parts = [variant.size, colourLabel(variant.color_name, locale)].filter(Boolean);
   return parts.length > 0 ? parts.join(" / ") : "—";
 }
 
@@ -83,7 +85,7 @@ export function StockLine({
  * will not fill in a form; they will send a message, and carrying the product,
  * the model and the link into it turns that hesitation into an order.
  */
-function useWhatsappHref(intro: string, name: string, selected: CatalogueVariant | null) {
+export function useWhatsappHref(intro: string, name: string, selected: CatalogueVariant | null) {
   const { locale } = useI18n();
   const { data: settings } = useStoreSettings();
 
@@ -97,7 +99,7 @@ function useWhatsappHref(intro: string, name: string, selected: CatalogueVariant
     settings?.whatsapp,
     [
       intro,
-      `${name}${selected ? ` — ${variantLabel(selected)}` : ""}`,
+      `${name}${selected ? ` — ${variantLabel(selected, locale)}` : ""}`,
       selected ? formatDzd(selected.price, locale) : "",
       pageUrl,
     ]

@@ -29,6 +29,7 @@ export const arOrder = {
   "express.feeFirst": "شوف مصاريف التوصيل قبل ما تأكد الطلب",
   "express.privacy": "معلوماتك تستعمل لمعالجة طلبك فقط",
   "express.submit": "أكد طلبي الآن",
+  "express.deliveryNote": "الدفع عند الاستلام · يوصلك خلال 1–7 أيام",
   "express.officeNoneShort": "ماكانش هنا",
   "express.trustConfirm": "تأكيد سريع بالهاتف",
   "express.addAddress": "زيد العنوان (اختياري)",

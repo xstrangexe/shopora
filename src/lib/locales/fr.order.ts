@@ -26,6 +26,7 @@ export const frOrder: Record<keyof typeof arOrder, string> = {
   "express.feeFirst": "Frais de livraison affichés avant confirmation",
   "express.privacy": "Vos informations servent uniquement à traiter votre commande",
   "express.submit": "Confirmer ma commande",
+  "express.deliveryNote": "Paiement à la livraison · livré en 1 à 7 jours",
   "express.officeNoneShort": "Indisponible ici",
   "express.trustConfirm": "Confirmation rapide par téléphone",
   "express.addAddress": "Ajouter l'adresse (facultatif)",

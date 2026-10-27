@@ -13,7 +13,13 @@ import {
 import { productVideos } from "@/lib/product-videos";
 import { StarRating } from "./star-rating";
 import { ProductGallery } from "./product-gallery";
-import { ModelHelp, OrderActions, StockLine, variantLabel } from "./product-purchase";
+import {
+  ModelHelp,
+  OrderActions,
+  StockLine,
+  useWhatsappHref,
+  variantLabel,
+} from "./product-purchase";
 import { ExpressOrderForm, ORDER_FORM_ID } from "./express-order-form";
 import { ProductShowcase } from "./product-showcase";
 import { StickyOrderBar } from "./sticky-order-bar";
@@ -76,13 +82,14 @@ export function ProductDetail({ product }: { product: CatalogueProduct }) {
   const showPickers = () =>
     pickersRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
   const fromPrice = Math.min(...variants.map((v) => v.price));
-  const label = selected ? variantLabel(selected) : null;
+  const name = localized(locale, product.name, product.name_fr);
+  const waHref = useWhatsappHref(t("store.waOrderIntro"), name, selected);
+  const label = selected ? variantLabel(selected, locale) : null;
 
   const rating = reviews ? averageRating(reviews) : null;
   const description = product.description
     ? localized(locale, product.description, product.description_fr)
     : product.description_fr;
-  const name = localized(locale, product.name, product.name_fr);
 
   return (
     <div className="grid grid-cols-[minmax(0,1fr)] gap-8 lg:grid-cols-2 lg:gap-12">
@@ -131,9 +138,13 @@ export function ProductDetail({ product }: { product: CatalogueProduct }) {
               variantLabel={label === "—" ? null : label}
               onMissingVariant={showPickers}
             />
-            <ProductShowcase slug={product.slug} />
             <OrderActions name={name} selected={selected} />
-            <StickyOrderBar price={selected?.price ?? fromPrice} onOrder={scrollToForm} />
+            <ProductShowcase slug={product.slug} />
+            <StickyOrderBar
+              price={selected?.price ?? fromPrice}
+              onOrder={scrollToForm}
+              whatsappHref={waHref}
+            />
           </>
         )}
       </div>
