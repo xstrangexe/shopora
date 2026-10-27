@@ -4,4 +4,4 @@ Disallow: /admin
 Disallow: /cart
 Disallow: /checkout
 Disallow: /*?*sort=
-Sitemap: https://shopora-kappa.vercel.app/sitemap.xml
+Sitemap: https://shoporadz.top/sitemap.xml
