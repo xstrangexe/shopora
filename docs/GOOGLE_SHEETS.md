@@ -78,32 +78,30 @@ const SHEET_NAME = "Orders";
 // /d/ and /edit.
 const SPREADSHEET_ID = "PASTE_YOUR_SPREADSHEET_ID_HERE";
 
-// Columns kept as plain text (A = 1): created_at, so it reads exactly as written
-// below, and phone, so Sheets keeps its leading 0.
-const TEXT_COLUMNS = [4, 6];
+// Columns kept as plain text (A = 1): the order date, so it reads exactly as
+// written below, and the phone number, so Sheets keeps its leading 0.
+const TEXT_COLUMNS = [2, 4];
 
 // The shop's time zone, used for the created_at column (Algeria, GMT+1).
 const TIME_ZONE = "Africa/Algiers";
 
+// The header row, in the order the columns appear. The order id must stay first:
+// it is how an order's row is found again when its status changes.
 const COLUMNS = [
-  "order_id",
-  "event",
-  "status",
-  "created_at",
-  "customer_name",
-  "phone",
-  "wilaya",
-  "commune",
-  "address",
-  "delivery",
-  "office",
-  "note",
-  "items",
-  "subtotal",
-  "delivery_fee",
-  "total",
-  "tracking_number",
-  "tracking_url",
+  "Order ID",
+  "Order date",
+  "Full name",
+  "Phone Number",
+  "Items",
+  "Variants",
+  "Wilaya",
+  "Baladiya",
+  "Full Adress",
+  "Delivery",
+  "Office",
+  "Total Price",
+  "Delivery Fee",
+  "Subtotal",
 ];
 
 function doPost(e) {
@@ -197,33 +195,30 @@ function sheetFor() {
 
 function rowFrom(payload) {
   const order = payload.order;
-  const items = (payload.items || [])
-    .map(function (i) {
-      return (
-        i.quantity + " x " + i.product_name + (i.variant_label ? " (" + i.variant_label + ")" : "")
-      );
-    })
-    .join(" | ");
+  const items = payload.items || [];
+  const list = function (pick) {
+    return items.map(pick).join(" | ");
+  };
 
   return [
     order.id,
-    payload.event,
-    order.status,
     formatTime(order.created_at),
     order.customer_name,
     order.phone,
+    list(function (i) {
+      return i.quantity + " x " + i.product_name;
+    }),
+    list(function (i) {
+      return i.variant_label || "";
+    }),
     order.wilaya,
     order.commune,
     order.address,
     deliveryLabel(order),
     order.delivery_method === "stopdesk" ? order.stopdesk_name || "" : "",
-    order.note,
-    items,
-    order.subtotal,
-    order.delivery_fee,
     order.total,
-    order.tracking_number,
-    order.tracking_url,
+    order.delivery_fee,
+    order.subtotal,
   ];
 }
 
