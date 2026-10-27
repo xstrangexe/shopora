@@ -26,7 +26,7 @@ export const enOrder: Record<keyof typeof arOrder, string> = {
   "express.feeFirst": "See the delivery fee before you confirm",
   "express.privacy": "Your details are used only to process your order",
   "express.submit": "Confirm my order",
-  "express.deliveryNote": "Cash on delivery · delivered in 1–7 days",
+  "express.deliveryNote": "Cash on delivery · delivered in 1–3 days",
   "express.officeNoneShort": "Not available here",
   "express.trustConfirm": "Quick confirmation call",
   "express.addAddress": "Add your address (optional)",
