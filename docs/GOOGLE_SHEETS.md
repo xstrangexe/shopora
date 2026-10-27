@@ -78,8 +78,12 @@ const SHEET_NAME = "Orders";
 // /d/ and /edit.
 const SPREADSHEET_ID = "PASTE_YOUR_SPREADSHEET_ID_HERE";
 
-// Column number of "phone" in COLUMNS below (A = 1).
-const PHONE_COLUMN = 6;
+// Columns kept as plain text (A = 1): created_at, so it reads exactly as written
+// below, and phone, so Sheets keeps its leading 0.
+const TEXT_COLUMNS = [4, 6];
+
+// The shop's time zone, used for the created_at column (Algeria, GMT+1).
+const TIME_ZONE = "Africa/Algiers";
 
 const COLUMNS = [
   "order_id",
@@ -122,8 +126,11 @@ function doPost(e) {
   const at = ids.indexOf(id);
   const target = at === -1 ? sheet.getLastRow() + 1 : at + 2;
 
-  // The phone column is written as text, otherwise Sheets drops the leading 0.
-  sheet.getRange(target, PHONE_COLUMN).setNumberFormat("@");
+  // Text columns are formatted before writing, otherwise Sheets turns the date
+  // into its own format and drops the 0 at the start of a phone number.
+  TEXT_COLUMNS.forEach(function (column) {
+    sheet.getRange(target, column).setNumberFormat("@");
+  });
   sheet.getRange(target, 1, 1, row.length).setValues([row]);
 
   return respond({ ok: true, event: payload.event });
@@ -189,7 +196,7 @@ function rowFrom(payload) {
     order.id,
     payload.event,
     order.status,
-    order.created_at,
+    formatTime(order.created_at),
     order.customer_name,
     order.phone,
     order.wilaya,
@@ -210,6 +217,12 @@ function rowFrom(payload) {
 /** Where the parcel goes: the customer's door, or a ZR Express pickup office. */
 function deliveryLabel(order) {
   return order.delivery_method === "stopdesk" ? "مكتب ZR Express" : "توصيل للمنزل";
+}
+
+/** 2026-10-27T19:23:24+00:00 -> "2026-10-27 20:23:24" in Algeria time. */
+function formatTime(iso) {
+  if (!iso) return "";
+  return Utilities.formatDate(new Date(iso), TIME_ZONE, "yyyy-MM-dd HH:mm:ss");
 }
 
 function respond(payload) {
