@@ -23,7 +23,8 @@ own signature, so revoking one does not affect the others.
 2. In the sheet, open **Extensions → Apps Script**.
 3. Delete whatever is in `Code.gs` and paste the script from
    [Step 5](#step-5-the-script) below.
-4. Leave `SECRET` as it is for now. You will paste the real value in Step 3.
+4. Leave `SECRET` as it is for now. You will paste the real value in Step 3. Replace
+   `SPREADSHEET_ID` with the long id in the sheet's address (between `/d/` and `/edit`).
 
 ## Step 2. Deploy it as a web app
 
@@ -73,6 +74,13 @@ const SECRET = "PASTE_YOUR_SECRET_HERE";
 // 2. The tab orders are written to. Created if it does not exist.
 const SHEET_NAME = "Orders";
 
+// 3. The spreadsheet to write to: the long id in the sheet's address, between
+// /d/ and /edit.
+const SPREADSHEET_ID = "PASTE_YOUR_SPREADSHEET_ID_HERE";
+
+// Column number of "phone" in COLUMNS below (A = 1).
+const PHONE_COLUMN = 6;
+
 const COLUMNS = [
   "order_id",
   "event",
@@ -93,53 +101,69 @@ const COLUMNS = [
 ];
 
 function doPost(e) {
-  const body = e.postData.contents;
-
-  // The shop cannot put the signature in a header, because Apps Script does not
-  // expose request headers at all. It arrives as a query parameter instead.
-  if (!verify(body, e.parameter.sig)) {
+  const text = verifiedText(e.postData.contents, e.parameter.sig);
+  if (text === null) {
     return respond({ ok: false, error: "bad signature" });
   }
 
-  const payload = JSON.parse(body);
+  const payload = JSON.parse(text);
   const sheet = sheetFor();
   const row = rowFrom(payload);
   const id = payload.order.id;
 
   const ids = sheet
-    .getRange(2, 1, Math.max(sheet.getLastRow() - 1, 0), 1)
+    .getRange(2, 1, Math.max(sheet.getLastRow() - 1, 1), 1)
     .getValues()
     .map(function (r) {
       return r[0];
     });
   const at = ids.indexOf(id);
+  const target = at === -1 ? sheet.getLastRow() + 1 : at + 2;
 
-  if (at === -1) {
-    sheet.appendRow(row);
-  } else {
-    sheet.getRange(at + 2, 1, 1, row.length).setValues([row]);
-  }
+  // The phone column is written as text, otherwise Sheets drops the leading 0.
+  sheet.getRange(target, PHONE_COLUMN).setNumberFormat("@");
+  sheet.getRange(target, 1, 1, row.length).setValues([row]);
 
   return respond({ ok: true, event: payload.event });
 }
 
-/** HMAC-SHA256 over the raw body, hex encoded. Must match the database exactly. */
-function verify(body, signature) {
-  if (!signature) return false;
-  const raw = Utilities.computeHmacSha256Signature(body, SECRET);
-  const expected = raw
+/**
+ * The request body as text, or null when the signature does not match.
+ *
+ * The shop signs the UTF-8 bytes of the body. Apps Script sometimes hands the
+ * body over decoded as Latin-1, which turns Arabic into other characters and
+ * breaks the signature, so both readings are tried and the text is rebuilt from
+ * the bytes the shop actually signed.
+ */
+function verifiedText(raw, signature) {
+  if (!signature) return null;
+  if (verify(Utilities.newBlob(raw).getBytes(), signature)) return raw;
+
+  const latin1 = [];
+  for (let i = 0; i < raw.length; i++) {
+    const code = raw.charCodeAt(i);
+    if (code > 255) return null;
+    latin1.push(code > 127 ? code - 256 : code);
+  }
+  if (verify(latin1, signature)) {
+    return Utilities.newBlob(latin1).getDataAsString("UTF-8");
+  }
+  return null;
+}
+
+/** HMAC-SHA256 over the raw bytes, hex encoded. Must match the database exactly. */
+function verify(bytes, signature) {
+  const key = Utilities.newBlob(SECRET).getBytes();
+  const expected = Utilities.computeHmacSha256Signature(bytes, key)
     .map(function (b) {
       return ((b & 0xff) + 0x100).toString(16).slice(1);
     })
     .join("");
-  // A plain comparison, not a constant-time one. Apps Script has no primitive for
-  // that, and the attack it defends against needs thousands of timed requests
-  // against an endpoint that logs nothing, which is not the threat here.
   return expected === signature;
 }
 
 function sheetFor() {
-  const book = SpreadsheetApp.getActiveSpreadsheet();
+  const book = SpreadsheetApp.openById(SPREADSHEET_ID);
   let sheet = book.getSheetByName(SHEET_NAME);
   if (!sheet) sheet = book.insertSheet(SHEET_NAME);
   if (sheet.getLastRow() === 0) {

@@ -1841,9 +1841,18 @@ begin
 end;
 $$;
 
+-- A new order is exported when its transaction commits, not when the order row
+-- is inserted: place_order() inserts the items and the totals are recomputed
+-- after the row exists, so an insert-time export carried no items and a total of
+-- zero. Status changes are exported straight away.
 drop trigger if exists order_export_enqueue on public.orders;
+drop trigger if exists order_export_enqueue_created on public.orders;
 create trigger order_export_enqueue
-  after insert or update of status on public.orders
+  after update of status on public.orders
+  for each row execute function public.enqueue_order_export();
+create constraint trigger order_export_enqueue_created
+  after insert on public.orders
+  deferrable initially deferred
   for each row execute function public.enqueue_order_export();
 
 alter table public.order_export_targets enable row level security;
