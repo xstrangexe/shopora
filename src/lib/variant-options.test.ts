@@ -4,6 +4,7 @@ import {
   colourOptions,
   findVariant,
   imagesForColour,
+  colourAfterModelChange,
   coloursForModel,
   initialChoice,
   modelOptions,
@@ -44,6 +45,12 @@ describe("fixed model list", () => {
       ["L", true],
       ["XL", false],
     ]);
+  });
+
+  it("keeps, auto-picks or clears the colour when the model changes", () => {
+    expect(colourAfterModelChange(polo, "M", "Noir")).toBe("Noir");
+    expect(colourAfterModelChange(polo, "L", "Noir")).toBe("Blanc");
+    expect(colourAfterModelChange(polo, "S", "Noir")).toBeNull();
   });
 
   it("marks the colours a model does not come in", () => {

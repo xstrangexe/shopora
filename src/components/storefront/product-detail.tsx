@@ -2,16 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { trackViewContent } from "@/lib/pixels";
 import { useI18n } from "@/lib/i18n-context";
 import { averageRating, sortVariants, useReviews, type CatalogueProduct } from "@/lib/queries";
-import {
-  colourOptions,
-  coloursForModel,
-  findVariant,
-  imagesForColour,
-  initialChoice,
-  modelOptions,
-  sizeAfterColourChange,
-} from "@/lib/variant-options";
-import { productVideos } from "@/lib/product-videos";
+import { useVariantChoice } from "./use-variant-choice";
 import { StarRating } from "./star-rating";
 import { ProductGallery } from "./product-gallery";
 import {
@@ -49,38 +40,19 @@ export function ProductDetail({ product }: { product: CatalogueProduct }) {
     trackViewContent({ id: product.id, name: product.name, price, quantity: 1 });
   }, [product.id]); // eslint-disable-line react-hooks/exhaustive-deps -- once per product
 
-  const [choice, setChoice] = useState(() => initialChoice(variants));
-  const [activeImage, setActiveImage] = useState(0);
-
-  const colours = colourOptions(variants);
-  // Every model stays listed; the ones the chosen colour lacks are crossed out.
-  const sizes = modelOptions(variants, colours.length > 0 ? choice.colour : null);
-  // No variant until every option shown is chosen: `findVariant` treats a null
-  // size as "any size", which would quietly order the first model in the list.
-  const choiceComplete =
-    (colours.length === 0 || choice.colour !== null) &&
-    (sizes.length === 0 || choice.size !== null);
-  const selected = choiceComplete ? findVariant(variants, choice.colour, choice.size) : null;
-  // A colour and model that do not exist together (or are out of stock).
-  const unavailable = choiceComplete && (!selected || selected.stock <= 0);
-  // The gallery follows the colour. With no colour photos, fall back to all.
-  const colourImages = imagesForColour(variants, choice.colour);
-  const photos = colourImages.length > 0 ? colourImages : imagesForColour(variants, null);
-  // The first clip opens the gallery; the rest follow the photos. Picking a
-  // colour jumps to its first photo, not back to the clip.
-  const videos = productVideos(product.slug);
-  const lead = Math.min(videos.length, 1);
-  const images = [...videos.slice(0, lead), ...photos, ...videos.slice(lead)];
-
-  const pickColour = (colour: string) => {
-    // The model the buyer picked is kept, even if this colour lacks it: they
-    // then see "unavailable" rather than their phone silently unselected.
-    setChoice({ colour, size: choice.size ?? sizeAfterColourChange(variants, colour, null) });
-    setActiveImage(lead);
-  };
-  const pickSize = (size: string) => {
-    setChoice((current) => ({ ...current, size }));
-  };
+  const {
+    sizes,
+    modelFirst,
+    choice,
+    colourChoices,
+    selected,
+    unavailable,
+    images,
+    activeImage,
+    setActiveImage,
+    pickColour,
+    pickSize,
+  } = useVariantChoice(variants, product.slug);
 
   const pickersRef = useRef<HTMLDivElement>(null);
   const scrollToForm = () =>
@@ -127,12 +99,17 @@ export function ProductDetail({ product }: { product: CatalogueProduct }) {
         />
 
         <div ref={pickersRef} className="flex flex-col gap-5">
-          <ColourPicker
-            colours={coloursForModel(colours, variants, choice.size)}
-            selected={choice.colour}
-            onSelect={pickColour}
-          />
           <SizePicker sizes={sizes} selected={choice.size} onSelect={pickSize} />
+          {modelFirst && choice.size === null ? (
+            <p className="text-sm text-on-surface-muted">{t("store.pickModelFirst")}</p>
+          ) : (
+            <ColourPicker
+              colours={colourChoices}
+              selected={choice.colour}
+              onSelect={pickColour}
+              step={modelFirst ? "2" : undefined}
+            />
+          )}
           {unavailable && (
             <p role="status" className="combo-off">
               <strong>{t("store.unavailableNow")}</strong>

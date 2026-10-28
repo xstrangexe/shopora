@@ -4,21 +4,26 @@ import type { ColourOption, SizeOption } from "@/lib/variant-options";
 import { cn } from "@/lib/utils";
 
 /**
- * Colour, then size. Two short rows instead of one chip per colour × size,
- * which on a real catalogue was over a hundred chips for one polo.
+ * The buyer's two choices, phone model first, then colour.
  *
- * An out-of-stock option stays visible and selectable for colour (so the buyer
- * can still see the photos) but is crossed out; an out-of-stock size cannot be
- * picked, because there is nothing to add to the cart.
+ * For a phone case the model decides everything: a colour is only worth
+ * showing once we know it exists for the buyer's phone. So the colours appear
+ * after the model is picked, each with its name, and a colour this model does
+ * not come in is greyed, crossed out and cannot be picked, with
+ * "currently unavailable" under its name. A product without models shows its
+ * colours straight away.
  */
 export function ColourPicker({
   colours,
   selected,
   onSelect,
+  step,
 }: {
   colours: ColourOption[];
   selected: string | null;
   onSelect: (name: string) => void;
+  /** "2" when the model was picked first, so the heading reads as a step. */
+  step?: string;
 }) {
   const { t, locale } = useI18n();
   if (colours.length === 0) return null;
@@ -26,7 +31,9 @@ export function ColourPicker({
   return (
     <fieldset className="flex flex-col gap-2.5">
       <legend className="mb-1 text-sm">
-        <span className="text-on-surface-muted">{t("store.color")}: </span>
+        <span className="text-on-surface-muted">
+          {step ? t("store.stepColour", { step }) : t("store.color")}:{" "}
+        </span>
         <span className="font-semibold">{colourLabel(selected, locale)}</span>
       </legend>
       <div className="flex flex-wrap gap-2.5">
@@ -35,12 +42,19 @@ export function ColourPicker({
             key={colour.name}
             type="button"
             onClick={() => onSelect(colour.name)}
+            disabled={!colour.inStock}
             aria-pressed={colour.name === selected}
-            aria-label={colourLabel(colour.name, locale)}
-            title={colourLabel(colour.name, locale)}
-            className={cn("swatch", colour.name === selected && "active", !colour.inStock && "out")}
+            className={cn("colour-chip", colour.name === selected && "active")}
           >
-            <span style={{ background: colour.hex ?? "var(--surface-high)" }} />
+            <span
+              className="colour-dot"
+              style={{ background: colour.hex ?? "var(--surface-high)" }}
+              aria-hidden="true"
+            />
+            <span className="flex flex-col items-start leading-tight">
+              <span className="colour-name">{colourLabel(colour.name, locale)}</span>
+              {!colour.inStock && <span className="colour-off">{t("store.unavailableNow")}</span>}
+            </span>
           </button>
         ))}
       </div>
@@ -63,8 +77,10 @@ export function SizePicker({
   return (
     <fieldset className="flex flex-col gap-2.5">
       <legend className="mb-1 text-sm">
-        <span className="text-on-surface-muted">{t("store.size")}: </span>
-        <span className="font-semibold">{selected}</span>
+        <span className="text-on-surface-muted">{t("store.stepModel")}: </span>
+        <span className="font-semibold" dir="auto">
+          {selected}
+        </span>
       </legend>
       <div className="flex flex-wrap gap-2">
         {sizes.map((size) => (
@@ -72,12 +88,12 @@ export function SizePicker({
             key={size.name}
             type="button"
             onClick={() => onSelect(size.name)}
+            // A model with nothing left in any colour cannot be picked.
+            disabled={!size.inStock}
             aria-pressed={size.name === selected}
             // "13 PRO MAX" inside the Arabic page otherwise reads "PRO MAX 13".
             dir="auto"
-            // Not disabled: a model the colour lacks stays pickable, greyed and
-            // crossed out, and picking it shows "unavailable" instead of nothing.
-            className={cn("size-chip", size.name === selected && "active", !size.inStock && "out")}
+            className={cn("size-chip", size.name === selected && "active")}
           >
             {size.name}
           </button>

@@ -1733,6 +1733,51 @@ button.gallery-main {
   }
 }
 
+/* Colour choices with their names (variant-picker.tsx). */
+.colour-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 6px 14px 6px 10px;
+  border: 1.5px solid var(--outline);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--on-surface);
+  cursor: pointer;
+  transition: border-color var(--dur-fast);
+}
+.colour-chip:hover:not(:disabled) {
+  border-color: var(--on-surface);
+}
+.colour-chip.active {
+  border-color: var(--primary-solid);
+  box-shadow: 0 0 0 2px var(--primary-solid) inset;
+}
+.colour-dot {
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+  border-radius: 999px;
+  border: 1px solid rgb(0 0 0 / 0.15);
+}
+.colour-name {
+  font-size: 14px;
+  font-weight: 600;
+}
+.colour-chip:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+.colour-chip:disabled .colour-name {
+  text-decoration: line-through;
+}
+.colour-off {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--error);
+}
+
 /* A colour and model that do not exist together (product-detail.tsx). */
 .combo-off {
   display: flex;

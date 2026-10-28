@@ -77,6 +77,9 @@ export const frStorefront = {
   "store.empty.body": "Ajoutez un premier produit depuis le tableau de bord.",
   "store.productCount": "{count} produit(s)",
   "store.outOfStock": "Rupture de stock",
+  "store.stepModel": "1. Choisissez votre modèle",
+  "store.stepColour": "{step}. Choisissez la couleur",
+  "store.pickModelFirst": "Choisissez d'abord votre modèle pour voir les couleurs disponibles.",
   "store.unavailableNow": "Indisponible pour le moment",
   "store.unavailableHint":
     "Cette couleur n'existe pas pour ce modèle. Choisissez une autre couleur ou un autre modèle.",

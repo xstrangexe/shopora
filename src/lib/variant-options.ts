@@ -127,6 +127,27 @@ export function coloursForModel(
   }));
 }
 
+/**
+ * The colour to keep once the buyer picks a model: theirs if this model comes in
+ * it, the only one if the model comes in a single colour, otherwise none, so
+ * the buyer picks again from what actually exists.
+ */
+export function colourAfterModelChange(
+  variants: CatalogueVariant[],
+  size: string,
+  colour: string | null,
+): string | null {
+  const available = [
+    ...new Set(
+      variants
+        .filter((v) => v.size === size && v.stock > 0 && v.color_name)
+        .map((v) => v.color_name as string),
+    ),
+  ];
+  if (colour !== null && available.includes(colour)) return colour;
+  return available.length === 1 ? available[0] : null;
+}
+
 /** Images for one colour, de-duplicated. Every size of a colour shares photos. */
 export function imagesForColour(variants: CatalogueVariant[], colour: string | null): string[] {
   const urls: string[] = [];
