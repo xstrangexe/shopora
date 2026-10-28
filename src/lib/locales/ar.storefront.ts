@@ -75,6 +75,8 @@ export const arStorefront = {
   "store.empty.body": "أضف أول منتج من لوحة التحكم ليظهر هنا.",
   "store.productCount": "{count} منتج",
   "store.outOfStock": "نفدت الكمية",
+  "store.unavailableNow": "غير متوفر حاليا",
+  "store.unavailableHint": "هذا اللون غير متوفر لهذا الموديل. اختر لوناً آخر أو موديلاً آخر.",
   "store.inStock": "متوفر",
   "store.lowStock": "آخر {count} قطع",
   "store.addToCart": "أضف إلى السلة",

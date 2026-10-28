@@ -72,11 +72,12 @@ export function SizePicker({
             key={size.name}
             type="button"
             onClick={() => onSelect(size.name)}
-            disabled={!size.inStock}
             aria-pressed={size.name === selected}
             // "13 PRO MAX" inside the Arabic page otherwise reads "PRO MAX 13".
             dir="auto"
-            className={cn("size-chip", size.name === selected && "active")}
+            // Not disabled: a model the colour lacks stays pickable, greyed and
+            // crossed out, and picking it shows "unavailable" instead of nothing.
+            className={cn("size-chip", size.name === selected && "active", !size.inStock && "out")}
           >
             {size.name}
           </button>

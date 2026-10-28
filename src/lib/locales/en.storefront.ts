@@ -76,6 +76,9 @@ export const enStorefront = {
   "store.empty.body": "Add your first product from the dashboard and it appears here.",
   "store.productCount": "{count} product(s)",
   "store.outOfStock": "Out of stock",
+  "store.unavailableNow": "Currently unavailable",
+  "store.unavailableHint":
+    "This colour isn't available for this model. Choose another colour or model.",
   "store.inStock": "In stock",
   "store.lowStock": "Only {count} left",
   "store.addToCart": "Add to cart",

@@ -4,7 +4,9 @@ import {
   colourOptions,
   findVariant,
   imagesForColour,
+  coloursForModel,
   initialChoice,
+  modelOptions,
   sizeAfterColourChange,
   sizeOptions,
 } from "./variant-options";
@@ -33,6 +35,25 @@ const polo = [
   v("Blanc", "M", 0, ["blanc-1"]),
   v("Blanc", "L", 3, ["blanc-1"]),
 ];
+
+describe("fixed model list", () => {
+  it("keeps every model and marks the ones the colour lacks", () => {
+    expect(modelOptions(polo, "Blanc").map((s) => [s.name, s.inStock])).toEqual([
+      ["S", false],
+      ["M", false],
+      ["L", true],
+      ["XL", false],
+    ]);
+  });
+
+  it("marks the colours a model does not come in", () => {
+    const marked = coloursForModel(colourOptions(polo), polo, "L");
+    expect(marked.map((c) => [c.name, c.inStock])).toEqual([
+      ["Noir", false],
+      ["Blanc", true],
+    ]);
+  });
+});
 
 describe("variant options", () => {
   it("lists each colour once, in stock if any size is", () => {

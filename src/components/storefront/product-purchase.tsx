@@ -26,11 +26,14 @@ export function StockLine({
   selected,
   fromPrice,
   hasStock,
+  outLabel,
 }: {
   selected: CatalogueVariant | null;
   /** Shown until a model is picked, so the price is never missing from the page. */
   fromPrice: number;
   hasStock: boolean;
+  /** Replaces "out of stock", e.g. for a colour and model that do not exist together. */
+  outLabel?: string;
 }) {
   const { t, locale } = useI18n();
   const low = selected !== null && selected.stock > 0 && selected.stock <= 3;
@@ -66,7 +69,7 @@ export function StockLine({
           </span>
         ) : (
           <span className="inline-flex items-center gap-1.5 rounded-full bg-error/12 px-3 py-1 text-error">
-            {t("store.outOfStock")}
+            {outLabel ?? t("store.outOfStock")}
           </span>
         )}
         {low && selected && (

@@ -97,6 +97,36 @@ export function sizeAfterColourChange(
   return sizes.length === 1 ? sizes[0].name : null;
 }
 
+/**
+ * Every model the product comes in, always in the same list, each marked by
+ * whether the chosen colour has it in stock.
+ *
+ * The list does not shrink when the colour changes: a buyer who picked their
+ * phone first keeps seeing it, greyed out in a colour that does not come in it,
+ * instead of watching it vanish. Picking it anyway shows "unavailable".
+ */
+export function modelOptions(variants: CatalogueVariant[], colour: string | null): SizeOption[] {
+  const all = sizeOptions(variants, null);
+  if (colour === null) return all;
+  return all.map((size) => ({
+    name: size.name,
+    inStock: variants.some((v) => v.size === size.name && v.color_name === colour && v.stock > 0),
+  }));
+}
+
+/** The colours, each marked by whether it comes in the chosen model. */
+export function coloursForModel(
+  colours: ColourOption[],
+  variants: CatalogueVariant[],
+  size: string | null,
+): ColourOption[] {
+  if (size === null) return colours;
+  return colours.map((colour) => ({
+    ...colour,
+    inStock: variants.some((v) => v.color_name === colour.name && v.size === size && v.stock > 0),
+  }));
+}
+
 /** Images for one colour, de-duplicated. Every size of a colour shares photos. */
 export function imagesForColour(variants: CatalogueVariant[], colour: string | null): string[] {
   const urls: string[] = [];

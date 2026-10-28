@@ -832,11 +832,20 @@ button.gallery-main {
   background: var(--primary-solid);
   color: var(--on-primary);
 }
-.size-chip:disabled {
+.size-chip:disabled,
+.size-chip.out {
   color: var(--on-surface-muted);
   text-decoration: line-through;
-  cursor: not-allowed;
   opacity: 0.55;
+}
+.size-chip:disabled {
+  cursor: not-allowed;
+}
+.size-chip.out.active {
+  opacity: 1;
+  border-color: var(--error, #b42318);
+  background: transparent;
+  color: var(--error, #b42318);
 }
 .gallery-thumb {
   aspect-ratio: 4 / 5;
@@ -1722,6 +1731,22 @@ button.gallery-main {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+/* A colour and model that do not exist together (product-detail.tsx). */
+.combo-off {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 14px;
+  border: 1px solid color-mix(in srgb, var(--error) 40%, transparent);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--error) 8%, transparent);
+  color: var(--error);
+  font-size: 13px;
+}
+.combo-off strong {
+  font-size: 15px;
 }
 
 /* Quick questions under a product (product-faq.tsx). */

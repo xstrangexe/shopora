@@ -4,11 +4,12 @@ import { useI18n } from "@/lib/i18n-context";
 import { averageRating, sortVariants, useReviews, type CatalogueProduct } from "@/lib/queries";
 import {
   colourOptions,
+  coloursForModel,
   findVariant,
   imagesForColour,
   initialChoice,
+  modelOptions,
   sizeAfterColourChange,
-  sizeOptions,
 } from "@/lib/variant-options";
 import { productVideos } from "@/lib/product-videos";
 import { StarRating } from "./star-rating";
@@ -52,13 +53,16 @@ export function ProductDetail({ product }: { product: CatalogueProduct }) {
   const [activeImage, setActiveImage] = useState(0);
 
   const colours = colourOptions(variants);
-  const sizes = sizeOptions(variants, colours.length > 0 ? choice.colour : null);
+  // Every model stays listed; the ones the chosen colour lacks are crossed out.
+  const sizes = modelOptions(variants, colours.length > 0 ? choice.colour : null);
   // No variant until every option shown is chosen: `findVariant` treats a null
   // size as "any size", which would quietly order the first model in the list.
   const choiceComplete =
     (colours.length === 0 || choice.colour !== null) &&
     (sizes.length === 0 || choice.size !== null);
   const selected = choiceComplete ? findVariant(variants, choice.colour, choice.size) : null;
+  // A colour and model that do not exist together (or are out of stock).
+  const unavailable = choiceComplete && (!selected || selected.stock <= 0);
   // The gallery follows the colour. With no colour photos, fall back to all.
   const colourImages = imagesForColour(variants, choice.colour);
   const photos = colourImages.length > 0 ? colourImages : imagesForColour(variants, null);
@@ -69,7 +73,9 @@ export function ProductDetail({ product }: { product: CatalogueProduct }) {
   const images = [...videos.slice(0, lead), ...photos, ...videos.slice(lead)];
 
   const pickColour = (colour: string) => {
-    setChoice({ colour, size: sizeAfterColourChange(variants, colour, choice.size) });
+    // The model the buyer picked is kept, even if this colour lacks it: they
+    // then see "unavailable" rather than their phone silently unselected.
+    setChoice({ colour, size: choice.size ?? sizeAfterColourChange(variants, colour, null) });
     setActiveImage(lead);
   };
   const pickSize = (size: string) => {
@@ -116,12 +122,23 @@ export function ProductDetail({ product }: { product: CatalogueProduct }) {
         <StockLine
           selected={selected}
           fromPrice={fromPrice}
-          hasStock={selected ? selected.stock > 0 : stockable.length > 0}
+          hasStock={!unavailable && (selected ? selected.stock > 0 : stockable.length > 0)}
+          outLabel={unavailable ? t("store.unavailableNow") : undefined}
         />
 
         <div ref={pickersRef} className="flex flex-col gap-5">
-          <ColourPicker colours={colours} selected={choice.colour} onSelect={pickColour} />
+          <ColourPicker
+            colours={coloursForModel(colours, variants, choice.size)}
+            selected={choice.colour}
+            onSelect={pickColour}
+          />
           <SizePicker sizes={sizes} selected={choice.size} onSelect={pickSize} />
+          {unavailable && (
+            <p role="status" className="combo-off">
+              <strong>{t("store.unavailableNow")}</strong>
+              <span>{t("store.unavailableHint")}</span>
+            </p>
+          )}
           {sizes.length > 0 && <ModelHelp name={name} />}
         </div>
 
