@@ -41,7 +41,7 @@ events are sent yet; the event IDs are ready for deduplication if they are added
 | Variable | Where | Purpose |
 |---|---|---|
 | `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`, `VITE_SUPABASE_PROJECT_ID` | Vercel + `.env` | Database (publishable key only) |
-| `VITE_SITE_URL` | Vercel + `.env` | Canonical and share-preview links; set to the main address |
+| `VITE_SITE_URL` | no longer read | The main address (https://shoporadz.top) is fixed in `src/lib/site-url.ts` |
 | `NITRO_PRESET=cloudflare_module` | only when building the Cloudflare backup | Build target |
 
 No database migration is needed for these changes.
@@ -51,5 +51,5 @@ No database migration is needed for these changes.
 - `/sitemap.xml` is generated per request from published products, categories
   and information pages; `robots.txt` points to it.
 - Product pages set a title with the price, description, `og:image` (first
-  photo), `og:url` and a canonical link to `VITE_SITE_URL`.
+  photo), `og:url` and a canonical link to the address in `src/lib/site-url.ts`.
 - Product URLs are unchanged (`/product/<slug>`), so existing ad links work.
