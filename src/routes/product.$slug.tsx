@@ -3,6 +3,7 @@ import { StoreLayout } from "@/components/storefront/store-layout";
 import { ProductDetail } from "@/components/storefront/product-detail";
 import { SizeGuide } from "@/components/storefront/size-guide";
 import { ReviewsSection } from "@/components/storefront/reviews";
+import { ProductFaq } from "@/components/storefront/product-faq";
 import { ErrorState } from "@/components/ui/feedback";
 import { productImage, productQuery, reviewsQuery, useProduct } from "@/lib/queries";
 import { formatDzd } from "@/lib/format";
@@ -78,6 +79,8 @@ function ProductPage() {
         ) : (
           <ProductDetail product={current} />
         )}
+
+        <ProductFaq />
 
         <SizeGuide productId={current.id} />
 

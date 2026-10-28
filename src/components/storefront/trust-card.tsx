@@ -5,7 +5,7 @@ import { WILAYAS } from "@/lib/wilayas";
 
 /**
  * Three facts the shop keeps, in one card: cash on delivery, how many wilayas in
- * 1 to 7 days (from the owner's delivery list) and the exchange window. Used
+ * 1 to 3 days (from the owner's delivery list) and the exchange window. Used
  * under the home hero and under the price on a product page, so a buyer sees
  * them where they decide, not only in the form below.
  */

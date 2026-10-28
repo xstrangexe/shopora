@@ -1,7 +1,14 @@
 import { useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { useI18n } from "@/lib/i18n-context";
-import { useStoreSettings, type CatalogueProduct, type CatalogueVariant } from "@/lib/queries";
+import {
+  primaryImage,
+  productImage,
+  useStoreSettings,
+  type CatalogueProduct,
+  type CatalogueVariant,
+} from "@/lib/queries";
+import { rememberOrderPhoto } from "@/lib/order-photo";
 import { pickupFee, resolveDelivery, useDeliveryZones, type DeliveryMethod } from "@/lib/delivery";
 import { useCommunes } from "@/lib/communes";
 import { placeOrder } from "@/lib/order";
@@ -112,6 +119,7 @@ export function useExpressOrder({
       return;
     }
     trackPurchase(item(), subtotal + (fee ?? 0), result.token);
+    rememberOrderPhoto(result.token, primaryImage(selected) ?? productImage(product));
     void navigate({
       to: "/order/$token",
       params: { token: result.token },

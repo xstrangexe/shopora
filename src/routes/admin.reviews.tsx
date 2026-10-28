@@ -3,6 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { ReviewItem } from "@/components/admin/review-item";
+import { ReviewAdd } from "@/components/admin/review-add";
 import { EmptyState, ErrorState, LoadingState } from "@/components/ui/feedback";
 import { Pagination } from "@/components/ui/pagination";
 import { useI18n } from "@/lib/i18n-context";
@@ -76,6 +77,8 @@ function ReviewsPage() {
           {tab(true, t("admin.reviews.approved"), counts.data?.approved)}
         </div>
       </div>
+
+      <ReviewAdd onAdded={invalidate} />
 
       {list.length === 0 ? (
         <EmptyState title={t("admin.reviews.empty")} />

@@ -86,7 +86,7 @@ function ReviewList({ productId }: { productId: string }) {
                   src={review.image_url}
                   alt=""
                   loading="lazy"
-                  className="mt-3 max-h-40 rounded-[10px] object-cover"
+                  className="mt-3 aspect-square w-40 rounded-[12px] object-cover"
                 />
               )}
             </div>

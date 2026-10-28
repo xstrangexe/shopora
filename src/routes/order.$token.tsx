@@ -8,10 +8,10 @@ import { EmptyState, ErrorState, LoadingState } from "@/components/ui/feedback";
 import { translate } from "@/lib/i18n";
 import { useI18n } from "@/lib/i18n-context";
 import { formatDateTime, formatDzd } from "@/lib/format";
-import { ORDER_FLOW, isTerminal, trackOrder } from "@/lib/order";
+import { ORDER_FLOW, isTerminal, trackOrder, type TrackedOrder } from "@/lib/order";
 import { wilayaLabel } from "@/lib/wilayas";
 import { cn } from "@/lib/utils";
-import { OrderPlacedBanner } from "@/components/storefront/order-placed-banner";
+import { OrderThankYou } from "@/components/storefront/order-thank-you";
 
 export const Route = createFileRoute("/order/$token")({
   // `?placed=1` is set only by the express order form, right after the database
@@ -38,14 +38,14 @@ function OrderPage() {
     retry: false,
   });
 
+  // Right after ordering: the thank-you page alone, with the full tracking view
+  // one tap away (the same address without `?placed`).
+  if (placed && data?.status === "pending") return <ThankYouView order={data} />;
+
   return (
     <StoreLayout>
       <div className="container-page flex max-w-3xl flex-col gap-6 py-8 sm:py-12">
-        {placed && data?.status === "pending" ? (
-          <OrderPlacedBanner token={data.token} phone={data.phone} />
-        ) : (
-          <h1 className="font-display text-2xl font-semibold sm:text-3xl">{t("order.title")}</h1>
-        )}
+        <h1 className="font-display text-2xl font-semibold sm:text-3xl">{t("order.title")}</h1>
 
         {isPending ? (
           <LoadingState />
@@ -215,5 +215,23 @@ function Timeline({ status }: { status: string }) {
         );
       })}
     </ol>
+  );
+}
+
+function ThankYouView({ order }: { order: TrackedOrder }) {
+  const { t } = useI18n();
+  return (
+    <StoreLayout>
+      <div className="container-page flex max-w-xl flex-col gap-5 py-6 sm:py-10">
+        <OrderThankYou order={order} />
+        <Link
+          to="/order/$token"
+          params={{ token: order.token }}
+          className="min-h-11 text-center text-sm font-semibold text-gold-ink underline underline-offset-4"
+        >
+          {t("placed.track")}
+        </Link>
+      </div>
+    </StoreLayout>
   );
 }

@@ -83,3 +83,34 @@ export async function deleteReview(id: string): Promise<void> {
   const { error } = await getSupabase().from("reviews").delete().eq("id", id);
   if (error) throw new Error(error.message);
 }
+
+export type CustomerReviewInput = {
+  productId: string;
+  name: string;
+  rating: number;
+  comment: string;
+  imageUrl: string | null;
+};
+
+/**
+ * A review the owner adds from what a customer sent (a WhatsApp photo and a few
+ * words), published straight away.
+ *
+ * The `validate_review` trigger forces every new row to unapproved, admins
+ * included, so it is inserted first and then approved in a second step.
+ */
+export async function addCustomerReview(input: CustomerReviewInput): Promise<void> {
+  const { data, error } = await getSupabase()
+    .from("reviews")
+    .insert({
+      product_id: input.productId,
+      customer_name: input.name.trim(),
+      rating: input.rating,
+      comment: input.comment.trim(),
+      image_url: input.imageUrl,
+    })
+    .select("id")
+    .single();
+  if (error) throw new Error(error.message);
+  await setReviewApproval(data.id, true);
+}

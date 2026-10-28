@@ -116,7 +116,16 @@ export function ReviewWall() {
         <div className="grid gap-4 lg:grid-cols-3">
           {top.map((review) => (
             <figure key={review.id} className="review-card">
-              <Quote size={18} className="mb-3 text-outline-hi" aria-hidden="true" />
+              {review.image_url ? (
+                <img
+                  src={review.image_url}
+                  alt=""
+                  loading="lazy"
+                  className="mb-4 aspect-square w-full rounded-[14px] object-cover"
+                />
+              ) : (
+                <Quote size={18} className="mb-3 text-outline-hi" aria-hidden="true" />
+              )}
               <StarRating value={review.rating} className="mb-3" />
               <blockquote className="review-body">{review.comment}</blockquote>
               <figcaption className="mt-4 flex items-center gap-2.5">

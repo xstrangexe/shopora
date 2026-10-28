@@ -104,7 +104,7 @@ function stars(section: HTMLElement | null) {
 
 /**
  * The three promises under the hero, as on YouCan: cash on delivery, how many
- * wilayas in 1 to 7 days (from the owner's delivery list) and the exchange
+ * wilayas in 1 to 3 days (from the owner's delivery list) and the exchange
  * window. Said once on the home page; the page does not repeat them.
  */
 export function TrustBar(props: { returnsDays: number; wilayaCount: number }) {
