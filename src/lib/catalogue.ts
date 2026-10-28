@@ -1,6 +1,6 @@
 import { keepPreviousData, queryOptions, useQuery } from "@tanstack/react-query";
 import { getSupabase } from "./supabase/client";
-import type { CatalogueProduct } from "./queries";
+import { withActiveVariants, type CatalogueProduct } from "./queries";
 
 /**
  * Catalogue browsing: filtering, sorting, search and paging.
@@ -88,7 +88,7 @@ async function fetchCataloguePage(filters: CatalogueFilters, page: number): Prom
   const response = (data ?? { total: 0, products: [], facets: EMPTY_FACETS }) as CatalogueResponse;
 
   return {
-    products: response.products ?? [],
+    products: (response.products ?? []).map(withActiveVariants),
     total: response.total ?? 0,
     pageCount: Math.max(1, Math.ceil((response.total ?? 0) / CATALOGUE_PAGE_SIZE)),
     facets: response.facets ?? EMPTY_FACETS,

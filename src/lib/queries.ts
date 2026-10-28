@@ -96,6 +96,18 @@ const PRODUCT_SELECT = `
   )
 `;
 
+/**
+ * A product with its switched-off variants removed.
+ *
+ * Visitors can read inactive variants (the database only hides unpublished
+ * products), so a colour the shop stopped selling would still show on cards,
+ * in the model finder and in the spotlight. Dropping them here, where products
+ * are loaded, keeps every part of the storefront in step.
+ */
+export function withActiveVariants(product: CatalogueProduct): CatalogueProduct {
+  return { ...product, product_variants: product.product_variants.filter((v) => v.is_active) };
+}
+
 async function fetchProduct(slug: string): Promise<CatalogueProduct | null> {
   const { data, error } = await getSupabase()
     .from("products")
@@ -104,7 +116,8 @@ async function fetchProduct(slug: string): Promise<CatalogueProduct | null> {
     .eq("status", "published")
     .maybeSingle();
   if (error) throw new Error(error.message);
-  return (data as unknown as CatalogueProduct | null) ?? null;
+  const product = data as unknown as CatalogueProduct | null;
+  return product ? withActiveVariants(product) : null;
 }
 
 async function fetchReviews(productId?: string): Promise<PublicReview[]> {
