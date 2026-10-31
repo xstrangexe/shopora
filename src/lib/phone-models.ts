@@ -65,3 +65,29 @@ export function modelRange(product: CatalogueProduct): string | null {
   const last = modelLabel(models[models.length - 1]).replace("iPhone ", "");
   return first === last ? first : `${first} → ${last}`;
 }
+
+export type ModelGeneration<T extends { name: string }> = { number: number; models: T[] };
+
+/**
+ * A product's model list grouped by iPhone number, newest first, each group in
+ * base → Pro Max order. Null when any model is not an iPhone name the shop
+ * uses, so the page falls back to the plain list instead of hiding a model.
+ */
+export function modelGenerations<T extends { name: string }>(
+  sizes: T[],
+): ModelGeneration<T>[] | null {
+  const groups = new Map<number, { model: PhoneModel; size: T }[]>();
+  for (const size of sizes) {
+    const model = parseModel(size.name);
+    if (!model) return null;
+    groups.set(model.number, [...(groups.get(model.number) ?? []), { model, size }]);
+  }
+  return [...groups.entries()]
+    .sort(([a], [b]) => b - a)
+    .map(([number, list]) => ({
+      number,
+      models: list
+        .sort((a, b) => TYPE_ORDER.indexOf(a.model.type) - TYPE_ORDER.indexOf(b.model.type))
+        .map((entry) => entry.size),
+    }));
+}

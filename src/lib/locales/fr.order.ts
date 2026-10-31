@@ -89,4 +89,5 @@ export const frOrder: Record<keyof typeof arOrder, string> = {
   "spot.colours": "Couleurs disponibles",
   "spot.cod": "Paiement à la livraison",
   "trust2.wilayas": "Livraison dans {count} wilayas",
+  "express.plusDelivery": "+ livraison",
 };

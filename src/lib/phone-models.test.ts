@@ -3,6 +3,7 @@ import type { CatalogueProduct } from "./queries";
 import {
   availableModels,
   modelLabel,
+  modelGenerations,
   modelRange,
   parseModel,
   productsForModel,
@@ -70,5 +71,26 @@ describe("model finder", () => {
   it("describes a product's model range", () => {
     expect(modelRange(snake)).toBe("13 Pro Max → 15 Pro Max");
     expect(modelRange(box)).toBeNull();
+  });
+});
+
+describe("modelGenerations", () => {
+  const size = (name: string) => ({ name, inStock: true });
+
+  it("groups models by number, newest first, base before Pro Max", () => {
+    const groups = modelGenerations([
+      size("13 PRO MAX"),
+      size("15"),
+      size("iPhone 15 Pro Max"),
+      size("13"),
+      size("15 PRO"),
+    ]);
+    expect(groups?.map((g) => g.number)).toEqual([15, 13]);
+    expect(groups?.[0].models.map((m) => m.name)).toEqual(["15", "15 PRO", "iPhone 15 Pro Max"]);
+    expect(groups?.[1].models.map((m) => m.name)).toEqual(["13", "13 PRO MAX"]);
+  });
+
+  it("gives up on a list with a name it cannot read", () => {
+    expect(modelGenerations([size("15 PRO"), size("Galaxy S24")])).toBeNull();
   });
 });

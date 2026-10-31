@@ -174,7 +174,8 @@ Every button and chip is a full pill (9999px). Cards are 24px, inputs 10px, and 
 
 - **Shape:** full pill.
 - **Primary:** ink background, cream label, 11px 22px padding. On hover it lifts 2px with shadow md and 0.92 opacity.
-- **Secondary:** transparent with a 2px ink border. On hover it gets a faint gold glow and lifts 2px.
+- **Primary inside the black order card:** the same pill inverted, a cream background with an ink label and no glow, so it reads as the same action as the sticky bar.
+- **Secondary:** transparent with a 2px ink border. On hover it gets a faint gold glow and lifts 2px. Product-card "order now" buttons use it, so the product page keeps one solid primary.
 - **Ghost / Danger:** lower emphasis. Danger is never the default focus.
 
 ### Chips

@@ -695,6 +695,13 @@
 /* Product gallery */
 /* min-width: 0 lets this grid item shrink to its column; with many thumbnails it
    otherwise grew to their combined width and pushed the whole page sideways. */
+.pd-description {
+  font-size: 15px;
+  line-height: 1.75;
+}
+[dir="rtl"] .pd-description {
+  font-size: 17px;
+}
 .gallery {
   display: flex;
   flex-direction: column;
@@ -703,7 +710,7 @@
 }
 .gallery-main {
   position: relative;
-  aspect-ratio: 4 / 5;
+  aspect-ratio: 1 / 1;
   border-radius: var(--r-lg);
   overflow: hidden;
   border: 1px solid var(--outline);
@@ -712,6 +719,11 @@
   align-items: center;
   justify-content: center;
   color: var(--outline-hi);
+}
+@media (min-width: 1024px) {
+  .gallery-main {
+    aspect-ratio: 4 / 5;
+  }
 }
 button.gallery-main {
   width: 100%;
@@ -813,8 +825,8 @@ button.gallery-main {
 .size-chip {
   min-width: 48px;
   height: 44px;
-  padding: 0 14px;
-  border-radius: var(--r-sm);
+  padding: 0 16px;
+  border-radius: var(--r-full);
   border: 1px solid var(--outline);
   background: var(--surface);
   font: 600 13px/1 var(--font-body);
@@ -1154,18 +1166,6 @@ button.gallery-main {
   font-variant-numeric: tabular-nums;
 }
 
-/* Sticky add-to-bag (product page, mobile) */
-.sticky-cta {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 12px;
-  background: var(--surface);
-  border: 1px solid var(--outline);
-  border-radius: var(--r-md);
-  box-shadow: var(--shadow-md);
-}
-
 /* Bottom tab bar — the reference's "Phone Feelings" mobile-app directive. */
 .bottom-nav {
   display: none;
@@ -1265,7 +1265,8 @@ button.gallery-main {
 }
 .xo-sub {
   margin-top: 6px;
-  font-size: 13.5px;
+  font-size: 15px;
+  text-wrap: pretty;
   line-height: 1.6;
   color: #bdb3a2;
 }
@@ -1284,9 +1285,9 @@ button.gallery-main {
   border: 1px solid rgba(201, 169, 110, 0.22);
   border-radius: 14px;
   background: rgba(255, 255, 255, 0.03);
-  font-size: 11.5px;
+  font-size: 14px;
   font-weight: 600;
-  line-height: 1.35;
+  line-height: 1.4;
   text-align: center;
   color: #e9dfcc;
 }
@@ -1324,13 +1325,17 @@ button.gallery-main {
     background-color 0.2s;
 }
 .xo .form-input::placeholder {
-  color: rgba(255, 255, 255, 0.35);
+  color: rgba(255, 255, 255, 0.55);
 }
 .xo .form-input:focus,
 .xo .form-select:focus {
   border-color: #c9a96e;
   background-color: rgba(201, 169, 110, 0.07);
   box-shadow: 0 0 0 3px rgba(201, 169, 110, 0.22);
+}
+.xo .form-input[aria-invalid="true"],
+.xo .form-select[aria-invalid="true"] {
+  border-color: #f87171;
 }
 .xo .form-select option {
   background: #1a1712;
@@ -1351,7 +1356,7 @@ button.gallery-main {
   right: 14px;
   translate: 0 -50%;
   color: #6fd29a;
-  animation: xo-pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation: xo-pop 0.35s var(--ease-out-soft);
 }
 .xo-add {
   display: inline-flex;
@@ -1420,6 +1425,12 @@ button.gallery-main {
 .xo .dc-card.is-active .dc-fee {
   color: #e3c68f;
 }
+.xo .dc-card.is-disabled {
+  opacity: 0.75;
+}
+.xo .dc-card.is-disabled .dc-fee {
+  color: #cfc5b3;
+}
 .dc-card.is-disabled .dc-fee {
   font-size: 12px;
   font-weight: 500;
@@ -1440,7 +1451,7 @@ button.gallery-main {
   scale: 0.6;
   transition:
     opacity 0.2s,
-    scale 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    scale 0.25s var(--ease-out-soft);
 }
 .dc-card.is-active .dc-tick {
   opacity: 1;
@@ -1456,10 +1467,8 @@ button.gallery-main {
 
 /* Summary: the case, the lines, and the total in gold. */
 .xo-summary {
-  padding: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.04);
+  padding-top: 16px;
+  border-top: 1px solid rgba(201, 169, 110, 0.28);
 }
 .xo-summary-title {
   margin-bottom: 12px;
@@ -1484,18 +1493,19 @@ button.gallery-main {
   background: #1f1b15;
 }
 .xo-item-name {
-  display: block;
+  display: -webkit-box;
   overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
   font-size: 14px;
   font-weight: 700;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+  line-height: 1.4;
   color: #fff;
 }
 .xo-item-variant {
   display: block;
   margin-top: 2px;
-  font-size: 12px;
+  font-size: 13px;
   color: #bdb3a2;
 }
 [dir="rtl"] .xo-item-name,
@@ -1564,7 +1574,20 @@ button.gallery-main {
 }
 .xo-lines dd.is-pending {
   font-weight: 500;
-  color: #8f8678;
+  color: #b8ad9f;
+}
+.xo-total dd.is-partial {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  white-space: nowrap;
+  font-size: 20px;
+  color: #e9dfcc;
+}
+.xo-plus {
+  font-size: 14px;
+  font-weight: 600;
+  color: #b8ad9f;
 }
 .xo-lines .xo-total {
   margin-top: 4px;
@@ -1579,7 +1602,7 @@ button.gallery-main {
   font-size: 24px;
   font-weight: 800;
   color: #e3c68f;
-  animation: xo-pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation: xo-pop 0.35s var(--ease-out-soft);
 }
 .xo-error {
   padding: 12px 14px;
@@ -1591,7 +1614,8 @@ button.gallery-main {
   color: #ffb4b4;
 }
 
-/* The one gold button, with a slow sweep of light across it. */
+/* The order button: the brand's black-on-cream pill, inverted to cream on the
+   black card, so it reads as the same action as the sticky bar. */
 .xo-cta {
   position: relative;
   overflow: hidden;
@@ -1601,29 +1625,23 @@ button.gallery-main {
   gap: 8px;
   width: 100%;
   min-height: 58px;
-  border-radius: 16px;
-  background: linear-gradient(180deg, #e6cb92, #c9a96e 55%, #b08d4f);
-  box-shadow:
-    0 10px 26px rgba(201, 169, 110, 0.32),
-    inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  border-radius: var(--r-full);
+  background: #f6eee6;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
   font-size: 18px;
   font-weight: 800;
   color: #111;
   transition:
-    transform 0.15s,
-    filter 0.2s;
-}
-.xo-cta::after {
-  content: "";
-  position: absolute;
-  inset: 0 auto 0 -60%;
-  width: 45%;
-  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.45), transparent);
-  transform: skewX(-18deg);
-  animation: xo-sweep 3.6s ease-in-out 1.2s infinite;
+    transform var(--dur-fast) var(--ease-out-soft),
+    background var(--dur-fast);
 }
 .xo-cta:hover:not(:disabled) {
-  filter: brightness(1.06);
+  background: #fffaf5;
+  transform: translateY(-2px);
+}
+.xo-cta:focus-visible {
+  outline: 2px solid #c9a96e;
+  outline-offset: 3px;
 }
 .xo-cta:active:not(:disabled) {
   transform: scale(0.985);
@@ -1632,16 +1650,13 @@ button.gallery-main {
   cursor: progress;
   opacity: 0.85;
 }
-.xo-cta:disabled::after {
-  display: none;
-}
 .xo-privacy {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
-  font-size: 12px;
-  color: #8f8678;
+  font-size: 13.5px;
+  color: #b8ad9f;
 }
 @keyframes xo-pop {
   from {
@@ -1649,17 +1664,7 @@ button.gallery-main {
     scale: 0.92;
   }
 }
-@keyframes xo-sweep {
-  0% {
-    left: -60%;
-  }
-  55%,
-  100% {
-    left: 130%;
-  }
-}
 @media (prefers-reduced-motion: reduce) {
-  .xo-cta::after,
   .xo-total dd,
   .xo-phone-ok {
     animation: none;
@@ -1690,10 +1695,7 @@ button.gallery-main {
   }
   .price-pop {
     display: inline-block;
-    animation: xo-pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
-  .sticky-cta {
-    animation: sticky-pulse 2.8s ease-in-out 1.5s infinite;
+    animation: xo-pop 0.35s var(--ease-out-soft);
   }
   @supports (animation-timeline: view()) {
     .showcase-clip {
@@ -1711,15 +1713,6 @@ button.gallery-main {
   to {
     opacity: 1;
     transform: scale(1);
-  }
-}
-@keyframes sticky-pulse {
-  0%,
-  100% {
-    box-shadow: 0 0 0 0 rgba(201, 169, 110, 0.5);
-  }
-  50% {
-    box-shadow: 0 0 0 9px rgba(201, 169, 110, 0);
   }
 }
 @keyframes rise-in {
@@ -1954,7 +1947,7 @@ button.gallery-main {
 }
 @media (prefers-reduced-motion: no-preference) {
   .ty-check {
-    animation: ty-pop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    animation: ty-pop 0.6s var(--ease-out-soft) both;
   }
   .ty-check svg {
     animation: ty-draw 0.4s 0.35s ease-out both;

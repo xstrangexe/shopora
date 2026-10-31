@@ -85,8 +85,11 @@ export function ExpressOrderSummary({
           <div className="xo-total">
             <dt>{t("express.total")}</dt>
             {/* Keyed by the amount so the figure pops each time it changes. */}
-            <dd key={total} dir="ltr">
-              {formatDzd(total, locale)}
+            {/* Before a wilaya is picked the delivery fee is unknown, so the
+                figure says "+ delivery" instead of passing for the final amount. */}
+            <dd key={total} className={deliveryFee === null ? "is-partial" : ""}>
+              <span dir="ltr">{formatDzd(total, locale)}</span>
+              {deliveryFee === null && <span className="xo-plus">{t("express.plusDelivery")}</span>}
             </dd>
           </div>
         </dl>

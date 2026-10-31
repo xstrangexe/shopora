@@ -16,7 +16,9 @@ import { ExpressOrderForm, ORDER_FORM_ID } from "./express-order-form";
 import { ProductShowcase } from "./product-showcase";
 import { StickyOrderBar } from "./sticky-order-bar";
 import { localized } from "@/lib/i18n";
+import { modelGenerations } from "@/lib/phone-models";
 import { ColourPicker, SizePicker } from "./variant-picker";
+import { ModelPicker } from "./model-picker";
 
 /**
  * Product page layout.
@@ -54,6 +56,8 @@ export function ProductDetail({ product }: { product: CatalogueProduct }) {
     pickSize,
   } = useVariantChoice(variants, product.slug);
 
+  // A long iPhone list is grouped by number; a short or non-iPhone list stays flat.
+  const generations = sizes.length > 6 ? modelGenerations(sizes) : null;
   const pickersRef = useRef<HTMLDivElement>(null);
   const scrollToForm = () =>
     document.getElementById(ORDER_FORM_ID)?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -80,7 +84,7 @@ export function ProductDetail({ product }: { product: CatalogueProduct }) {
 
       <div className="flex flex-col gap-5">
         <div className="flex flex-col gap-2">
-          <h1 className="font-display text-2xl font-semibold sm:text-3xl">{name}</h1>
+          <h1 className="font-display text-2xl font-semibold text-balance sm:text-3xl">{name}</h1>
           {reviews && reviews.length > 0 && (
             <span className="flex items-center gap-2">
               <StarRating value={rating ?? 0} />
@@ -99,7 +103,11 @@ export function ProductDetail({ product }: { product: CatalogueProduct }) {
         />
 
         <div ref={pickersRef} className="flex flex-col gap-5">
-          <SizePicker sizes={sizes} selected={choice.size} onSelect={pickSize} />
+          {generations ? (
+            <ModelPicker generations={generations} selected={choice.size} onSelect={pickSize} />
+          ) : (
+            <SizePicker sizes={sizes} selected={choice.size} onSelect={pickSize} />
+          )}
           {modelFirst && choice.size === null ? (
             <p className="text-sm text-on-surface-muted">{t("store.pickModelFirst")}</p>
           ) : (
@@ -158,7 +166,7 @@ function Description({ text }: { text: string }) {
   return (
     <div className="flex flex-col items-start gap-1">
       <p
-        className={`whitespace-pre-line text-sm leading-7 text-on-surface-muted ${
+        className={`pd-description whitespace-pre-line text-on-surface-muted ${
           long && !open ? "line-clamp-5" : ""
         }`}
       >

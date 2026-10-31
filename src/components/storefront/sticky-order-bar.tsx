@@ -51,7 +51,7 @@ export function StickyOrderBar({
         <button
           type="button"
           onClick={onOrder}
-          className="btn btn-gold btn-lg btn-block sticky-cta !min-h-13 !text-base"
+          className="btn btn-primary btn-lg btn-block !min-h-13 !text-base"
         >
           <ShoppingBag size={19} aria-hidden="true" />
           {/* Keyed on the price so a new model or colour makes the number pop. */}

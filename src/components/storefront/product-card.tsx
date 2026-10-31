@@ -91,7 +91,7 @@ function ProductCard({ product }: { product: CatalogueProduct }) {
         </span>
 
         <span className="pc-cta">
-          <span className="btn btn-gold btn-sm btn-block !min-h-10">
+          <span className="btn btn-secondary btn-sm btn-block !min-h-10">
             {soldOut ? t("store.outOfStock") : t("express.cta")}
           </span>
         </span>
