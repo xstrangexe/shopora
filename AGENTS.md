@@ -20,6 +20,18 @@ keep responses short without losing information. English only.
 3. `docs/ARCHITECTURE.md` — how the system fits together
 4. `docs/DATABASE.md` — schema, RLS, and design rules (matches `supabase/schema.sql`)
 5. `docs/DECISIONS.md` — decisions already made and why. Do not relitigate them silently.
+6. `DESIGN.md` and `PRODUCT.md` — the SHOPORA visual system and product context, read by the
+   Impeccable skill. `src/styles.css` stays the source of truth for token values.
+
+## Skills
+
+- **Impeccable** (`.claude/skills/impeccable`, v4.8.0, vendored from pbakaus/impeccable): use for
+  any UI work, e.g. `/impeccable critique`, `polish`, `audit` or `harden` on a storefront page.
+  It reads `PRODUCT.md` and `DESIGN.md`. After changing tokens in `styles.css`, run
+  `/impeccable document` to refresh `DESIGN.md`.
+- **Superpowers** (obra, installed as a Claude Code plugin): use its brainstorming,
+  writing-plans, systematic-debugging and verification-before-completion skills for
+  non-visual engineering work. The project rules here still win over its defaults.
 
 ## The code is the source of truth, not the docs
 

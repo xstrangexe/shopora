@@ -22,6 +22,8 @@ export default tseslint.config(
       "playwright-report",
       "test-results",
       "docs/**",
+      // Local agent skills (Impeccable ships its own browser scripts).
+      ".claude/**",
       "src/routeTree.gen.ts",
       "src/lib/supabase/types.ts",
       "eslint-rules/**",
