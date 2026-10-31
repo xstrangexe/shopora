@@ -710,7 +710,7 @@
 }
 .gallery-main {
   position: relative;
-  aspect-ratio: 1 / 1;
+  aspect-ratio: 4 / 5;
   border-radius: var(--r-lg);
   overflow: hidden;
   border: 1px solid var(--outline);
@@ -719,11 +719,6 @@
   align-items: center;
   justify-content: center;
   color: var(--outline-hi);
-}
-@media (min-width: 1024px) {
-  .gallery-main {
-    aspect-ratio: 4 / 5;
-  }
 }
 button.gallery-main {
   width: 100%;
