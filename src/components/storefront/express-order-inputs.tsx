@@ -1,11 +1,10 @@
 import { useState } from "react";
-import { Banknote, CheckCircle2, PhoneCall, Plus, Truck } from "lucide-react";
+import { CheckCircle2, Plus } from "lucide-react";
 import { Field, Input } from "@/components/ui/form";
 import { useI18n } from "@/lib/i18n-context";
-import { deliveryWilayaCount, useStoreSettings } from "@/lib/queries";
 import { isValidDzPhone } from "@/lib/express-order";
 
-/** The small fields and the promise row of the express order form, split out of `express-order-form.tsx`. */
+/** The small fields of the express order form, split out of `express-order-form.tsx`. */
 
 /** The buyer's full name; the courier and the confirmation call use it. */
 export function NameField({
@@ -99,33 +98,5 @@ export function PhoneField({
         {ok && <CheckCircle2 size={20} className="xo-phone-ok" aria-label={t("express.phoneOk")} />}
       </span>
     </Field>
-  );
-}
-
-/**
- * Three promises, each true of this shop: cash on delivery, a confirmation call
- * before shipping, and the number of wilayas in the owner's delivery list (left
- * out until that list is known, rather than shown with a guessed number).
- */
-export function TrustRow() {
-  const { t } = useI18n();
-  const { data: settings } = useStoreSettings();
-  const count = deliveryWilayaCount(settings);
-  const items = [
-    { icon: Banknote, label: t("home2.trust.cod") },
-    { icon: PhoneCall, label: t("express.trustConfirm") },
-    ...(count === null ? [] : [{ icon: Truck, label: t("trust2.wilayas", { count }) }]),
-  ];
-  return (
-    <ul className="xo-trust">
-      {items.map((item) => (
-        <li key={item.label}>
-          <span className="xo-trust-icon" aria-hidden="true">
-            <item.icon size={16} />
-          </span>
-          {item.label}
-        </li>
-      ))}
-    </ul>
   );
 }

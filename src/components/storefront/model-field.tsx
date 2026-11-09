@@ -30,7 +30,7 @@ export function ModelField({ choice, error }: { choice: ModelChoice; error?: str
   const isPhone = choice.sizes.every((size) => parseModel(size.name) !== null);
   const model = parseModel(choice.selected);
 
-  if (isPhone && !choice.generations && model && !editing) {
+  if (isPhone && model && !editing) {
     return (
       <Field label={t("express.model")} error={error} required>
         <div className="flex min-h-11 items-center justify-between gap-3 rounded-md border border-outline px-4">
@@ -55,7 +55,10 @@ export function ModelField({ choice, error }: { choice: ModelChoice; error?: str
         <ModelPicker
           generations={choice.generations}
           selected={choice.selected}
-          onSelect={choice.onSelect}
+          onSelect={(name) => {
+            choice.onSelect(name);
+            setEditing(false);
+          }}
         />
       ) : isPhone ? (
         <SizePicker

@@ -75,7 +75,9 @@ export function StockLine({
         )}
         {low && selected && (
           <span className="text-xs text-tertiary">
-            {t("store.lowStock", { count: selected.stock })}
+            {selected.stock === 1
+              ? t("stock.last")
+              : t("store.lowStock", { count: selected.stock })}
           </span>
         )}
       </div>

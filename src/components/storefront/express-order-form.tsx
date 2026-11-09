@@ -10,7 +10,7 @@ import { DeliveryChoice } from "./delivery-choice";
 import { ExpressOrderSummary } from "./express-order-summary";
 import { WilayaCommuneFields } from "./express-order-fields";
 import { ModelField, type ModelChoice } from "./model-field";
-import { AddressField, NameField, PhoneField, TrustRow } from "./express-order-inputs";
+import { AddressField, NameField, PhoneField } from "./express-order-inputs";
 import { useExpressOrder } from "./use-express-order";
 
 /** The section the "order now" buttons scroll to. */
@@ -19,8 +19,8 @@ export const ORDER_FORM_ID = "order";
 /**
  * Express order form: the whole purchase on the product page, no cart.
  *
- * A black and gold card, like the brand's packaging, on the cream page: three
- * promises, then name, phone, wilaya and commune — the four fields the YouCan
+ * A black and gold card, like the brand's packaging, on the cream page: the
+ * model, then name, phone, wilaya and commune — the four fields the YouCan
  * shop asked for — home or office delivery with both prices, and a summary with
  * the one cream button. `data-theme="dark"` scopes the dark tokens to the card,
  * so the shared inputs and selects turn dark without a second set of styles.
@@ -67,8 +67,6 @@ export function ExpressOrderForm({
         </h2>
         <p className="xo-sub">{t("express.subtitle")}</p>
       </header>
-
-      <TrustRow />
 
       <form
         onSubmit={order.submit}

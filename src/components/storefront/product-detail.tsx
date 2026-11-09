@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { trackViewContent } from "@/lib/pixels";
 import { useI18n } from "@/lib/i18n-context";
 import {
@@ -21,6 +21,8 @@ import {
 } from "./product-purchase";
 import { ExpressOrderForm, ORDER_FORM_ID } from "./express-order-form";
 import { ProductShowcase } from "./product-showcase";
+import { PriceFacts, ProductBenefits } from "./product-benefits";
+import { TrustCard } from "./trust-card";
 import { StickyOrderBar } from "./sticky-order-bar";
 import { localized } from "@/lib/i18n";
 import { modelOptions, modelSpan } from "@/lib/phone-models";
@@ -31,11 +33,12 @@ import { ModelPicker } from "./model-picker";
 /**
  * Product page layout.
  *
- * Built as a landing page for ad traffic: photos, name, price, the model and
- * colour pickers, a short description, then the express order form, so a buyer
- * on a phone reads why to buy and then how, with nothing between them. The
- * three promises are in the form's own header, not above the pickers. Actions live in `product-purchase.tsx` and `express-order-form.tsx`;
- * this file holds the state they share.
+ * Built as a landing page for ad traffic: photos, name, price with what
+ * delivery starts at, the shop's three promises, the selling points, then the
+ * model and colour pickers and the express order form, so a buyer on a phone
+ * reads why to buy and then how, with nothing between them. Actions live in
+ * `product-purchase.tsx` and `express-order-form.tsx`; this file holds the
+ * state they share.
  */
 type ProductDetailProps = {
   product: CatalogueProduct;
@@ -57,6 +60,7 @@ export function ProductDetail({ product, initialModel }: ProductDetailProps) {
   }, [product.id]); // eslint-disable-line react-hooks/exhaustive-deps -- once per product
 
   const {
+    colours,
     sizes,
     modelFirst,
     choice,
@@ -107,6 +111,8 @@ export function ProductDetail({ product, initialModel }: ProductDetailProps) {
           hasStock={!unavailable && (selected ? selected.stock > 0 : stockable.length > 0)}
           outLabel={unavailable ? t("store.unavailableNow") : undefined}
         />
+        <PriceFacts />
+        <TrustCard />
 
         <div ref={pickersRef} className="flex flex-col gap-5">
           {generations ? (
@@ -115,7 +121,10 @@ export function ProductDetail({ product, initialModel }: ProductDetailProps) {
             <SizePicker sizes={shownSizes} selected={choice.size} onSelect={pickSize} />
           )}
           {modelFirst && choice.size === null ? (
-            <p className="text-sm text-on-surface-muted">{t("store.pickModelFirst")}</p>
+            // With one colour there is nothing to "see once the model is picked".
+            colours.length > 1 && (
+              <p className="text-sm text-on-surface-muted">{t("store.pickModelFirst")}</p>
+            )
           ) : (
             <ColourPicker
               colours={colourChoices}
@@ -138,9 +147,7 @@ export function ProductDetail({ product, initialModel }: ProductDetailProps) {
           {sizes.length > 0 && <ModelHelp name={name} />}
         </div>
 
-        {/* What the case is, above the form: the selling points a buyer on a
-            phone should read before the fields, not after them. */}
-        {description && <Description text={description} />}
+        {description && <ProductBenefits text={description} />}
 
         {stockable.length > 0 && (
           <>
@@ -202,37 +209,5 @@ function FitsLine({ product }: { product: CatalogueProduct }) {
         ? t("store.fitsOne", { model: keep(span.from) })
         : t("store.fits", { from: keep(span.from), to: keep(span.to) })}
     </p>
-  );
-}
-
-/**
- * The product description, four lines at first with a "more" toggle, so a long
- * one does not push the form out of sight. Short descriptions show whole.
- */
-function Description({ text }: { text: string }) {
-  const { t } = useI18n();
-  const [open, setOpen] = useState(false);
-  const long = text.split("\n").length > 5 || text.length > 260;
-
-  return (
-    <div className="flex flex-col items-start gap-1">
-      <p
-        className={`pd-description whitespace-pre-line text-on-surface-muted ${
-          long && !open ? "line-clamp-5" : ""
-        }`}
-      >
-        {text}
-      </p>
-      {long && (
-        <button
-          type="button"
-          onClick={() => setOpen((v) => !v)}
-          aria-expanded={open}
-          className="min-h-10 text-sm font-semibold text-gold-ink"
-        >
-          {open ? t("store.readLess") : t("store.readMore")}
-        </button>
-      )}
-    </div>
   );
 }

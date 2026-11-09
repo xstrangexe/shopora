@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
 import { ImageOff, Play } from "lucide-react";
 import { ImageLightbox } from "./image-lightbox";
+import { GallerySwipe } from "./gallery-swipe";
 import { isVideo, posterOf } from "@/lib/product-videos";
 import { useI18n } from "@/lib/i18n-context";
 import { cn } from "@/lib/utils";
 
 /**
- * Product gallery: 4:3 main image plus an active-ringed thumbnail strip.
+ * Product gallery. On a phone it is a swiped row of photos (`GallerySwipe`);
+ * from 1024px up, a 3:4 main image plus an active-ringed thumbnail strip. Both
+ * are rendered and CSS shows one, so the server's HTML is right on any screen.
  *
  * The main frame is 4:3 while the catalogue card is 1:1, matching the reference
  * (it locks both, deliberately different: a card is a teaser, a gallery is a
@@ -42,75 +45,90 @@ export function ProductGallery({
 
   return (
     <div className="gallery">
-      {isVideo(current) ? (
-        <div className="gallery-main">
-          <video
-            key={current}
-            src={current}
-            poster={posterOf(current)}
-            autoPlay={!reduceMotion}
-            controls={reduceMotion}
-            muted
-            loop
-            playsInline
-            preload="metadata"
-            aria-label={alt}
-            onClick={(event) => {
-              const video = event.currentTarget;
-              if (video.paused) void video.play();
-              else video.pause();
-            }}
-          />
-        </div>
-      ) : (
-        <button
-          type="button"
-          className="gallery-main cursor-zoom-in"
-          onClick={() => setOpen(active)}
-          aria-label={t("store.zoom")}
-        >
-          <img key={current} src={current} alt={alt} decoding="async" className="gallery-swap" />
-        </button>
-      )}
-      <ImageLightbox
+      <GallerySwipe
         images={images}
-        index={open}
         alt={alt}
-        onIndex={(index) => {
-          setOpen(index);
-          onSelect(index);
-        }}
-        onClose={() => setOpen(null)}
+        active={active}
+        onSelect={onSelect}
+        onZoom={setOpen}
       />
+      <div className="gallery-desk">
+        {isVideo(current) ? (
+          <div className="gallery-main">
+            <video
+              key={current}
+              src={current}
+              poster={posterOf(current)}
+              autoPlay={!reduceMotion}
+              controls={reduceMotion}
+              muted
+              loop
+              playsInline
+              preload="metadata"
+              aria-label={alt}
+              onClick={(event) => {
+                const video = event.currentTarget;
+                if (video.paused) void video.play();
+                else video.pause();
+              }}
+            />
+          </div>
+        ) : (
+          <button
+            type="button"
+            className="gallery-main cursor-zoom-in"
+            onClick={() => setOpen(active)}
+            aria-label={t("store.zoom")}
+          >
+            <img
+              key={current}
+              src={current}
+              alt={alt}
+              loading="lazy"
+              decoding="async"
+              className="gallery-swap"
+            />
+          </button>
+        )}
+        <ImageLightbox
+          images={images}
+          index={open}
+          alt={alt}
+          onIndex={(index) => {
+            setOpen(index);
+            onSelect(index);
+          }}
+          onClose={() => setOpen(null)}
+        />
 
-      {images.length > 1 && (
-        <div className="gallery-thumbs">
-          {images.map((url, index) => (
-            <button
-              key={url}
-              type="button"
-              onClick={() => onSelect(index)}
-              aria-label={`${t("store.description")} ${index + 1}`}
-              aria-current={index === active}
-              className={cn("gallery-thumb", index === active && "active")}
-            >
-              {/* The first few thumbnails are on screen at once, so they load at once;
-                  only those past the strip's edge wait. */}
-              <img
-                src={isVideo(url) ? posterOf(url) : url}
-                alt=""
-                loading={index < 4 ? "eager" : "lazy"}
-                decoding="async"
-              />
-              {isVideo(url) && (
-                <span className="gallery-play" aria-hidden="true">
-                  <Play size={14} fill="currentColor" />
-                </span>
-              )}
-            </button>
-          ))}
-        </div>
-      )}
+        {images.length > 1 && (
+          <div className="gallery-thumbs">
+            {images.map((url, index) => (
+              <button
+                key={url}
+                type="button"
+                onClick={() => onSelect(index)}
+                aria-label={`${t("store.description")} ${index + 1}`}
+                aria-current={index === active}
+                className={cn("gallery-thumb", index === active && "active")}
+              >
+                {/* Lazy, so a phone, where the strip is hidden, never fetches them. */}
+                <img
+                  src={isVideo(url) ? posterOf(url) : url}
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                />
+                {isVideo(url) && (
+                  <span className="gallery-play" aria-hidden="true">
+                    <Play size={14} fill="currentColor" />
+                  </span>
+                )}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

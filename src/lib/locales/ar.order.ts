@@ -119,5 +119,6 @@ export const arOrder = {
   "spot.colours": "الألوان المتوفرة",
   "spot.cod": "دفع عند الاستلام",
   "trust2.wilayas": "توصيل لـ {count} ولاية",
+  "store.deliveryFrom": "التوصيل من",
   "express.plusDelivery": "+ التوصيل",
 } as const;

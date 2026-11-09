@@ -26,7 +26,7 @@
  */
 
 /* ── Tokens: light (canonical) ─────────────────────────────────────────────── */
-/* SHOPORA palette: black, cream #f6eee6, champagne gold #c9a96e.
+/* SHOPORA palette: black, cream #f6eee6, champagne gold #ddbf96.
    Gold on cream measures about 2:1, under the 4.5:1 AA floor for text, so the
    pure gold is used for accents and marks only. Buttons are black on cream,
    and gold-toned text uses the darker #7a5c28 (5.4:1 on cream). */
@@ -46,10 +46,10 @@
   --primary: #111111;
   --primary-solid: #111111;
   --on-primary: #f6eee6;
-  --primary-glow: rgba(201, 169, 110, 0.28);
-  --primary-glow-sm: rgba(201, 169, 110, 0.12);
+  --primary-glow: rgba(221, 191, 150, 0.28);
+  --primary-glow-sm: rgba(221, 191, 150, 0.12);
 
-  --brand-orange: #c9a96e;
+  --brand-orange: #ddbf96;
   --secondary: #7a5c28;
   --secondary-dim: #634a1f;
   --on-secondary: #ffffff;
@@ -68,9 +68,9 @@
   --nav-bg: #fffaf5;
   --scroll-track: #efe4d8;
   --scroll-thumb: #d8c8b3;
-  --scroll-thumb-hi: #c9a96e;
-  --toggle-bg: rgba(201, 169, 110, 0.1);
-  --toggle-border: rgba(201, 169, 110, 0.35);
+  --scroll-thumb-hi: #ddbf96;
+  --toggle-bg: rgba(221, 191, 150, 0.1);
+  --toggle-border: rgba(221, 191, 150, 0.35);
   --table-header-bg: #ede2d5;
   --table-header-fg: #7a5c28;
   --table-row-bg: #fffaf5;
@@ -92,15 +92,15 @@
   --outline: #2a2724;
   --outline-hi: #3d3833;
 
-  --primary: #c9a96e;
-  --primary-solid: #c9a96e;
+  --primary: #ddbf96;
+  --primary-solid: #ddbf96;
   --on-primary: #111111;
-  --primary-glow: rgba(201, 169, 110, 0.22);
-  --primary-glow-sm: rgba(201, 169, 110, 0.1);
+  --primary-glow: rgba(221, 191, 150, 0.22);
+  --primary-glow-sm: rgba(221, 191, 150, 0.1);
 
-  --brand-orange: #c9a96e;
+  --brand-orange: #ddbf96;
   --secondary: #d9bd88;
-  --secondary-dim: #c9a96e;
+  --secondary-dim: #ddbf96;
   --on-secondary: #111111;
   --tertiary: #e0c48f;
   --on-tertiary: #111111;
@@ -117,11 +117,11 @@
   --nav-bg: #0a0a0a;
   --scroll-track: #161616;
   --scroll-thumb: #2c2c2c;
-  --scroll-thumb-hi: #c9a96e;
-  --toggle-bg: rgba(201, 169, 110, 0.08);
-  --toggle-border: rgba(201, 169, 110, 0.25);
+  --scroll-thumb-hi: #ddbf96;
+  --toggle-bg: rgba(221, 191, 150, 0.08);
+  --toggle-border: rgba(221, 191, 150, 0.25);
   --table-header-bg: #1c1c1c;
-  --table-header-fg: #c9a96e;
+  --table-header-fg: #ddbf96;
   --table-row-bg: #0d0d0d;
   --table-row-hover: #161616;
   --table-border: #2a2724;
@@ -433,10 +433,10 @@
 /* The ordering action, and only that: champagne gold with black text (8.7:1),
    so "order now" is the one gold thing on a page. Same colours in both themes. */
 .btn-gold {
-  background: #c9a96e;
+  background: #ddbf96;
   color: #111111;
   font-weight: 700;
-  box-shadow: 0 6px 18px rgba(201, 169, 110, 0.35);
+  box-shadow: 0 6px 18px rgba(221, 191, 150, 0.35);
 }
 .btn-gold:hover:not(:disabled) {
   background: #d4b57c;
@@ -735,6 +735,103 @@ button.gallery-main {
   height: 100%;
   object-fit: cover;
 }
+/* Phone: a swiped row of photos with dots. Desktop: main frame and thumbnails. */
+.gallery-desk {
+  display: none;
+}
+.gallery-swipe {
+  position: relative;
+}
+.gallery-track {
+  display: flex;
+  aspect-ratio: 3 / 4;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  border-radius: var(--r-lg);
+  border: 1px solid var(--outline);
+  background: linear-gradient(135deg, var(--surface-high), var(--surface-mid));
+}
+.gallery-track::-webkit-scrollbar {
+  display: none;
+}
+.gallery-slide {
+  flex: 0 0 100%;
+  padding: 0;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+.gallery-slide img,
+.gallery-slide video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.gallery-dots {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 10px;
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  pointer-events: none;
+}
+.gallery-dots span {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.55);
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.18);
+  transition:
+    width var(--dur-fast),
+    background-color var(--dur-fast);
+}
+.gallery-dots span.is-on {
+  width: 18px;
+  background: #fff;
+}
+@media (min-width: 1024px) {
+  .gallery-swipe {
+    display: none;
+  }
+  .gallery-desk {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-sm);
+    min-width: 0;
+  }
+}
+
+/* The selling points of a product, as a list a buyer reads at a glance. */
+.pd-points {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.pd-points li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.55;
+}
+[dir="rtl"] .pd-points li {
+  font-size: 16px;
+}
+.pd-point-tick {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  margin-top: 2px;
+  border-radius: 999px;
+  background: #111;
+  color: #ddbf96;
+}
+
 .gallery-thumb {
   position: relative;
 }
@@ -1300,10 +1397,10 @@ button.gallery-main {
   position: relative;
   overflow: hidden;
   padding: 22px 16px 18px;
-  border: 1px solid rgba(201, 169, 110, 0.38);
+  border: 1px solid rgba(221, 191, 150, 0.38);
   border-radius: 24px;
   background:
-    radial-gradient(120% 55% at 50% 0%, rgba(201, 169, 110, 0.14), transparent 62%), #0c0a07;
+    radial-gradient(120% 55% at 50% 0%, rgba(221, 191, 150, 0.14), transparent 62%), #0c0a07;
   box-shadow: 0 22px 50px rgba(0, 0, 0, 0.22);
   color: #f3ede2;
 }
@@ -1313,6 +1410,7 @@ button.gallery-main {
   }
 }
 .xo-head {
+  margin-bottom: 18px;
   text-align: center;
 }
 .xo-title {
@@ -1328,36 +1426,6 @@ button.gallery-main {
   text-wrap: pretty;
   line-height: 1.6;
   color: #bdb3a2;
-}
-.xo-trust {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-  margin: 16px 0 18px;
-}
-.xo-trust li {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  padding: 10px 4px;
-  border: 1px solid rgba(201, 169, 110, 0.22);
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.03);
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 1.4;
-  text-align: center;
-  color: #e9dfcc;
-}
-.xo-trust-icon {
-  display: grid;
-  place-items: center;
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  background: rgba(201, 169, 110, 0.16);
-  color: #e3c68f;
 }
 .xo-form {
   display: flex;
@@ -1388,9 +1456,9 @@ button.gallery-main {
 }
 .xo .form-input:focus,
 .xo .form-select:focus {
-  border-color: #c9a96e;
-  background-color: rgba(201, 169, 110, 0.07);
-  box-shadow: 0 0 0 3px rgba(201, 169, 110, 0.22);
+  border-color: #ddbf96;
+  background-color: rgba(221, 191, 150, 0.07);
+  box-shadow: 0 0 0 3px rgba(221, 191, 150, 0.22);
 }
 .xo .form-input[aria-invalid="true"],
 .xo .form-select[aria-invalid="true"] {
@@ -1454,19 +1522,19 @@ button.gallery-main {
   transform: scale(0.98);
 }
 .dc-card:has(input:focus-visible) {
-  outline: 2px solid #c9a96e;
+  outline: 2px solid #ddbf96;
   outline-offset: 2px;
 }
 .dc-card.is-active {
-  border-color: #c9a96e;
-  background: rgba(201, 169, 110, 0.12);
+  border-color: #ddbf96;
+  background: rgba(221, 191, 150, 0.12);
 }
 .dc-card.is-disabled {
   cursor: not-allowed;
   opacity: 0.5;
 }
 .dc-icon {
-  color: #c9a96e;
+  color: #ddbf96;
 }
 .dc-label {
   font-size: 13px;
@@ -1504,7 +1572,7 @@ button.gallery-main {
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: #c9a96e;
+  background: #ddbf96;
   color: #111;
   opacity: 0;
   scale: 0.6;
@@ -1527,7 +1595,7 @@ button.gallery-main {
 /* Summary: the case, the lines, and the total in gold. */
 .xo-summary {
   padding-top: 16px;
-  border-top: 1px solid rgba(201, 169, 110, 0.28);
+  border-top: 1px solid rgba(221, 191, 150, 0.28);
 }
 .xo-summary-title {
   margin-bottom: 12px;
@@ -1654,7 +1722,7 @@ button.gallery-main {
 .xo-lines .xo-total {
   margin-top: 4px;
   padding-top: 12px;
-  border-top: 1px dashed rgba(201, 169, 110, 0.35);
+  border-top: 1px dashed rgba(221, 191, 150, 0.35);
 }
 .xo-total dt {
   font-weight: 700;
@@ -1702,7 +1770,7 @@ button.gallery-main {
   transform: translateY(-2px);
 }
 .xo-cta:focus-visible {
-  outline: 2px solid #c9a96e;
+  outline: 2px solid #ddbf96;
   outline-offset: 3px;
 }
 .xo-cta:active:not(:disabled) {
@@ -1904,11 +1972,11 @@ button.gallery-main {
   width: 84px;
   height: 84px;
   border-radius: 999px;
-  background: linear-gradient(180deg, #e6cb92, #c9a96e 55%, #b08d4f);
+  background: linear-gradient(180deg, #e6cb92, #ddbf96 55%, #b08d4f);
   color: #1a140a;
   box-shadow:
-    0 0 0 10px rgba(201, 169, 110, 0.16),
-    0 14px 30px rgba(201, 169, 110, 0.35);
+    0 0 0 10px rgba(221, 191, 150, 0.16),
+    0 14px 30px rgba(221, 191, 150, 0.35);
 }
 .ty-title {
   margin-top: 10px;
@@ -1924,7 +1992,7 @@ button.gallery-main {
 }
 .ty-number {
   padding: 6px 14px;
-  border: 1px dashed rgba(201, 169, 110, 0.6);
+  border: 1px dashed rgba(221, 191, 150, 0.6);
   border-radius: 999px;
   font-size: 13px;
 }
@@ -2004,7 +2072,7 @@ button.gallery-main {
   height: 38px;
   flex-shrink: 0;
   border-radius: 999px;
-  background: rgba(201, 169, 110, 0.18);
+  background: rgba(221, 191, 150, 0.18);
   color: #85652d;
 }
 @media (prefers-reduced-motion: no-preference) {
@@ -2060,10 +2128,10 @@ button.gallery-main {
   background:
     linear-gradient(
       180deg,
-      rgba(201, 169, 110, 0) 38%,
-      rgba(201, 169, 110, 0.04) 56%,
-      rgba(201, 169, 110, 0.055) 70%,
-      rgba(201, 169, 110, 0.03) 100%
+      rgba(221, 191, 150, 0) 38%,
+      rgba(221, 191, 150, 0.04) 56%,
+      rgba(221, 191, 150, 0.055) 70%,
+      rgba(221, 191, 150, 0.03) 100%
     ),
     #050403;
   color: #fff;
@@ -2148,7 +2216,7 @@ button.gallery-main {
   box-shadow:
     inset 1px 0 0 rgba(240, 215, 160, 0.4),
     inset -1px 0 0 rgba(240, 215, 160, 0.52),
-    0 0 6px rgba(201, 169, 110, 0.2),
+    0 0 6px rgba(221, 191, 150, 0.2),
     0 3px 8px -5px rgba(230, 200, 140, 0.6);
 }
 .hx-badge i svg {
@@ -2164,7 +2232,7 @@ button.gallery-main {
   font-size: 58px;
   font-weight: 800;
   line-height: 1.2;
-  text-shadow: 0 0 34px rgba(201, 169, 110, 0.22);
+  text-shadow: 0 0 34px rgba(221, 191, 150, 0.22);
 }
 .hx-sub {
   max-width: 560px;
@@ -2218,7 +2286,7 @@ button.gallery-main {
     inset -1px 0 0 rgba(255, 255, 255, 0.09),
     1px 0 0 rgba(220, 190, 130, 0.17),
     -1px 0 0 rgba(220, 190, 130, 0.17),
-    0 0 8px rgba(201, 169, 110, 0.1),
+    0 0 8px rgba(221, 191, 150, 0.1),
     0 2px 5px -3px rgba(230, 200, 140, 0.45);
   transition:
     transform 0.25s,
@@ -2260,7 +2328,7 @@ button.gallery-main {
     inset 0 1px 0 rgba(255, 240, 200, 0.6),
     inset 1px 0 0 rgba(240, 215, 160, 0.35),
     inset -1px 0 0 rgba(240, 215, 160, 0.35),
-    0 6px 22px rgba(201, 169, 110, 0.45);
+    0 6px 22px rgba(221, 191, 150, 0.45);
 }
 
 /* Holds the ring; on wide screens it is only a frame. */

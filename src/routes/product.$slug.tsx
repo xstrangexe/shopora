@@ -85,7 +85,7 @@ function ProductPage() {
 
   return (
     <StoreLayout bottomNav={false}>
-      <div className="container-page flex flex-col gap-12 py-8 sm:py-12">
+      <div className="container-page flex flex-col gap-12 py-4 sm:py-12">
         {isError ? (
           <ErrorState message={error.message} onRetry={() => void refetch()} />
         ) : (
