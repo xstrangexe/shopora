@@ -12,6 +12,8 @@ export const enAdmin = {
   "admin.orders.empty": "No orders yet",
   "admin.orders.needsCall": "Needs a call",
   "admin.orders.confirm": "Confirm",
+  "admin.orders.cancel": "Cancel order",
+  "admin.orders.cancelSure": "Confirm cancel?",
   "admin.orders.refuse": "Refuse",
   "admin.orders.ship": "Hand to courier",
   "admin.orders.delivered": "Delivered",

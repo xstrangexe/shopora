@@ -12,6 +12,8 @@ export const arAdmin = {
   "admin.orders.empty": "لا توجد طلبات بعد",
   "admin.orders.needsCall": "بحاجة إلى اتصال",
   "admin.orders.confirm": "تم التأكيد",
+  "admin.orders.cancel": "إلغاء الطلب",
+  "admin.orders.cancelSure": "تأكيد الإلغاء؟",
   "admin.orders.refuse": "رفض الطلب",
   "admin.orders.ship": "أرسل مع الموصّل",
   "admin.orders.delivered": "تم التسليم",

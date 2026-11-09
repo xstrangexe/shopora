@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
-import { Check, Printer, Truck, X } from "lucide-react";
+import { Ban, Check, Printer, Truck, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Field, Input } from "@/components/ui/form";
 import { useI18n } from "@/lib/i18n-context";
@@ -100,7 +100,12 @@ export function OrderDetail({
   );
 }
 
-/** Status transitions. Only forward moves are offered, matching the flow. */
+/**
+ * Status transitions. Only forward moves are offered, matching the flow, plus
+ * cancelling an order that has not shipped yet (a test order, a duplicate, a
+ * buyer who changed their mind on the call). Cancelling puts the stock back and,
+ * unlike a refusal, does not count against the buyer or the refusal rate.
+ */
 function OrderActions({ order }: { order: AdminOrder }) {
   const { t } = useI18n();
   const queryClient = useQueryClient();
@@ -188,6 +193,12 @@ function OrderActions({ order }: { order: AdminOrder }) {
           {t("admin.orders.ship")}
         </Button>
       )}
+      {(order.status === "pending" || order.status === "confirmed") && (
+        <CancelButton
+          disabled={mutation.isPending}
+          onCancel={() => mutation.mutate({ status: "cancelled" })}
+        />
+      )}
       {order.status === "shipped" && (
         <Button
           size="sm"
@@ -199,5 +210,23 @@ function OrderActions({ order }: { order: AdminOrder }) {
         </Button>
       )}
     </div>
+  );
+}
+
+/** Two taps: the first asks, the second cancels, so a slip of the thumb does not. */
+function CancelButton({ disabled, onCancel }: { disabled: boolean; onCancel: () => void }) {
+  const { t } = useI18n();
+  const [asking, setAsking] = useState(false);
+  return (
+    <Button
+      variant={asking ? "danger" : "ghost"}
+      size="sm"
+      disabled={disabled}
+      onClick={() => (asking ? onCancel() : setAsking(true))}
+      onBlur={() => setAsking(false)}
+    >
+      <Ban size={15} aria-hidden="true" />
+      {t(asking ? "admin.orders.cancelSure" : "admin.orders.cancel")}
+    </Button>
   );
 }

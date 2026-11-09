@@ -12,6 +12,8 @@ export const frAdmin = {
   "admin.orders.empty": "Aucune commande pour le moment",
   "admin.orders.needsCall": "À appeler",
   "admin.orders.confirm": "Confirmer",
+  "admin.orders.cancel": "Annuler la commande",
+  "admin.orders.cancelSure": "Confirmer l'annulation ?",
   "admin.orders.refuse": "Refuser",
   "admin.orders.ship": "Expédier",
   "admin.orders.delivered": "Livrée",
